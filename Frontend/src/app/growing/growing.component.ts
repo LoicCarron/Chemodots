@@ -12,7 +12,7 @@ export interface Function {
 })
 
 export class GrowingComponent implements OnInit {
-  smile:String='';
+  smile:string='';
   Detected_Functions:Function[]=[
     {Position:'9',Name:"Primary Amine"},
     {Position:'6',Name:"Secondary Amine"},
@@ -114,6 +114,7 @@ export class GrowingComponent implements OnInit {
 
       }
     }
+
     return;
   }
   Check_Function(){
@@ -124,5 +125,9 @@ export class GrowingComponent implements OnInit {
     }
 
   }
+  ConvertRestultFunction(output:string[]){
+
+  }
+
 
 }
