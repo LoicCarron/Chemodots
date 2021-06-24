@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 // @ts-ignore
 import {main_Growing,SetAtomSelect,generateMolSketcherGrowing} from '../../../../Backend/MainJS.js';
+import {MessageService} from "../message/message.service";
+import {Router} from "@angular/router";
+
 export interface Function {
   Position : string;
   Name: string;
+
 }
 @Component({
   selector: 'app-growing',
@@ -18,7 +22,7 @@ export class GrowingComponent implements OnInit {
     {Position:'6',Name:"Secondary Amine"},
     {Position:'',Name:"None"},
   ];
-  constructor() {}
+  constructor(private message : MessageService,route:Router) {}
 
   ngOnInit(): void {
 
@@ -113,9 +117,19 @@ export class GrowingComponent implements OnInit {
         doc.style.display = "block";
 
       }
+      this.Detected_Functions.push({ Position :'8',Name: "kakaou"})
     }
-
-    return;
+    let data = {
+      smiles : this.smile
+    }
+    this.message.sendMessage('Callscript', data ).subscribe(res => {
+      console.log(res.status);
+      if (res.status == "error") {
+      } else {
+        console.log(res);
+      }
+    });
+      return;
   }
   Check_Function(){
     //On met à jour la valeur du smile

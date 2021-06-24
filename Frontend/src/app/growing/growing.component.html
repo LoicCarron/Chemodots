@@ -155,7 +155,7 @@
           <input type="button" (click)="Check_Function()" value="Validate" class="btnFormSettings" style="margin-left: 10px">
         </div>
         <div id="scroll2" style="overflow-y:scroll; height:150px; background:#D5E9EB;display:none">
-          <label style="color:red">Choose the targeted function, If you changed your molecule please press Yes or No again.</label>
+          <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Yes or No buttons.</label>
           <div *ngFor = "let n of Detected_Functions">
           <input type="radio" (click) = "Higlightfunction(0,n.Position)" name="chemfunction" id={{n.Name}} style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
           <label>{{n.Name}}</label>
