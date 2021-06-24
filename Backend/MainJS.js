@@ -214,7 +214,6 @@ export function main_Linking() {
             switch (num_sketcher) {
 
                 case 0:
-                    console.log("coucou2")
                     sketcher.then(function(marvin){
                         marvin.setSelection({
                             'atoms' : pos,
