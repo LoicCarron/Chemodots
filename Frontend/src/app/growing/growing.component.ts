@@ -17,12 +17,8 @@ export interface Function {
 
 export class GrowingComponent implements OnInit {
   smile:string='';
-  Detected_Functions:Function[]=[
-    {Position:'9',Name:"Primary Amine"},
-    {Position:'6',Name:"Secondary Amine"},
-    {Position:'',Name:"None"},
-  ];
-  constructor(private message : MessageService,route:Router) {}
+  Detected_Functions:Function[]=[];
+  constructor(private message : MessageService) {}
 
   ngOnInit(): void {
 
@@ -77,10 +73,7 @@ export class GrowingComponent implements OnInit {
   }
 
   GenerateMol() {
-    var doc =(<HTMLInputElement>document.getElementById("smilesMolecule"));
-    if(doc!=null){
-      this.smile=doc.value;
-    }
+    this.Update_smile();
     console.log(this.smile);
     generateMolSketcherGrowing(this.smile);
   }
@@ -100,11 +93,7 @@ export class GrowingComponent implements OnInit {
     return;
   }
   LaunchPytonFindFunction() {
-    //On met à jour la valeur du smile
-    var smildoc =(<HTMLInputElement>document.getElementById("smilesMolecule"));
-    if(smildoc!=null){
-      this.smile=smildoc.value;
-    }
+    this.Update_smile();
     var doc = document.getElementById("scroll2");
     var doc1 = document.getElementById("InputForFunction");
     if (doc1 != null) {
@@ -117,31 +106,52 @@ export class GrowingComponent implements OnInit {
         doc.style.display = "block";
 
       }
-      this.Detected_Functions.push({ Position :'8',Name: "kakaou"})
+      this.Detected_Functions.push({ Position :'8',Name: "test"})
     }
     let data = {
       smiles : this.smile
     }
     this.message.sendMessage('Callscript', data ).subscribe(res => {
-      console.log(res.status);
       if (res.status == "error") {
       } else {
         console.log(res);
+        this.ConvertRestultFunction(res.data);
       }
     });
       return;
   }
   Check_Function(){
-    //On met à jour la valeur du smile
+    this.Update_smile();
+    let funcdoc =(<HTMLInputElement>document.getElementById("Function name"));
+    if(funcdoc!=null){
+    let data = {
+      funcname :funcdoc.value
+    }
+      this.message.sendMessage('Callscript_Check_Function', data ).subscribe(res => {
+        if (res.status == "error") {
+        } else {
+          console.log(res);
+
+        }
+      });
+
+    }
+
+  }
+  ConvertRestultFunction(output:string []){
+    this.Detected_Functions=[];
+    this.Detected_Functions.push({Position:'',Name:"None"});
+    for(let i = 0; i < output.length; i++) {
+        this.Detected_Functions.push({Name: output[i],Position:output[i+=1]});
+    }
+
+
+  }
+  Update_smile(){
     var smildoc =(<HTMLInputElement>document.getElementById("smilesMolecule"));
     if(smildoc!=null){
       this.smile=smildoc.value;
     }
-
   }
-  ConvertRestultFunction(output:string[]){
-
-  }
-
 
 }

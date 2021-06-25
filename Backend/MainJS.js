@@ -280,4 +280,3 @@ export function generateMolSketcherLinking2(smiles){
 }
 
 
-	//$('.image-link').magnificPopup({type:'image'});

@@ -4,6 +4,7 @@ from rdkit.Chem.Draw import IPythonConsole
 from rdkit.Chem import AllChem
 from IPython import get_ipython
 import operator
+import sys
 
 
 
@@ -212,6 +213,5 @@ def draw(smiles):
     m = Chem.MolFromSmiles(smiles)
     m
 if __name__== '__main__':
-smiles=sys.argv[1]
-print(smiles)
-searchFct(smiles)
+    smiles=sys.argv[1]
+    searchFct(smiles)

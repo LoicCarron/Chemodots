@@ -20,7 +20,10 @@ app.use(cors({origin: 'http://localhost:4200', credentials: true}));
 // fichier exporte juste une fonction, que l'on appelle quand l'utilisateur
 // demande à accéder à la route.
 const Callscript = require ('./Callscript');
+const Callscript_Check_Function = require ('./Callscript_Check_Function');
+
 
 app.post ('/Callscript', (req, res) => {Callscript(req,res);});
+app.post ('./Callscript_Check_Function', (req, res) => {Callscript(req,res);});
 
 app.listen(port, () => {console.log (`listening on port ${port}`)});
