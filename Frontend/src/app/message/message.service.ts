@@ -17,6 +17,7 @@ export class MessageService {
 
   sendMessage(url : string, data : any) : Observable<PhpData> {
     url = environment.url + url;
+
     /*let form_data = new FormData();
     if (data != null && data != undefined) {
       for (let key of Object.keys(data)) {
