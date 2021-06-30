@@ -1,5 +1,4 @@
 // on crée le serveur web sur le port 3000
-// on crée le serveur web sur le port 3000
 const express = require ('express');
 const app = express ();
 const port = process.env.PORT || 3000;
@@ -20,10 +19,10 @@ app.use(cors({origin: 'http://localhost:4200', credentials: true}));
 // fichier exporte juste une fonction, que l'on appelle quand l'utilisateur
 // demande à accéder à la route.
 const Callscript = require ('./Callscript');
-const Callscript_Check_Function = require ('./Callscript_Check_Function');
+const Callscript2 = require ('./Callscript2');
 
 
 app.post ('/Callscript', (req, res) => {Callscript(req,res);});
-app.post ('./Callscript_Check_Function', (req, res) => {Callscript(req,res);});
+app.post ('/Callscript2', (req, res) => {Callscript2(req,res);});
 
 app.listen(port, () => {console.log (`listening on port ${port}`)});

@@ -87,6 +87,25 @@ body{
 
 
 }
+#main #Validate_Function {
+  margin-top: 2%;
+  margin-left: 30%;
+  width:40%;
+  height: 2%;
+  font-size: x-large;
+  position: relative;
+}
+#main #Validate_Rules {
+  margin-top: 2%;
+  margin-left: 30%;
+  width:40%;
+  height: 2%;
+  font-size: x-large;
+  position: relative;
+}
+
+
+
 #main #sketcher{position:sticky; top:0;}
 
 

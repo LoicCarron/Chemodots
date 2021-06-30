@@ -5,7 +5,6 @@ from rdkit.Chem import AllChem
 from IPython import get_ipython
 
 
-
 #Search fct (return the index where the fct is)
 def searchFct(smiles):
     
@@ -22,7 +21,7 @@ def searchFct(smiles):
     primaire.name="Amine Primaire"
     secondaire=Chem.MolFromSmarts('[NH1;!$(N~[C,S,P,N]=[O,S,N]);!$(N#[C,N]);!$(N=C)]')
     secondaire.name="Amine secondaire"
-    tertiaire=Chem.MolFromSmarts('CN(C)C')
+    tertiaire=Chem.MolFromSmarts('cN(C)C')
     tertiaire.name="Amine tertiaire"
     #amine_prim_alkyl=Chem.MolFromSmarts('C[NH2]')
     #amine_prim_alkyl.name="Amine primaire alkyl"
@@ -41,23 +40,23 @@ def searchFct(smiles):
     nitrile_aryl=Chem.MolFromSmarts('cC#N')
     nitrile_aryl.name="Nitrile aryl"
     aziridine_alkyl=Chem.MolFromSmarts('C1NC1C')
-    aziridine_alkyl.name="aziridine alkyl"
+    aziridine_alkyl.name="Aziridine alkyl"
     aziridine_aryl=Chem.MolFromSmarts('C1NC1c')
     aziridine_aryl.name="Aziridine aryl"
     imine_alkyl=Chem.MolFromSmarts('[C;R0](=N)C')
-    imine_alkyl.name="Amine alkyl"
+    imine_alkyl.name="Imine alkyl"
     imine_aryl=Chem.MolFromSmarts('[C;R0](=N)c')
     imine_aryl.name="Imine aryl"
     azide_alkyl=Chem.MolFromSmarts('[N-]=[N+]=NC')
-    azide_alkyl.name="Amine alkyl"
+    azide_alkyl.name="Azide alkyl"
     azide_aryl=Chem.MolFromSmarts('[N-]=[N+]=Nc')
     azide_aryl.name="Azide aryl"
     amidine_alkyl=Chem.MolFromSmarts('C[C;R0](N)=N')
-    amidine_alkyl.name="Amine alkyl"
+    amidine_alkyl.name="Amidine alkyl"
     amidine_aryl=Chem.MolFromSmarts('c[C;R0](N)=N')
     amidine_aryl.name="Amidine aryl"
     hydrazine_alkyl=Chem.MolFromSmarts('C[NH;R0][NH2;R0]')
-    hydrazine_alkyl.name="Amine alkyl"
+    hydrazine_alkyl.name="Hydrazine alkyl"
     hydrazine_aryl=Chem.MolFromSmarts('c[NH;R0][NH2;R0]')
     hydrazine_aryl.name="Hydrazine aryl"
     
@@ -98,11 +97,11 @@ def searchFct(smiles):
     anhydride_aryl.name="Anhydride aryl"
     dicarbonyl_1_3_alkyl=Chem.MolFromSmarts('C[C;R0](=O)[CH2][C;R0](=O)C')
     dicarbonyl_1_3_alkyl.name="Dicarbonyl 1-3 alkyl"
-    dicarbonyl_1_3_aryl=Chem.MolFromSmarts('c[C;R0](=O)[CH2][C;R0](=O)c')
+    dicarbonyl_1_3_aryl=Chem.MolFromSmarts('[#6][C;R0](=O)[CH2;R0][C;R0]([#6])=O')
     dicarbonyl_1_3_aryl.name="Dicarbonyl 1-3 aryl"
     dicarbonyl_1_4_alkyl=Chem.MolFromSmarts('C[C;R0](=O)[CH2][CH2][C;R0](=O)C')
     dicarbonyl_1_4_alkyl.name="Dicarbonyl 1-4 alkyl"
-    dicarbonyl_1_4_aryl=Chem.MolFromSmarts('c[C;R0](=O)[CH2][CH2][C;R0](=O)c')
+    dicarbonyl_1_4_aryl=Chem.MolFromSmarts('[#6][C;R0](=O)[CH2;R0][CH2;R0][C;R0]([#6])=O')
     dicarbonyl_1_4_aryl.name="Dicarbonyl 1-4 aryl"
     ketone_alpha_halide=Chem.MolFromSmarts('C[C;R0](=O)[CH2][Cl,Br,I]')
     ketone_alpha_halide.name="Ketone alpha halide"
@@ -163,7 +162,7 @@ def searchFct(smiles):
     vinylsulfonyl_alkyl.name="Vinylsulfonyl Alkyl"
     vinylsulfonyl_aryl=Chem.MolFromSmarts('c[S;R0](=O)(=O)[C;R0]=[C;R0]')
     vinylsulfonyl_aryl.name="Vinylsulfonyl Aryl"
-    sulfonate_ester_alkyl=Chem.MolFromSmarts('c[S;R0](=O)(=O)OC')
+    sulfonate_ester_alkyl=Chem.MolFromSmarts('[#6][O;R0][S;R0](=O)(=O)[#6]')
     sulfonate_ester_alkyl.name="Sulfonate ester alkyl"
     sulfonate_ester_aryl=Chem.MolFromSmarts('c[S;R0](=O)(=O)Oc')
     sulfonate_ester_aryl.name="Sulfonate ester aryl"
@@ -292,7 +291,7 @@ def searchFct(smiles):
         
      
       #if N & S are present
-      if (smiles[p] == 'O') & (p<len(smiles)):
+      if (smiles[p] == 'N') & (p<len(smiles)):
           
           for j in range (len(smiles)):
                 if (smiles[j] == 'S'):
@@ -312,38 +311,12 @@ def searchFct(smiles):
                  dico[fctElse[i].name]=t
           
     
+
     for v in dico:
         print(v)
         print(dico[v])
-    
-        
-        
-        
-        
-    
-    
-    
-    
-    
-#Add H (convert smiles without Hydrogens to smiles with hydrogens)
-def addH(smiles):
-    m = Chem.MolFromSmiles(smiles)
-    m2=Chem.AddHs(m)
-
-    print (Chem.MolToSmiles(m2))
- 
-
-
-
-
-
-def draw(smiles):
-    IPythonConsole.drawOptions.addAtomIndices=True
-    m = Chem.MolFromSmiles(smiles)
-    m
 import sys
 if __name__== '__main__':
 # simple argument echo script
    smiles=sys.argv[1]
    searchFct(smiles)
-    
