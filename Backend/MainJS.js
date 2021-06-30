@@ -210,13 +210,14 @@ export function main_Linking() {
 
 
 }
-		export function SetAtomSelect (num_sketcher,pos) {
+		export function SetAtomSelect (num_sketcher,pos,bonds) {
             switch (num_sketcher) {
 
                 case 0:
                     sketcher.then(function(marvin){
                         marvin.setSelection({
                             'atoms' : pos,
+                            'bonds' : bonds
                         });
                     });
                     break;
@@ -224,6 +225,7 @@ export function main_Linking() {
                     sketcher1.then(function(marvin){
                         marvin.setSelection({
                             'atoms' : pos,
+                            'bonds' : bonds
                         });
                     });
                     break;
@@ -231,6 +233,7 @@ export function main_Linking() {
                     sketcher2.then(function(marvin){
                         marvin.setSelection({
                             'atoms' : pos,
+                            'bonds' : bonds
                         });
                     });
                     break;
@@ -278,5 +281,6 @@ export function generateMolSketcherLinking2(smiles){
     });
 
 }
+
 
 

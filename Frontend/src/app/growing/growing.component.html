@@ -29,7 +29,10 @@
     <div id="sketcher" style="width:100%">
       <h2><i class="fas fa-pen-square"></i> Sketcher</h2>
       <div id="marvin-test" style="width: 100%; height: 600px"></div>
+      <input id="validate-button" type="button" (click)="ValidateMol()" name="generateMol" value="Validate" class="btnFormSettings"
+             onmouseover="return overlib (' Click here to validate your molecule',HAUTO, VAUTO);" onmouseout="return nd ();">
     </div>
+
 
 
   </div> <!-- end left-->
@@ -54,7 +57,7 @@
         <input type="text" id="smilesMolecule" name="smilesMolecule" size="30" placeholder="Paste or write the SMILES"  [(ngModel)]="this.smile" class="fieldSMILES" form="formSmiles"
                onmouseover="return overlib (' Paste your molecule in SMILES format ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
-        <input type="button" (click)="GenerateMol()" name="generateMol" value="Generate molecule in sketcher" class="btnFormSettings"
+        <input type="button" (click)="ValidateMol()" name="generateMol" value="Generate molecule in sketcher" class="btnFormSettings"
                onmouseover="return overlib (' Click here and the smiles will be automatically drawn in the sketcher ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
       </form>
@@ -71,7 +74,7 @@
 
       <h2><i class="fas fa-vial"></i>
         Set of available reaction rules
-        <i id="Fleche1" class="fas fa-caret-down" (click)="ShowReactions()"></i>
+        <i id="Fleche1" class="fas fa-caret-down" (click)="ShowReactions(3)"></i>
       </h2>
 
       <div id="reac" style="display:none">
@@ -147,17 +150,19 @@
         <h3 onmouseover="return overlib (' Select a function to highlight it in the sketcher',HAUTO, VAUTO);" onmouseout="return nd ();"> Functions </h3>
 
 
-          <h3>Do you know the activated (targeted) function on your molecule ?</h3><br>
-          <input id="ButtonYes" type="button" (click)="SetInputActive()"  value="Yes" class="btnFormSettings">
-          <input id="ButtonNo" type="button" (click)="LaunchPytonFindFunction()" value="No" class="btnFormSettings"><br>
+         <div id="Question_Function" style="display:none">
+           <h3>Do you know the activated (targeted) function on your molecule ?</h3><br>
+           <input id="ButtonYes" type="button" (click)="SetInputActive()"  value="Yes" class="btnFormSettings">
+           <input id="ButtonNo" type="button" (click)="LaunchPytonFindFunction()" value="No" class="btnFormSettings"><br>
+         </div>
         <div id="InputForFunction" style="display:none">
           <input type="text" id="Function name" size="30" placeholder="Your targeted Function" value="">
           <input type="button" (click)="Check_Function()" value="Validate" class="btnFormSettings" style="margin-left: 10px">
         </div>
         <div id="scroll2" style="overflow-y:scroll; height:150px; background:#D5E9EB;display:none">
-          <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Yes or No buttons.</label>
+          <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
           <div *ngFor = "let n of Detected_Functions">
-          <input type="radio" (click) = "Higlightfunction(0,n.Position)" name="chemfunction" id={{n.Name}} style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
+          <input type="radio" (click) = "Higlightfunction(0,n.Position,n.Bonds)" name="chemfunction" id={{n.Name}} style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
           <label>{{n.Name}}</label>
 
           </div>

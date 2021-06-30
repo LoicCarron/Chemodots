@@ -15,7 +15,7 @@ def searchFct(smiles):
     boronate_alkyl=Chem.MolFromSmarts('OB(O)C')
     boronate_alkyl.name="Boronate alkyl"
     boronate_aryl=Chem.MolFromSmarts('OB(O)c')
-    boronate_aryl.name="Boronate aryl"
+    boronate_alkyl.name="Boronate aryl"
     
     #N
     primaire=Chem.MolFromSmarts('[NH2;!$(N~[C,S,P,N]=[O,S,N]);!$(N#[C,N]);!$(N=C)]')
@@ -113,9 +113,7 @@ def searchFct(smiles):
     epoxyde_aryl=Chem.MolFromSmarts('C1OC1c')
     epoxyde_aryl.name="Epoxyde aryl"
     acyl_chloride_alkyl=Chem.MolFromSmarts('C[C;R0](Cl)=O')
-    acyl_chloride_alkyl.name="Acyl chloride alkyl"
     acyl_chloride_aryl=Chem.MolFromSmarts('c[C;R0](Cl)=O')
-    acyl_chloride_aryl.name="Acyl chloride aryl"
 
     
     
@@ -310,11 +308,11 @@ def searchFct(smiles):
              t=m.GetSubstructMatches(fctElse[i])
              if (len(t) != 0):
                  dico[fctElse[i].name]=t
-          
-    
     for v in dico:
         print(v)
         print(dico[v])
+
+
     
         
         
@@ -337,13 +335,9 @@ def addH(smiles):
 
 
 
-def draw(smiles):
-    IPythonConsole.drawOptions.addAtomIndices=True
-    m = Chem.MolFromSmiles(smiles)
-    m
 import sys
 if __name__== '__main__':
 # simple argument echo script
    smiles=sys.argv[1]
    searchFct(smiles)
-    
+
