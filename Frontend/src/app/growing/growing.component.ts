@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import {main_Growing,SetAtomSelect,generateMolSketcherGrowing} from '../../../../Backend/MainJS.js';
 import {MessageService} from "../message/message.service";
 import {FormArray, FormControl, FormGroup} from "@angular/forms";
-import {logger} from "codelyzer/util/logger";
+import {Undesired_substructures_DATA_BASE} from "../undesired-substructures";
+import {UndesiredSubstructures} from "../undesired-substructures";
+
 
 export interface Function {
   Position : string;
@@ -17,6 +19,8 @@ export interface Rule {
   Name: string;
 
 }
+
+
 @Component({
   selector: 'app-growing',
   templateUrl: './growing.component.html',
@@ -35,12 +39,33 @@ export class GrowingComponent implements OnInit {
   Form_Rules!:FormGroup;
   Selected_Rules:Rule[]=[];
 
+  Selected_Undesired_Substructures:UndesiredSubstructures[]=[];
+  Undesired_Substructures:UndesiredSubstructures[]=[];
+  Form_UndSub!:FormGroup;
+
 
   constructor(private message : MessageService) {}
 
   ngOnInit(): void {
+    this.Undesired_Substructures=Undesired_substructures_DATA_BASE;
     this.Form_Rules=new FormGroup({
       rules: new FormArray([])});
+
+    this.Form_UndSub=new FormGroup({
+      UndSub: new FormArray([])});
+    const formArray = this.Form_UndSub.get('UndSub') as FormArray;
+    // loop each existing value options from database
+    this.Undesired_Substructures.forEach(UndSub => {
+      // generate control Group for each option and push to formArray
+      formArray.push(new FormGroup({
+        Name: new FormControl(UndSub.Name),
+        Smart: new FormControl(UndSub.Smart),
+        checked: new FormControl(false)
+
+      }))
+    })
+
+
     //Lauch the sketcher
     main_Growing();
   }
@@ -85,16 +110,35 @@ export class GrowingComponent implements OnInit {
     return;
   }
   //Show the Substructure part
-  ShowSub():void {
+  ShowSub(Status:Number):void {
     var doc=document.getElementById("sub");
     var vThis=document.getElementById("Fleche2");
-    if(doc!=null && vThis!=null) {
+    var doc1=document.getElementById("Undesired_sub");
+    if (doc != null && vThis != null && doc1!=null) {
+    if (Status==0) {
       if (doc.style.display == "none") {
         vThis.className = "fas fa-caret-up";
         doc.style.display = "block";
-      } else {
-        doc.style.display = "none";
-        vThis.className = "fas fa-caret-down";
+      }
+      if (doc1.style.display == "none") {
+        doc1.style.display = "block";
+      }
+      else if (Status==1) {
+        if (doc.style.display == "block") {
+          doc.style.display = "none";
+          vThis.className = "fas fa-caret-down";
+        }
+      }
+      else {
+
+          if (doc.style.display == "none") {
+            vThis.className = "fas fa-caret-up";
+            doc.style.display = "block";
+          } else {
+            doc.style.display = "none";
+            vThis.className = "fas fa-caret-down";
+          }
+        }
       }
     }
     return;
@@ -216,6 +260,7 @@ export class GrowingComponent implements OnInit {
     this.Update_smile();
     this.GenerateMol();
     this.ShowReactions(0);
+    this.ShowSub(1)
     this.Detected_Functions=[];
     this.LaunchPytonFindFunction()
 
@@ -302,7 +347,18 @@ export class GrowingComponent implements OnInit {
       if(this.Selected_Rules.length==0){
         window.alert("Please choose at least one reaction rule.");
       }
+      else{
+        this.ShowSub(0);
+      }
+
     }
     //For the HTML
   get FormRules() { return <FormArray>this.Form_Rules.get('rules'); }
+  get FormUndSub() { return <FormArray>this.Form_UndSub.get('UndSub'); }
+
+  ValidateUndSub() {
+    this.Selected_Undesired_Substructures=this.Form_UndSub.value.UndSub.filter((f: { checked: any; }) => f.checked);
+    console.log(this.Selected_Undesired_Substructures);
+
+  }
 }
