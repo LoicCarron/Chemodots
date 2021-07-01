@@ -8,7 +8,7 @@
 header{
   display:inline-flex;
   flex-direction:row;
-  width: 98.5%;
+  width: 99%;
   height: 60px;
   background-color: #2c3143;
   line-height:40px;
@@ -50,7 +50,7 @@ h2{
 
 body{
   background-color:#C1DDE0;
-  height:280%;
+  height:200%;
   width:100%;
   position: absolute;
   top: 0; left: 0; bottom:0;
@@ -92,8 +92,14 @@ body{
   margin-left: 30%;
   width:40%;
   height: 2%;
-  font-size: x-large;
   position: relative;
+  font-size: small;
+}
+@media screen and (min-width: 1800px){
+
+  #main #Validate_Function {
+    font-size: x-large;
+  }
 }
 #main #Validate_Rules {
   margin-top: 2%;
@@ -103,8 +109,14 @@ body{
   font-size: x-large;
   position: relative;
 }
-
-
+#main #Validate_UndSub {
+  margin-top: 2%;
+  margin-left: 30%;
+  width:40%;
+  height: 2%;
+  font-size: x-large;
+  position: relative;
+}
 
 #main #sketcher{position:sticky; top:0;}
 
