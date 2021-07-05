@@ -1,11 +1,11 @@
+#Searching a chemical function in a given smiles molecule, then return the result
 from rdkit import Chem
 from rdkit.Chem.Draw import rdMolDraw2D
 from rdkit.Chem.Draw import IPythonConsole
 from rdkit.Chem import AllChem
 from IPython import get_ipython
 
-
-#Search fct (return the index where the fct is)
+#Search chemical function (returns the index where the fct is, and its name)
 def searchFct(smiles):
     
     m = Chem.MolFromSmiles(smiles)

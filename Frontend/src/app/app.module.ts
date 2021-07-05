@@ -7,7 +7,9 @@ import { MenuComponent } from './menu/menu.component';
 import { GrowingComponent } from './growing/growing.component';
 import { LinkingComponent } from './linking/linking.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 
+// @ts-ignore
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +24,8 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
         FormsModule,
         ReactiveFormsModule
     ],
-  providers: [],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

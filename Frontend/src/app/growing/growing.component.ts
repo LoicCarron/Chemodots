@@ -17,6 +17,7 @@ export interface Rule {
   checked:boolean;
   Id : number;
   Name: string;
+  Image:string,
 
 }
 
@@ -29,10 +30,12 @@ export interface Rule {
 
 export class GrowingComponent implements OnInit {
   smile:string='';
+  Required_substructures:string='';
 
   //We could use FromGroup in this case too
   Detected_Functions:Function[]=[];
   Selected_Function:string="";
+  ID_Selected_Function:number=0;
 
 
   Detected_Rules:Rule[]=[];
@@ -115,6 +118,7 @@ export class GrowingComponent implements OnInit {
     var vThis=document.getElementById("Fleche2");
     var doc1=document.getElementById("Undesired_sub");
     if (doc != null && vThis != null && doc1!=null) {
+
     if (Status==0) {
       if (doc.style.display == "none") {
         vThis.className = "fas fa-caret-up";
@@ -123,6 +127,7 @@ export class GrowingComponent implements OnInit {
       if (doc1.style.display == "none") {
         doc1.style.display = "block";
       }
+    }
       else if (Status==1) {
         if (doc.style.display == "block") {
           doc.style.display = "none";
@@ -130,7 +135,6 @@ export class GrowingComponent implements OnInit {
         }
       }
       else {
-
           if (doc.style.display == "none") {
             vThis.className = "fas fa-caret-up";
             doc.style.display = "block";
@@ -139,7 +143,7 @@ export class GrowingComponent implements OnInit {
             vThis.className = "fas fa-caret-down";
           }
         }
-      }
+
     }
     return;
   }
@@ -175,12 +179,14 @@ export class GrowingComponent implements OnInit {
     let data = {
       smiles : this.smile
     }
+
     if(this.Detected_Functions.length==0){
       this.message.sendMessage('Callscript', data ).subscribe(res => {
         if (res.status == "error") {
         } else {
           console.log(res);
           if (res.data != null) {
+            this.Detected_Functions=[];
             this.ConvertRestultFunction(res.data);
           } else {
             window.alert("We could not find functions for your molecule, they may not be available yet or there is an error in the molecule.");
@@ -196,8 +202,9 @@ export class GrowingComponent implements OnInit {
     let name:string;
     let pos:number[]=[];
     let tmp:string="";
-    let bond:string[]
-      =[];
+    let numb_tmp:number=0;
+    let bond:string[] =[];
+    let limit:number=0;
     for(let i = 0; i < output.length; i++) {
 
         name=output[i];
@@ -221,7 +228,20 @@ export class GrowingComponent implements OnInit {
           while ((+output[i][j] >= 0 && +output[i][j] <= 9) || output[i][j] == ",") {
             if (output[i][j] == "," || output[i][j] == " ") {
               if (tmp != "") {
-                pos.push(Number(tmp) + 1);
+                 limit=Number(tmp);
+                 numb_tmp=limit;
+                //test
+                for(let k=0;k<=limit;k++) {
+                  if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
+                    limit = limit + 1;
+                    if (this.smile[k] == "H") {
+                      numb_tmp = numb_tmp + 1;
+
+                    }
+                  }
+                }
+                pos.push(numb_tmp + 1);
+
                 tmp = "";
               }
             } else {
@@ -230,7 +250,20 @@ export class GrowingComponent implements OnInit {
             j++;
           }
           if (tmp != "") {
-            pos.push(Number(tmp) + 1);
+            limit=Number(tmp);
+            numb_tmp=limit;
+            //test
+            for(let k=0;k<=limit;k++) {
+              if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
+                limit = limit + 1;
+                if (this.smile[k] == "H") {
+                  numb_tmp = numb_tmp + 1;
+
+                }
+              }
+            }
+
+            pos.push(numb_tmp + 1);
           }
           for (let k = 0; k < pos.length; k++) {
             for (let h = 0; h < pos.length; h++) {
@@ -335,11 +368,28 @@ export class GrowingComponent implements OnInit {
             name+=output[i][j];
             j++;
           }
-          this.Detected_Rules.push({checked:false,Id: id,Name:name});
+          this.Detected_Rules.push({checked:false,Id: id,Name:name,Image:"assets/Images_Rules/Rules"+id+".png"});
     }
 
   }
-    GenerateSub(){}
+    GenerateSub(){
+      let data = {
+        smiles : this.smile,
+        funcname:this.Selected_Function
+      };
+        this.message.sendMessage('Callscript_UndSub', data ).subscribe(res => {
+          if (res.status == "error") {
+          } else {
+            console.log(res);
+            if (res.data != null) {
+              this.Required_substructures=res.data[0];
+              this.Remove_Sub(res.data[1]);
+
+            }
+          }
+        });
+
+    }
     ValidateReactions(){
       this.Selected_Rules=this.Form_Rules.value.rules.filter((f: { checked: any; }) => f.checked);
       console.log(this.Selected_Rules);
@@ -359,6 +409,35 @@ export class GrowingComponent implements OnInit {
   ValidateUndSub() {
     this.Selected_Undesired_Substructures=this.Form_UndSub.value.UndSub.filter((f: { checked: any; }) => f.checked);
     console.log(this.Selected_Undesired_Substructures);
+
+  }
+  isAlpha(str:string) {
+    var code, i, len;
+
+    for (i = 0, len = str.length; i < len; i++) {
+      code = str.charCodeAt(i);
+      if (!(code > 64 && code < 91) && // upper alpha (A-Z)
+        !(code > 96 && code < 123)) { // lower alpha (a-z)
+        return false;
+      }
+    }
+    return true;
+  };
+  Remove_Sub(output:string){
+    //Mettre L'id de la fonction choisit.
+    let limit=0;
+    let numb_tmp=limit;
+    //test
+    for(let k=0;k<=limit;k++) {
+      if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
+        limit = limit + 1;
+        if (this.smile[k] == "H") {
+          numb_tmp = numb_tmp + 1;
+
+        }
+      }
+    }
+
 
   }
 }

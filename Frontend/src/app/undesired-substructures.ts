@@ -2,6 +2,7 @@ export interface UndesiredSubstructures {
   Name:string;
   Smart:string;
 }
+
 export const Undesired_substructures_DATA_BASE:UndesiredSubstructures[]=[
   {Name:"2,2-dimethyl-4,5-dicarboxy-dithiole",Smart:"C1(C)(C)SC(C(=O)O)=C(C(=O)O)S1"},
   {Name:"2,3,4_trihydroxyphenyl",Smart:"c([OH])c([OH])c([OH])"},
@@ -163,7 +164,6 @@ export const Undesired_substructures_DATA_BASE:UndesiredSubstructures[]=[
   {Name:"Triphenyl_Silyl",Smart:"[Si](c1ccccc1)(c2ccccc2)(c3ccccc3)"},
   {Name:"triple_bond",Smart:"[#6]C#[CH]"},
   {Name:"tropone",Smart:"C1C(=O)C=CC=CC=1"},
-  {Name:"Undesirable_Elements_Salts",Smart:"[Ac,Ag,Am,Ar,As,At,Au,Ba,Be,Bi,Bk,Cd,Ce,Cf,Cm,Cr,Cs,Dy,Er,Eu,Fr,Ga,Gd,Ge,He,Hf,Ho,In,Ir,Kr,La,Lu,Mo,Nb,Nd,Ne,Ni,Np,Os,Pa,Pb,Pd,Pm,Po,Pr,Pt,Pu,Ra,Rb,Re,Rh,Rn,Ru,Sb,Sc,Se,Sm,Sr,Ta,Tb,Tc,Te,Th,Ti,Tl,Tm,U,V,W,Xe,Y,Yb,Zr]"},
   {Name:"Vinyl_Halide",Smart:"[Cl,Br,I]C=[!O!R]"},
   {Name:"Vinyl_Sulphone",Smart:"[#6][CH1]!@=[CH1][S;H1,H0$(S(C)C)](=O)(=O)"},
-];
+]
