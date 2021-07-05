@@ -11,3 +11,9 @@ conda activate my-rdkit-env
 node ./Backend/app.js
 //Dans Frontend
 ng serve
+
+//Si on veut le lancer en local pour que d'autres aient accès 
+Vérifier les cors dans app.js
+activer l'environnement avec conda activate
+lancer app.js
+pour le front faire bash exec dans le dossier Frontend.
