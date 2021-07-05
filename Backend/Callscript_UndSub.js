@@ -7,7 +7,6 @@ async function Callscript_UndSub(req, res) {
         args: [req.body.smiles,req.body.funcname]// An argument which can be accessed in the script using sys.argv[1]
     };
     PythonShell.run('./Backend/Python/substruct.py', options,(err, output) => {
-        if (err) throw err;
         return sendMessage(res,output);
     });
 

@@ -7,7 +7,6 @@ async function Callscript2(req, res) {
         args: [req.body.funcname]// An argument which can be accessed in the script using sys.argv[1]
     };
     PythonShell.run('./Backend/Python/rules_dico.py', options,(err, output) => {
-        if (err) throw err;
         return sendMessage(res,output);
      });
 

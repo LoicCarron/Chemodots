@@ -220,18 +220,21 @@ export class GrowingComponent implements OnInit {
           nametemp+=cpt;
         }
 
-
+        //We search the first number
         while ((j<output[i].length)&& ((isNaN(+output[i][j])) ||(output[i][j] == " ") || (output[i][j] == ","))) {
           j++;
         }
+        //Check if we are not at the end of the string
         if(j<output[i].length) {
+
           while ((+output[i][j] >= 0 && +output[i][j] <= 9) || output[i][j] == ",") {
-            if (output[i][j] == "," || output[i][j] == " ") {
+            if (output[i][j] == "," || output[i][j] == " " ) {
               if (tmp != "") {
                  limit=Number(tmp);
                  numb_tmp=limit;
-                //test
-                for(let k=0;k<=limit;k++) {
+                //Move the index of the function in the case with explicit H
+                let k=0
+                while(k<=limit){
                   if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
                     limit = limit + 1;
                     if (this.smile[k] == "H") {
@@ -239,6 +242,7 @@ export class GrowingComponent implements OnInit {
 
                     }
                   }
+                  k++;
                 }
                 pos.push(numb_tmp + 1);
 
@@ -249,11 +253,13 @@ export class GrowingComponent implements OnInit {
             }
             j++;
           }
+
           if (tmp != "") {
             limit=Number(tmp);
             numb_tmp=limit;
             //test
-            for(let k=0;k<=limit;k++) {
+            let k=0
+            while(k<=limit){
               if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
                 limit = limit + 1;
                 if (this.smile[k] == "H") {
@@ -261,6 +267,7 @@ export class GrowingComponent implements OnInit {
 
                 }
               }
+              k++;
             }
 
             pos.push(numb_tmp + 1);

@@ -7,7 +7,6 @@ async function Callscript(req,res) {
         args: [req.body.smiles]// An argument which can be accessed in the script using sys.argv[1]
     };
     PythonShell.run('./Backend/Python/chemodots.py', options,(err, output) => {
-        if (err) throw err;
         return sendMessage(res,output);
      });
 
