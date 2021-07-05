@@ -13,7 +13,7 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
   }
   on_click_Growing() {
-        this.router.navigateByUrl('/Growing');
+    this.router.navigateByUrl('Growing');
   }
   on_click_Linking() {
     this.router.navigateByUrl('/Linking');

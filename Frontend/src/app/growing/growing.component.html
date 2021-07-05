@@ -101,6 +101,7 @@
             <ul formArrayName="rules">
 
               <li [formGroupName]="i"  *ngFor="let item of FormRules.controls; let i = index">
+                <i class="fas fa-info-circle" id="{{Detected_Rules[i].Image}}"  onmouseover="return overlib ('',BACKGROUND,id,WIDTH,600,HEIGHT,250,HAUTO, VAUTO);" onmouseout="return nd ();"></i>
                 <input type="checkbox" formControlName="checked" />  Rule:{{Detected_Rules[i].Id}}  {{Detected_Rules[i].Name}}
               </li>
 
@@ -174,6 +175,7 @@
 
         <h3 onmouseover="return overlib (' Define the reaction mode',HAUTO, VAUTO);" onmouseout="return nd ();"> Reaction mode</h3>
 
+
         <select>
           <option value="default" selected>Default</option>
           <option value="strict">Strict</option>
@@ -182,7 +184,7 @@
 
         <h3 onmouseover="return overlib (' Define the library of building blocks (BBs)',HAUTO, VAUTO);" onmouseout="return nd ();">Building blocks database</h3>
 
-        <select>
+        <select >
           <option value="standard" selected>Standard</option>
           <option value="large">Large</option>
           <option value="test">Test</option>
