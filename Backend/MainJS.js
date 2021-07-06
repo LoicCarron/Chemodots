@@ -256,29 +256,35 @@ export function generateMolSketcherGrowing(smiles){
 
 }
 //Generation of the molecule (from the smiles) in the sketcher
-export function generateMolSketcherLinking1(smiles){
-    sketcher1.then(function (marvin) {
-        function generateMolSketcher(smiles){
-            if(smiles == ""){
-                marvin.clear();
+export function generateMolSketcherLinking(smiles,numsketch){
+    if(numsketch==1) {
+        sketcher1.then(function (marvin) {
+            function generateMolSketcher(smiles) {
+                if (smiles == "") {
+                    marvin.clear();
+                }
+                marvin.importStructure("smiles", smiles);
             }
-            marvin.importStructure("smiles",smiles);
-        }
-        marvin.on("smiles",generateMolSketcher(smiles));
-    });
 
-}
-//Generation of the molecule (from the smiles) in the sketcher
-export function generateMolSketcherLinking2(smiles){
-    sketcher2.then(function (marvin) {
-        function generateMolSketcher(smiles){
-            if(smiles == ""){
-                marvin.clear();
+            marvin.on("smiles", generateMolSketcher(smiles));
+        });
+    }
+    else if (numsketch==2){
+        sketcher2.then(function (marvin) {
+            function generateMolSketcher(smiles){
+                if(smiles == ""){
+                    marvin.clear();
+                }
+                marvin.importStructure("smiles",smiles);
             }
-            marvin.importStructure("smiles",smiles);
-        }
-        marvin.on("smiles",generateMolSketcher(smiles));
-    });
+            marvin.on("smiles",generateMolSketcher(smiles));
+        });
+
+
+    }
+    else{
+        console.log("Error, wrong num sketcher")
+    }
 
 }
 

@@ -1,5 +1,4 @@
 #!/bin/bash
-rm -r ../../forum-angular-apache/
-ng build --prod --base-href ../../forum-angular-apache/
+rm -r ../../forum-angular-apache
+ng build --prod --base-href /forum-angular-apache/
 mv dist/frontend ../../forum-angular-apache
-
