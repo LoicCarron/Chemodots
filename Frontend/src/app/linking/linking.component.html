@@ -19,15 +19,24 @@
 <div id="main">
 
   <div id="left" > <!-- left part-->
-
-    <div id="sketcher1" style="width:100%">
+<div id="sketchers">
+    <div id="sketcher1" style="width:100%;height: 40%;max-height: 480px">
       <h2><i class="fas fa-pen-square"></i> Sketcher 1</h2>
-      <div id="marvin-test1" style="width: 100%; height: 480px"></div>
-      <div id="sketcher2" style="width:100%">
-        <h2><i class="fas fa-pen-square"></i> Sketcher 2</h2>
-        <div id="marvin-test2" style="width: 100%; height: 480px"></div>
-      </div>
+      <div id="marvin-test1" style="width: 100%; height: 100%;min-height: 350px;max-height: 450px"></div>
+
     </div>
+  <br>
+  <input id="validate-button" type="button" (click)="ValidateMol(1)" name="generateMol" value="Validate" class="btnFormSettings"
+         onmouseover="return overlib (' Click here to validate your molecule',HAUTO, VAUTO);" onmouseout="return nd ();">
+      <div id="sketcher2" style="width:100%;height: 40%;max-height: 480px">
+        <h2><i class="fas fa-pen-square"></i> Sketcher 2</h2>
+        <div id="marvin-test2" style="width: 100%; height: 100%;min-height: 350px;max-height: 450px"></div>
+      </div>
+  <br>
+  <input id="validate-button" type="button" (click)="ValidateMol(2)" name="generateMol" value="Validate" class="btnFormSettings"
+         onmouseover="return overlib (' Click here to validate your molecule',HAUTO, VAUTO);" onmouseout="return nd ();">
+</div>
+
 
 
 
@@ -54,7 +63,7 @@
         <input type="text" [(ngModel)]="smile1" id="smilesMolecule1" name="smilesMolecule1" size="30" placeholder="Paste or write the SMILES" value="" class="fieldSMILES" form="formSmiles"
                onmouseover="return overlib (' Paste your molecule in SMILES format ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
-        <input type="button" (click)="GenerateMol1()" name="generateMol1" value="Generate molecule in sketcher" class="btnFormSettings"
+        <input type="button" (click)="ValidateMol(1)" name="generateMol1" value="Generate molecule in sketcher" class="btnFormSettings"
                onmouseover="return overlib (' Click here and the smiles will be automatically drawn in the sketcher ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
       </form>
@@ -72,7 +81,7 @@
         <input type="text" [(ngModel)]="smile2" id="smilesMolecule2" name="smilesMolecule" size="30" placeholder="Paste or write the SMILES" value="" class="fieldSMILES" form="formSmiles"
                onmouseover="return overlib (' Paste your molecule in SMILES format ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
-        <input type="button" (click)="GenerateMol2()" name="generateMol2" value="Generate molecule in sketcher" class="btnFormSettings"
+        <input type="button" (click)="ValidateMol(2)" name="generateMol2" value="Generate molecule in sketcher" class="btnFormSettings"
                onmouseover="return overlib (' Click here and the smiles will be automatically drawn in the sketcher ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
       </form>
@@ -86,99 +95,56 @@
 
 
     <fieldset id="reactions">
-
-
       <h2><i class="fas fa-vial"></i>
         Set of available reaction rules
-        <i id="Fleche1" class="fas fa-caret-down" (click)="ShowReactions()"></i>
+        <i id="Fleche1" class="fas fa-caret-down" (click)="ShowReactions(2)"></i>
       </h2>
 
       <div id="reac" style="display:none">
+        <h3 onmouseover="return overlib (' Select a function to highlight it in the sketcher',HAUTO, VAUTO);" onmouseout="return nd ();"> Functions for the first molecule </h3>
 
+        <div id="FunctionsPart1" style="display:none">
+          <div id="scroll1" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
+            <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
+            <div *ngFor = "let n of Detected_Functions1">
+              <input type="radio" (click) = "Highlightfunction(1,n.Position,n.Bonds)" [(ngModel)]="Selected_Function1" value={{n.Name}} name="chemfunction1" id={{n.Name}}+1 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
+              <label>{{n.Name}}</label>
+            </div>
+          </div>
+        </div>
+          <br>
+          <h3 onmouseover="return overlib (' Select a function to highlight it in the sketcher',HAUTO, VAUTO);" onmouseout="return nd ();"> Functions for the second molecule </h3>
+          <div id="FunctionsPart2" style="display:none">
+          <div id="scroll2" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
+            <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
+            <div *ngFor = "let n of Detected_Functions2">
+              <input type="radio" (click) = "Highlightfunction(2,n.Position,n.Bonds)" [(ngModel)]="Selected_Function2" value={{n.Name}} name="chemfunction2" id={{n.Name}}+2 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
+              <label>{{n.Name}}</label>
+            </div>
+          </div>
+          <input id="Validate_Function" type="button" (click)="ValidateFunction(2)" value="Generate reactions rules" class="btnFormSettings"
+                 onmouseover="return overlib (' Click here to generate reactions rules compatible with the targeted function',HAUTO, VAUTO);" onmouseout="return nd ();">
+        </div>
         <h3 onmouseover="return overlib (' Select the reaction rules to activate during the virtual synthesis stage (1-5 reactions is advised)',HAUTO, VAUTO);" onmouseout="return nd ();"> Reaction rules </h3>
         <i class="fas fa-info-circle" onmouseover="return overlib (' Click here for more information about reaction rules ',HAUTO, VAUTO);"
            onmouseout="return nd ();" onclick='window.location.href="http://chemodots.marseille.inserm.fr/static/dots-reactions.html";'></i><Br><Br>
+        <div id="RulesPart" style="display:none">
+          <div id="scroll" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
+            <form [formGroup]="Form_Rules" >
 
-        <div id="scroll" style="overflow-y:scroll; height:200px; background:#D5E9EB">
+              <ul formArrayName="rules">
 
-          <input type="checkbox" id="c01" name="rules" value="5" ><label >Rule 01</label><br>
-          <input type="checkbox" id="c02" name="rules" value="5" ><label >Rule 02</label><br>
-          <input type="checkbox" id="c03" name="rules" value="5" ><label >Rule 03</label><br>
-          <input type="checkbox" id="c04" name="rules" value="5" ><label >Rule 04</label><br>
-          <input type="checkbox" id="c05" name="rules" value="5" ><label >Rule 05</label><br>
-          <input type="checkbox" id="c06" name="rules" value="5" ><label >Rule 06</label><br>
-          <input type="checkbox" id="c07" name="rules" value="5" ><label >Rule 07</label><br>
-          <input type="checkbox" id="c08" name="rules" value="5" ><label >Rule 08</label><br>
-          <input type="checkbox" id="c09" name="rules" value="5" ><label >Rule 09</label><br>
-          <input type="checkbox" id="c10" name="rules" value="5" ><label >Rule 10</label><br>
-          <input type="checkbox" id="c11" name="rules" value="5" ><label >Rule 11</label><br>
-          <input type="checkbox" id="c12" name="rules" value="5" ><label >Rule 12</label><br>
-          <input type="checkbox" id="c13" name="rules" value="5" ><label >Rule 13</label><br>
-          <input type="checkbox" id="c14" name="rules" value="5" ><label >Rule 14</label><br>
-          <input type="checkbox" id="c15" name="rules" value="5" ><label >Rule 15</label><br>
-          <input type="checkbox" id="c16" name="rules" value="5" ><label >Rule 16</label><br>
-          <input type="checkbox" id="c17" name="rules" value="5" ><label >Rule 17</label><br>
-          <input type="checkbox" id="c18" name="rules" value="5" ><label >Rule 18</label><br>
-          <input type="checkbox" id="c19" name="rules" value="5" ><label >Rule 19</label><br>
-          <input type="checkbox" id="c20" name="rules" value="5" ><label >Rule 20</label><br>
-          <input type="checkbox" id="c21" name="rules" value="5" ><label >Rule 21</label><br>
-          <input type="checkbox" id="c22" name="rules" value="5" ><label >Rule 22</label><br>
-          <input type="checkbox" id="c23" name="rules" value="5" ><label >Rule 23</label><br>
-          <input type="checkbox" id="c24" name="rules" value="5" ><label >Rule 24</label><br>
-          <input type="checkbox" id="c25" name="rules" value="5" ><label >Rule 25</label><br>
-          <input type="checkbox" id="c26" name="rules" value="5" ><label >Rule 26</label><br>
-          <input type="checkbox" id="c27" name="rules" value="5" ><label >Rule 27</label><br>
-          <input type="checkbox" id="c28" name="rules" value="5" ><label >Rule 28</label><br>
-          <input type="checkbox" id="c29" name="rules" value="5" ><label >Rule 29</label><br>
-          <input type="checkbox" id="c30" name="rules" value="1" checked><label>Rule 30 (reductive amination)</label><br>
-          <input type="checkbox" id="c31" name="rules" value="2" checked><label>Rule 31 (suzuki)</label><br>
-          <input type="checkbox" id="c32" name="rules" value="5" ><label >Rule 32</label><br>
-          <input type="checkbox" id="c33" name="rules" value="5" ><label >Rule 33</label><br>
-          <input type="checkbox" id="c34" name="rules" value="5" ><label >Rule 34</label><br>
-          <input type="checkbox" id="c35" name="rules" value="5" ><label >Rule 35</label><br>
-          <input type="checkbox" id="c36" name="rules" value="5" ><label >Rule 36</label><br>
-          <input type="checkbox" id="c37" name="rules" value="5" ><label >Rule 37</label><br>
-          <input type="checkbox" id="c38" name="rules" value="5" ><label >Rule 38</label><br>
-          <input type="checkbox" id="c39" name="rules" value="5" ><label >Rule 39</label><br>
-          <input type="checkbox" id="c40" name="rules" value="5" ><label >Rule 40</label><br>
-          <input type="checkbox" id="c41" name="rules" value="5" ><label >Rule 41</label><br>
-          <input type="checkbox" id="c42" name="rules" value="5" ><label >Rule 42</label><br>
-          <input type="checkbox" id="c43" name="rules" value="5" ><label >Rule 43</label><br>
-          <input type="checkbox" id="c44" name="rules" value="5" ><label >Rule 44</label><br>
-          <input type="checkbox" id="c45" name="rules" value="5" ><label >Rule 45</label><br>
-          <input type="checkbox" id="c46" name="rules" value="5" ><label >Rule 46</label><br>
-          <input type="checkbox" id="c47" name="rules" value="3" checked><label >Rule 47 (schotten baumann)</label><br>
-          <input type="checkbox" id="c48" name="rules" value="4" checked><label>Rule 48 (sulfonamide)</label><br>
-          <input type="checkbox" id="c49" name="rules" value="5" ><label >Rule 49</label><br>
-          <input type="checkbox" id="c50" name="rules" value="5" ><label >Rule 50</label><br>
-          <input type="checkbox" id="c51" name="rules" value="5" checked><label >Rule 51 (buchwald hartwig)</label><br>
-          <input type="checkbox" id="c52" name="rules" value="5" ><label >Rule 52</label><br>
-          <input type="checkbox" id="c53" name="rules" value="5" ><label >Rule 53</label><br>
-          <input type="checkbox" id="c54" name="rules" value="5" ><label >Rule 54</label><br>
-          <input type="checkbox" id="c55" name="rules" value="5" ><label >Rule 55</label><br>
-          <input type="checkbox" id="c56" name="rules" value="5" ><label >Rule 56</label><br>
-          <input type="checkbox" id="c57" name="rules" value="5" ><label >Rule 57</label><br>
-          <input type="checkbox" id="c58" name="rules" value="5" ><label >Rule 58</label><br>
+                <li [formGroupName]="i"  *ngFor="let item of FormRules.controls; let i = index">
+                  <i class="fas fa-info-circle" id="{{Detected_Rules[i].Image}}"  onmouseover="return overlib ('',BACKGROUND,id,WIDTH,600,HEIGHT,250,HAUTO, VAUTO);" onmouseout="return nd ();"></i>
+                  <input type="checkbox" formControlName="checked" />  Rule:{{Detected_Rules[i].Id}}  {{Detected_Rules[i].Name}}
+                </li>
 
+              </ul>
+            </form>
+          </div>
+          <input id="Validate_Rules" type="button" (click)="ValidateReactions()"  value="Validate rules" class="btnFormSettings"
+                 onmouseover="return overlib (' Click here to validate the reactions rules',HAUTO, VAUTO);" onmouseout="return nd ();">
         </div>
-
-
-        <h3 onmouseover="return overlib (' Select a function to highlight it in the sketcher',HAUTO, VAUTO);" onmouseout="return nd ();"> Functions </h3>
-
-        <div id="scroll2" style="overflow-y:scroll; height:200px; background:#D5E9EB">
-          <input type="radio" (click) = "Higlightfunction(1,'6')" name="chemfunction" id="primaryamine" style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
-          <label for="primaryamine">Primary Amine</label><br>
-          <input type="radio" (click) = "Higlightfunction(1,'9')" name="chemfunction" id="secondaryamine" style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
-          <label for="secondaryamine">Secondary Amine</label><br>
-          <input type="radio" (click) = "Higlightfunction(1,'')" name="chemfunction" id="nochemfct" checked style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
-          <label for="nochemfct">None</label><br>
-        </div>
-        <Br> <Br>
-
-
-
-
-
       </div> <!--end reactionRules -->
 
     </fieldset> <!-- end reactions-->
@@ -190,7 +156,7 @@
       <h2><i class="fas fa-dna"></i>
         Substructures
 
-        <i id="Fleche2" class="fas fa-caret-down" (click)="ShowSub()"></i>
+        <i id="Fleche2" class="fas fa-caret-down" (click)="ShowSub(2)"></i>
       </h2>
 
       <div id="sub" style="display:none">
@@ -201,7 +167,23 @@
 
 
         <h3 onmouseover="return overlib(' Compounds that contain at least 1 of these substructures will be discarded.',HAUTO, VAUTO, WIDTH,300,BGCOLOR,'#4B4BF2',BORDER,2,CAPTION,'Paste undesired substructures (optional)',CELLPAD,3,CAPCOLOR,'#FFFFFF',TEXTCOLOR,'#000000',TEXTSIZE,2,TEXTFONT,'Courier New',CAPTIONFONT,'Courier New-bold',CAPTIONSIZE,3,CENTER, );" onmouseout="return nd();" width="70%" > Undesired substructures</h3>
-        <input type="text" id="undesired" placeholder="Paste or write" size="50">
+        <div id="Undesired_sub" style="display:none">
+          <div id="scroll3" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
+            <form [formGroup]="Form_UndSub" >
+
+              <ul formArrayName="UndSub">
+
+                <li [formGroupName]="i"  *ngFor="let item of FormUndSub.controls; let i = index">
+                  <i class="fas fa-info-circle" id="{{Undesired_Substructures[i].Smart}}"  onmouseover="return overlib (id,HAUTO, VAUTO);" onmouseout="return nd ();"></i>
+                  <input type="checkbox" formControlName="checked"/>  {{Undesired_Substructures[i].Name}}
+                </li>
+
+              </ul>
+            </form>
+          </div>
+          <input id="Validate_UndSub" type="button" (click)="ValidateUndSub()"  value="Validate" class="btnFormSettings"
+                 onmouseover="return overlib (' Click here to validate the undesired substructures',HAUTO, VAUTO);" onmouseout="return nd ();">
+        </div>
 
 
 
@@ -227,6 +209,7 @@
 
         <h3 onmouseover="return overlib (' Define the reaction mode',HAUTO, VAUTO);" onmouseout="return nd ();"> Reaction mode</h3>
 
+
         <select>
           <option value="default" selected>Default</option>
           <option value="strict">Strict</option>
@@ -235,7 +218,7 @@
 
         <h3 onmouseover="return overlib (' Define the library of building blocks (BBs)',HAUTO, VAUTO);" onmouseout="return nd ();">Building blocks database</h3>
 
-        <select>
+        <select >
           <option value="standard" selected>Standard</option>
           <option value="large">Large</option>
           <option value="test">Test</option>
