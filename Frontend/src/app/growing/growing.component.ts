@@ -5,6 +5,7 @@ import {MessageService} from "../message/message.service";
 import {FormArray, FormControl, FormGroup} from "@angular/forms";
 import {Undesired_substructures_DATA_BASE} from "../undesired-substructures";
 import {UndesiredSubstructures} from "../undesired-substructures";
+import {compareSegments} from "@angular/compiler-cli/src/ngtsc/sourcemaps/src/segment_marker";
 
 
 export interface Function {
@@ -217,7 +218,7 @@ export class GrowingComponent implements OnInit {
         bond = [];
         let nametemp:string=name;
         if(cpt!=0){
-          nametemp+=cpt;
+          nametemp+='_'+cpt;
         }
 
         //We search the first number
@@ -235,7 +236,7 @@ export class GrowingComponent implements OnInit {
                 //Move the index of the function in the case with explicit H
                 let k=0
                 while(k<=limit){
-                  if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
+                  if (this.smile[k] == "H" || !this.isAlpha(this.smile[k]) ) {
                     limit = limit + 1;
                     if (this.smile[k] == "H") {
                       numb_tmp = numb_tmp + 1;
@@ -389,8 +390,9 @@ export class GrowingComponent implements OnInit {
           } else {
             console.log(res);
             if (res.data != null) {
-              this.Required_substructures=res.data[0];
-              this.Remove_Sub(res.data[1]);
+              //this.Required_substructures=res.data[0];
+
+              this.Remove_Sub(res.data);
 
             }
           }
@@ -430,21 +432,87 @@ export class GrowingComponent implements OnInit {
     }
     return true;
   };
-  Remove_Sub(output:string){
-    //Mettre L'id de la fonction choisit.
-    let limit=0;
-    let numb_tmp=limit;
-    //test
-    for(let k=0;k<=limit;k++) {
-      if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
-        limit = limit + 1;
-        if (this.smile[k] == "H") {
-          numb_tmp = numb_tmp + 1;
 
-        }
+  Remove_Sub(res:string []){
+    //Mettre L'id de la fonction choisit.
+    let i=0;
+    let nb_remove=1;
+    let nb_removed=0;
+    let selectedfunc=res[0]
+    let tmp="";
+    let numb_tmp=0;
+    let remove=res[2];
+    let j=0;
+    //Faire dans le cas où il existe deux fois la même fonction
+    while ((j<res[1].length)&& ((isNaN(+res[1][j])) ||(res[1][j] == " ") || (res[1][j] == ","))) {
+      j++;
+    }
+    //Check if we are not at the end of the string
+    if(j<res[1].length) {
+
+      while ((+res[1][j] >= 0 && +res[1][j] <= 9)) {
+        tmp += res[1][j];
+        j++;
       }
     }
+      numb_tmp=Number(tmp);
+    console.log(numb_tmp);
+    //test
+    let k=0;
+    //On s'arrête avant au cas où il faut enlever un H avant
+    if((+remove[0]>1 && +remove[0]<9)  && remove[1]=="H"){
+      numb_tmp=    numb_tmp+1;
+    }
+    while(k<=numb_tmp){
+      if (selectedfunc[k] == "H" || !this.isAlpha(selectedfunc[k]) && (!(+selectedfunc[k] >= 0 && +selectedfunc[k] <= 9))) {
+        numb_tmp=numb_tmp + 1;
+      }
+      this.Required_substructures+=selectedfunc[k];
+      k++;
+    }
+    console.log(this.Required_substructures);
+    i=0;
+
+    while(i<remove.length){
+      nb_remove=1;
+      console.log(i);
+
+      if(+remove[i] >= 0 && +remove[i]<= 9){
+        nb_remove=Number(remove[i]);
+        i++;
+      }
+      //On augmente car on est déjà aller jusqu'à numb-tmp dans le while au dessus
+
+      numb_tmp++;
+      while(selectedfunc[numb_tmp]!=remove[i] && selectedfunc[numb_tmp+1]!=remove[i] && numb_tmp<selectedfunc.length){
+        console.log(selectedfunc[numb_tmp]);
+        this.Required_substructures+=selectedfunc[numb_tmp];
+        numb_tmp++;
+
+      }
+      if(selectedfunc[numb_tmp+1]==remove[i]) {
+        numb_tmp++;
+      }
+
+      nb_removed=0;
+      while (((nb_removed<nb_remove) ||(!this.isAlpha(selectedfunc[numb_tmp]) )&& numb_tmp<selectedfunc.length)){
+        numb_tmp++;
+        if(selectedfunc[numb_tmp]==remove[i]){
+          nb_removed++;
+        }
+
+      }
+
+      i++;
+    }
+    console.log(this.Required_substructures);
+    for(numb_tmp;numb_tmp<selectedfunc.length;numb_tmp++){
+      this.Required_substructures+=selectedfunc[numb_tmp];
+    }
+    console.log(this.Required_substructures);
 
 
   }
+
+
 }

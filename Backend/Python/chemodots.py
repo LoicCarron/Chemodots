@@ -21,7 +21,7 @@ def searchFct(smiles):
     primaire.name="Amine Primaire"
     secondaire=Chem.MolFromSmarts('[NH1;!$(N~[C,S,P,N]=[O,S,N]);!$(N#[C,N]);!$(N=C)]')
     secondaire.name="Amine secondaire"
-    tertiaire=Chem.MolFromSmarts('cN(C)C')
+    tertiaire=Chem.MolFromSmarts('CN(C)C')
     tertiaire.name="Amine tertiaire"
     #amine_prim_alkyl=Chem.MolFromSmarts('C[NH2]')
     #amine_prim_alkyl.name="Amine primaire alkyl"
