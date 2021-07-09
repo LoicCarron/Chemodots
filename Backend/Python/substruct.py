@@ -16,10 +16,11 @@ functions["Boronate aryl"]='OB(O)c'
 remove["Boronate aryl"]='OB(O)'
 
 functions["Amine Primaire"]='[NH2;!$(N~[C,S,P,N]=[O,S,N]);!$(N#[C,N]);!$(N=C)]'
-remove["Amine Primaire"]='N'
+remove["Amine Primaire"]='N2H'
 
 functions["Amine secondaire"]='[NH1;!$(N~[C,S,P,N]=[O,S,N]);!$(N#[C,N]);!$(N=C)]'
-remove["Amine secondaire"]='N'
+remove["Amine secondaire"]='H'
+
 ''' On enlève quoi sachant que ça risque de casser la molecule dans tout les cas'''
 functions["Amine tertiaire"]='cN(C)C'
 remove["Amine tertiaire"]=''
@@ -251,16 +252,22 @@ remove["Halo pyrimidine"]='OB(O)C'
 
 def substruct(smiles, function):
     m = Chem.MolFromSmiles(smiles)
-    m=Chem.AddHs(m)
+    m=AllChem.AddHs(m)
+    params = Chem.SmilesParserParams()
+    params.removeHs=False
+    m=Chem.MolFromSmiles(AllChem.MolToSmiles(m),params)
     print(Chem.MolToSmiles(m))
+
     '''
     fct = Chem.MolFromSmarts(functions[function])
     rm = AllChem.DeleteSubstructs(m,fct)
     print(Chem.MolToSmiles(rm))'''
     tmp=Chem.MolFromSmarts(functions[function])
-    tmp=Chem.AddHs(tmp)
+    tmp=AllChem.AddHs(tmp)
+    '''print(Chem.MolToSmarts(tmp)'''
 
     print(m.GetSubstructMatches(tmp))
+
     print(remove[function])
 import sys
 if __name__== '__main__':
