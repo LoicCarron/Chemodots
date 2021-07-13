@@ -36,19 +36,20 @@ export class LinkingComponent implements OnInit {
   //We could use FromGroup in this case too
   Detected_Functions:Function[]=[];
   Detected_Functions1:Function[]=[];
-  Selected_Function1:string="";
-  ID_Selected_Function1:number=0;
+  Selected_Function1_name:string="";
+  Selected_Function1!:Function;
 
   Detected_Functions2:Function[]=[];
-  Selected_Function2:string="";
-  ID_Selected_Function2:number=0;
+  Selected_Function2_name:string="";
+  Selected_Function2!:Function;
 
 
-  Detected_Rules:Rule[]=[];
   Detected_Rules1:Rule[]=[];
   Detected_Rules2:Rule[]=[];
-  Form_Rules!:FormGroup;
-  Selected_Rules:Rule[]=[];
+  Form_Rules1!:FormGroup;
+  Form_Rules2!:FormGroup;
+  Selected_Rules1:Rule[]=[];
+  Selected_Rules2:Rule[]=[];
 
   Selected_Undesired_Substructures:UndesiredSubstructures[]=[];
   Undesired_Substructures:UndesiredSubstructures[]=[];
@@ -56,7 +57,9 @@ export class LinkingComponent implements OnInit {
   constructor(private message : MessageService) {}
   ngOnInit(): void {
     this.Undesired_Substructures=Undesired_substructures_DATA_BASE;
-    this.Form_Rules=new FormGroup({
+    this.Form_Rules1=new FormGroup({
+      rules: new FormArray([])});
+    this.Form_Rules2=new FormGroup({
       rules: new FormArray([])});
 
     this.Form_UndSub=new FormGroup({
@@ -230,10 +233,7 @@ export class LinkingComponent implements OnInit {
                 this.Detected_Functions2=this.Detected_Functions;
 
               }
-              else{
-                console.log("Wrong numsketch")
-                return;
-              }
+              this.ShowReactions(0,nb_sketch);
             } else {
               window.alert("We could not find functions for your molecule, they may not be available yet or there is an error in the molecule.");
             }
@@ -367,7 +367,6 @@ export class LinkingComponent implements OnInit {
     this.Update_smile(num_sketch);
     console.log(this.smile1);
     this.GenerateMol(num_sketch);
-    this.ShowReactions(0,num_sketch);
     this.ShowSub(1)
     this.Detected_Functions=[];
     this.LaunchPytonFindFunction(num_sketch)
@@ -380,32 +379,52 @@ export class LinkingComponent implements OnInit {
 
 
     //Generate Reactions :
-    if(this.Selected_Function1=="" || this.Selected_Function2==""){
+    if(this.Selected_Function1_name=="" || this.Selected_Function2_name==""){
       window.alert("Please select a targeted function or none before generate reactions rules.");
     }
     else {
+      let i=0;
+      let trouve=false;
+      while(!trouve){
+        if(this.Detected_Functions1[i].Name==this.Selected_Function1_name){
+          this.Selected_Function1=this.Detected_Functions1[i];
+          trouve=true;
+        }
+        i++;
+
+      }
+      i=0;
+      trouve=false;
+      while(!trouve){
+        if(this.Detected_Functions2[i].Name==this.Selected_Function2_name){
+          this.Selected_Function2=this.Detected_Functions2[i];
+          trouve=true;
+        }
+        i++;
+
+      }
       let doc = document.getElementById("RulesPart");
       if (doc != null) {
         if (doc.style.display == "none") {
           doc.style.display = "block";
         }
       }
-      let data = {funcname:this.Selected_Function1}
+      let data = {funcname:this.Selected_Function1_name}
       this.message.sendMessage('Callscript2', data).subscribe(res => {
         if (res.status == "error") {
         } else {
           console.log(res);
           if (res.data != null) {
 
-            this.ConvertRestultRules(res.data);
+            this.ConvertRestultRules(res.data,1);
             // get array control
             //
-            this.Form_Rules = new FormGroup({
+            this.Form_Rules1 = new FormGroup({
               rules: new FormArray([])
             });
-            const formArray = this.Form_Rules.get('rules') as FormArray;
+            const formArray = this.Form_Rules1.get('rules') as FormArray;
             // loop each existing value options from database
-            this.Detected_Rules.forEach(rule => {
+            this.Detected_Rules1.forEach(rule => {
               // generate control Group for each option and push to formArray
               formArray.push(new FormGroup({
                 name: new FormControl(rule.Name),
@@ -419,17 +438,44 @@ export class LinkingComponent implements OnInit {
           }
         }
       });
+      data = {funcname:this.Selected_Function2_name}
+      this.message.sendMessage('Callscript2', data).subscribe(res => {
+        if (res.status == "error") {
+        } else {
+          console.log(res);
+          if (res.data != null) {
 
+            this.ConvertRestultRules(res.data,2);
+            // get array control
+            //
+            this.Form_Rules2 = new FormGroup({
+              rules: new FormArray([])
+            });
+            const formArray = this.Form_Rules2.get('rules') as FormArray;
+            // loop each existing value options from database
+            this.Detected_Rules2.forEach(rule => {
+              // generate control Group for each option and push to formArray
+              formArray.push(new FormGroup({
+                name: new FormControl(rule.Name),
+                Id: new FormControl(rule.Id),
+                checked: new FormControl(rule.checked)
 
-      //Generate required Substructure
-      this.GenerateSub();
+              }))
+            })
+            //Generate required Substructure
+            this.GenerateSub();
+          } else {
+
+          }
+        }
+      });
     }
   }
-  ConvertRestultRules(output:string []){
+  ConvertRestultRules(output:string [],numb_func:number){
     let name:string="";
     let id:number;
     let tmp:string="";
-    this.Detected_Rules=[];
+    let Detected_Rules=[];
     for(let i = 0; i < output.length; i++) {
       let j = 0;
       name = "";
@@ -446,35 +492,27 @@ export class LinkingComponent implements OnInit {
         name+=output[i][j];
         j++;
       }
-      this.Detected_Rules.push({checked:false,Id: id,Name:name,Image:"assets/Images_Rules/Rules"+id+".png"});
+      Detected_Rules.push({checked:false,Id: id,Name:name,Image:"assets/Images_Rules/Rules"+id+".png"});
+    }
+    if(numb_func==1){
+      this.Detected_Rules1=Detected_Rules;
+    }
+    else if(numb_func==2){
+      this.Detected_Rules2=Detected_Rules
     }
 
   }
   GenerateSub(){
-    /*
-    let data = {
-      smiles : this.smile,
-      funcname:this.Selected_Function
-    };
-    this.message.sendMessage('Callscript_UndSub', data ).subscribe(res => {
-      if (res.status == "error") {
-      } else {
-        console.log(res);
-        if (res.data != null) {
-          this.Required_substructures=res.data[0];
-          this.Remove_Sub(res.data[1]);
 
-        }
-      }
-    });
-*/
   }
   ValidateReactions(){
-    this.Selected_Rules=this.Form_Rules.value.rules.filter((f: { checked: any; }) => f.checked);
-    console.log(this.Selected_Rules);
+    this.Selected_Rules1=this.Form_Rules1.value.rules.filter((f: { checked: any; }) => f.checked);
+    console.log(this.Selected_Rules1);
     //Ici mettre un truc qui vérifie que Selected rules n'est pas vide
-    if(this.Selected_Rules.length==0){
-      window.alert("Please choose at least one reaction rule.");
+    this.Selected_Rules2=this.Form_Rules2.value.rules.filter((f: { checked: any; }) => f.checked);
+    console.log(this.Selected_Rules2);
+    if((this.Selected_Rules1.length==0)||(this.Selected_Rules2.length==0)){
+      window.alert("Please choose at least one reaction rule for each functions.");
     }
     else{
       this.ShowSub(0);
@@ -482,7 +520,8 @@ export class LinkingComponent implements OnInit {
 
   }
   //For the HTML
-  get FormRules() { return <FormArray>this.Form_Rules.get('rules'); }
+  get FormRules1() { return <FormArray>this.Form_Rules1.get('rules'); }
+  get FormRules2() { return <FormArray>this.Form_Rules2.get('rules'); }
   get FormUndSub() { return <FormArray>this.Form_UndSub.get('UndSub'); }
 
   ValidateUndSub() {
@@ -502,23 +541,4 @@ export class LinkingComponent implements OnInit {
     }
     return true;
   };
-  /*
-  Remove_Sub(output:string){
-    //Mettre L'id de la fonction choisit.
-    let limit=0;
-    let numb_tmp=limit;
-    //test
-    for(let k=0;k<=limit;k++) {
-      if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
-        limit = limit + 1;
-        if (this.smile[k] == "H") {
-          numb_tmp = numb_tmp + 1;
-
-        }
-      }
-    }
-
-
-  }
-   */
 }

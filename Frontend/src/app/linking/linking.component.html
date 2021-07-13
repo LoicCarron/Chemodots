@@ -107,7 +107,7 @@
           <div id="scroll1" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
             <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
             <div *ngFor = "let n of Detected_Functions1">
-              <input type="radio" (click) = "Highlightfunction(1,n.Position,n.Bonds)" [(ngModel)]="Selected_Function1" value={{n.Name}} name="chemfunction1" id={{n.Name}}+1 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
+              <input type="radio" (click) = "Highlightfunction(1,n.Position,n.Bonds)" [(ngModel)]="Selected_Function1_name" value={{n.Name}} name="chemfunction1" id={{n.Name}}+1 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
               <label>{{n.Name}}</label>
             </div>
           </div>
@@ -118,30 +118,46 @@
           <div id="scroll2" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
             <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
             <div *ngFor = "let n of Detected_Functions2">
-              <input type="radio" (click) = "Highlightfunction(2,n.Position,n.Bonds)" [(ngModel)]="Selected_Function2" value={{n.Name}} name="chemfunction2" id={{n.Name}}+2 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
+              <input type="radio" (click) = "Highlightfunction(2,n.Position,n.Bonds)" [(ngModel)]="Selected_Function2_name" value={{n.Name}} name="chemfunction2" id={{n.Name}}+2 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
               <label>{{n.Name}}</label>
             </div>
           </div>
           <input id="Validate_Function" type="button" (click)="ValidateFunction(2)" value="Generate reactions rules" class="btnFormSettings"
                  onmouseover="return overlib (' Click here to generate reactions rules compatible with the targeted function',HAUTO, VAUTO);" onmouseout="return nd ();">
         </div>
-        <h3 onmouseover="return overlib (' Select the reaction rules to activate during the virtual synthesis stage (1-5 reactions is advised)',HAUTO, VAUTO);" onmouseout="return nd ();"> Reaction rules </h3>
+        <h3 onmouseover="return overlib (' Select the reaction rules to activate during the virtual synthesis stage (1-5 reactions is advised)',HAUTO, VAUTO);" onmouseout="return nd ();"> Reaction rules for the first molecule </h3>
         <i class="fas fa-info-circle" onmouseover="return overlib (' Click here for more information about reaction rules ',HAUTO, VAUTO);"
            onmouseout="return nd ();" onclick='window.location.href="http://chemodots.marseille.inserm.fr/static/dots-reactions.html";'></i><Br><Br>
         <div id="RulesPart" style="display:none">
           <div id="scroll" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
-            <form [formGroup]="Form_Rules" >
+            <form [formGroup]="Form_Rules1" >
 
               <ul formArrayName="rules">
 
-                <li [formGroupName]="i"  *ngFor="let item of FormRules.controls; let i = index">
-                  <i class="fas fa-info-circle" id="{{Detected_Rules[i].Image}}"  onmouseover="return overlib ('',BACKGROUND,id,WIDTH,600,HEIGHT,250,HAUTO, VAUTO);" onmouseout="return nd ();"></i>
-                  <input type="checkbox" formControlName="checked" />  Rule:{{Detected_Rules[i].Id}}  {{Detected_Rules[i].Name}}
+                <li [formGroupName]="i"  *ngFor="let item of FormRules1.controls; let i = index">
+                  <i class="fas fa-info-circle" id="{{Detected_Rules1[i].Image}}"  onmouseover="return overlib ('',BACKGROUND,id,WIDTH,600,HEIGHT,250,HAUTO, VAUTO);" onmouseout="return nd ();"></i>
+                  <input type="checkbox" formControlName="checked" />  Rule:{{Detected_Rules1[i].Id}}  {{Detected_Rules1[i].Name}}
                 </li>
 
               </ul>
             </form>
           </div>
+          <h3 onmouseover="return overlib (' Select the reaction rules to activate during the virtual synthesis stage (1-5 reactions is advised)',HAUTO, VAUTO);" onmouseout="return nd ();"> Reaction rules for the second molecule </h3>
+          <i class="fas fa-info-circle" onmouseover="return overlib (' Click here for more information about reaction rules ',HAUTO, VAUTO);"
+             onmouseout="return nd ();" onclick='window.location.href="http://chemodots.marseille.inserm.fr/static/dots-reactions.html";'></i><Br><Br>
+            <div id="scroll4" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
+              <form [formGroup]="Form_Rules2" >
+
+                <ul formArrayName="rules">
+
+                  <li [formGroupName]="i"  *ngFor="let item of FormRules2.controls; let i = index">
+                    <i class="fas fa-info-circle" id="{{Detected_Rules2[i].Image}}"  onmouseover="return overlib ('',BACKGROUND,id,WIDTH,600,HEIGHT,250,HAUTO, VAUTO);" onmouseout="return nd ();"></i>
+                    <input type="checkbox" formControlName="checked" />  Rule:{{Detected_Rules2[i].Id}}  {{Detected_Rules2[i].Name}}
+                  </li>
+
+                </ul>
+              </form>
+            </div>
           <input id="Validate_Rules" type="button" (click)="ValidateReactions()"  value="Validate rules" class="btnFormSettings"
                  onmouseover="return overlib (' Click here to validate the reactions rules',HAUTO, VAUTO);" onmouseout="return nd ();">
         </div>

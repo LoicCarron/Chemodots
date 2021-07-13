@@ -5,7 +5,6 @@ import {MessageService} from "../message/message.service";
 import {FormArray, FormControl, FormGroup} from "@angular/forms";
 import {Undesired_substructures_DATA_BASE} from "../undesired-substructures";
 import {UndesiredSubstructures} from "../undesired-substructures";
-import {compareSegments} from "@angular/compiler-cli/src/ngtsc/sourcemaps/src/segment_marker";
 
 
 export interface Function {
@@ -37,7 +36,8 @@ export class GrowingComponent implements OnInit {
   Required_substructures:string='';
 
   Detected_Functions:Function[]=[];
-  Selected_Function:string="";
+  Selected_Function_name:string="";
+  Selected_Function!:Function;
 
 
   Detected_Rules:Rule[]=[];
@@ -309,17 +309,27 @@ export class GrowingComponent implements OnInit {
   //When you validate which function is targeted
   ValidateFunction() {
     //Generate Reactions :
-    if(this.Selected_Function==""){
+    if(this.Selected_Function_name==""){
       window.alert("Please select a targeted function or none before generate reactions rules.");
     }
       else {
+        let i=0;
+        let trouve=false;
+        while(!trouve){
+          if(this.Detected_Functions[i].Name==this.Selected_Function_name){
+            this.Selected_Function=this.Detected_Functions[i];
+            trouve=true;
+          }
+          i++;
+
+        }
       var doc = document.getElementById("RulesPart");
       if (doc != null) {
         if (doc.style.display == "none") {
           doc.style.display = "block";
         }
       }
-      let data = {funcname: this.Selected_Function}
+      let data = {funcname: this.Selected_Function.Name_Func}
       this.message.sendMessage('Callscript2', data).subscribe(res => {
         if (res.status == "error") {
         } else {
@@ -343,16 +353,17 @@ export class GrowingComponent implements OnInit {
 
               }))
             })
+            //Generate required Substructure
+            this.GenerateSub();
           } else {
 
           }
+
         }
       });
 
-
-      //Generate required Substructure
-      this.GenerateSub();
     }
+
   }
   ConvertRestultRules(output:string []){
     let name:string="";
@@ -382,7 +393,7 @@ export class GrowingComponent implements OnInit {
     GenerateSub(){
       let data = {
         smiles : this.smile,
-        funcname:this.Selected_Function
+        funcname:this.Selected_Function.Name_Func
       };
         this.message.sendMessage('Callscript_UndSub', data ).subscribe(res => {
           if (res.status == "error") {
@@ -407,6 +418,7 @@ export class GrowingComponent implements OnInit {
       }
       else{
         this.ShowSub(0);
+
       }
 
     }
@@ -430,7 +442,7 @@ export class GrowingComponent implements OnInit {
     }
     return true;
   };
-
+//Remove the substurcture
   Remove_Sub(res:string []){
     //Mettre L'id de la fonction choisit.
     let i=0;
@@ -438,51 +450,49 @@ export class GrowingComponent implements OnInit {
     let nb_removed=0;
     let selectedfunc=res[0]
     let tmp="";
-    let numb_tmp=0;
+    let numb_tmp:number=0;
+    let nb_tmp2:number;
     let remove=res[2];
     let j=0;
+    let found:boolean=false
+    let To_remove="";
     this.Required_substructures="";
-    //Faire dans le cas où il existe deux fois la même fonction
-    while ((j<res[1].length)&& ((isNaN(+res[1][j])) ||(res[1][j] == " ") || (res[1][j] == ","))) {
-      j++;
+    let min=100;
+    let id=1;
+    //Go to the begining of the pos of the targeted function in the smile
+    console.log(this.Selected_Function.ID);
+    while (id<this.Selected_Function.ID &&(j<res[1].length)) {
+      if ((res[1][j] == ")")) {
+        id++;
+      }
+      j++
     }
+      while ( (j<res[1].length)&&((isNaN(+res[1][j])) || (res[1][j] == " ") || (res[1][j] == ","))) {
+        j++;
+      }
     //Check if we are not at the end of the string
+    //Search the min of the pos of the targeted function
     if(j<res[1].length) {
-
-      while ((+res[1][j] >= 0 && +res[1][j] <= 9)) {
-        tmp += res[1][j];
+      while (res[1][j] != ")") {
+        tmp="";
+        while ((+res[1][j] >= 0 && +res[1][j] <= 9)) {
+          tmp += res[1][j];
+          j++;
+        }
         j++;
+        numb_tmp=Number(tmp);
+        if(numb_tmp<min && numb_tmp!=0){
+          min=numb_tmp;
+        }
       }
-    }
-      numb_tmp=Number(tmp);
-    numb_tmp++;
-    console.log(numb_tmp);
-    /*
-    while (this.Detected_Functions[i].Name!=this.Selected_Function){
-      i++;
-    }
-    while ((j<this.Detected_Functions[i].Position.length)&& ((isNaN(+this.Detected_Functions[i].Position[j])) ||(this.Detected_Functions[i].Position[j] == " ") || (this.Detected_Functions[i].Position[j] == ","))) {
-      j++;
-    }
-    //Check if we are not at the end of the string
-    if(j<this.Detected_Functions[i].Position.length) {
 
-      while ((+this.Detected_Functions[i].Position[j] >= 0 && +this.Detected_Functions[i].Position[j] <= 9)) {
-        tmp += this.Detected_Functions[i].Position[j];
-        j++;
-      }
-    }
-    numb_tmp=Number(tmp);
-    console.log(numb_tmp);
 
-     */
-    //test
+    }
+    numb_tmp=min;
+    console.log(numb_tmp);
     let k=0;
-    //On s'arrête avant au cas où il faut enlever un H avant
-    if((+remove[0]>1 && +remove[0]<9)  && remove[1]=="H"){
-      numb_tmp=numb_tmp+1;
-    }
-    while(k<numb_tmp-1){
+    //Find the position of the targeted function in the smiles
+    while(k<numb_tmp && numb_tmp!=1){
       if (!this.isAlpha(selectedfunc[k])) {
           numb_tmp=numb_tmp + 1;
 
@@ -493,34 +503,110 @@ export class GrowingComponent implements OnInit {
     console.log(this.Required_substructures);
     i=0;
 
+
+
     while(i<remove.length){
       nb_remove=1;
-
-      if(+remove[i] >= 0 && +remove[i]<= 9){
-        nb_remove=Number(remove[i]);
+      found=false
+      To_remove="";
+      while((i<remove.length) &&((+remove[i] >= 0 && +remove[i]<= 9)||(!this.isAlpha(remove[i]) ||(remove[i]=="R")) && remove[i]!="#" && remove[i]!="/")) {
+        if (+remove[i] >= 0 && +remove[i] <= 9) {
+          nb_remove = Number(remove[i]);
+          i++;
+        }
+        else{
+          i++;
+        }
+      }
+      //Special character, go to the next occurence of the character after this one, without remove it from the required substructure
+      if(remove[i]=="/"){
+        i++;
+        while(numb_tmp < selectedfunc.length&& selectedfunc[numb_tmp] !=remove[i]){
+          this.Required_substructures+=selectedfunc[numb_tmp];
+          numb_tmp++;
+        }
         i++;
       }
-      //On augmente car on est déjà aller jusqu'à numb-tmp dans le while au dessus
-
       console.log(remove[i]);
-      while(selectedfunc[numb_tmp]!=remove[i] && selectedfunc[numb_tmp+1]!=remove[i] && numb_tmp<selectedfunc.length){
-        console.log(selectedfunc[numb_tmp]);
-        this.Required_substructures+=selectedfunc[numb_tmp];
-        numb_tmp++;
 
-      }
-      console.log(this.Required_substructures);
+      //If we have a Br or Cl to remove
+      if((remove[i]=="C" && remove[i+1]=="l")||(remove[i]=="B" && remove[i+1]=="r")|| (remove[i]=="C" && remove[i+1]=="l")){
+        To_remove=remove[i];
+        i++;
+        To_remove+=remove[i];
+        while ((numb_tmp < selectedfunc.length - 2)&&(selectedfunc[numb_tmp] != To_remove[0] && selectedfunc[numb_tmp + 1] != To_remove[1]) && (selectedfunc[numb_tmp + 1] != To_remove[0] && selectedfunc[numb_tmp + 2] != To_remove[1]) ) {
+          console.log(selectedfunc[numb_tmp]);
+          this.Required_substructures += selectedfunc[numb_tmp];
+          numb_tmp++;
 
-      nb_removed=0;
-      while ((((nb_removed<nb_remove) ||(!this.isAlpha(selectedfunc[numb_tmp]) ))&& numb_tmp<selectedfunc.length)){
-        console.log(selectedfunc[numb_tmp])
-        if(selectedfunc[numb_tmp]==remove[i]){
-          nb_removed++;
         }
-        numb_tmp++;
+        if ((selectedfunc[numb_tmp] == To_remove[0] && selectedfunc[numb_tmp + 1] == To_remove[1])||((selectedfunc[numb_tmp+1] == To_remove[0]) && (selectedfunc[numb_tmp + 2] == To_remove[1]))) {
+          found = true
+        }
+        console.log(found);
+        console.log(selectedfunc[numb_tmp]);
+        while (found && (this.isAlpha(selectedfunc[numb_tmp]) || (selectedfunc[numb_tmp] == ")") || (selectedfunc[numb_tmp] == "]")) && selectedfunc[numb_tmp] != To_remove[0]  && selectedfunc[numb_tmp+1] != To_remove[1]) {
+          console.log(selectedfunc[numb_tmp]);
+          this.Required_substructures += selectedfunc[numb_tmp];
+          numb_tmp++;
+        }
+        nb_tmp2 = numb_tmp;
+        console.log(this.Required_substructures);
 
+
+        nb_removed = 0;
+
+        while ((numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || ((!this.isAlpha(selectedfunc[numb_tmp])) && (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "("))))) {
+          console.log(selectedfunc[numb_tmp])
+          if ((selectedfunc[numb_tmp]==To_remove[0])&&(selectedfunc[numb_tmp+1]==To_remove[1])) {
+            nb_removed++;
+            numb_tmp++;
+          }
+          numb_tmp++;
+
+        }
+        if(numb_tmp==selectedfunc.length && nb_removed<nb_remove){
+          numb_tmp=nb_tmp2;
+        }
+        console.log(this.Required_substructures);
       }
-      console.log(this.Required_substructures);
+      else {
+        while (selectedfunc[numb_tmp] != remove[i] && selectedfunc[numb_tmp + 1] != remove[i] && selectedfunc[numb_tmp + 2] != remove[i] && numb_tmp < selectedfunc.length - 2) {
+          console.log(selectedfunc[numb_tmp]);
+          this.Required_substructures += selectedfunc[numb_tmp];
+          numb_tmp++;
+
+        }
+        if (selectedfunc[numb_tmp] == remove[i] || selectedfunc[numb_tmp + 1] == remove[i] || selectedfunc[numb_tmp + 2] == remove[i]) {
+          found = true
+        }
+        console.log(found);
+        console.log(selectedfunc[numb_tmp]);
+        while (found && (this.isAlpha(selectedfunc[numb_tmp]) || (selectedfunc[numb_tmp] == ")") || (selectedfunc[numb_tmp] == "]")) && selectedfunc[numb_tmp] != remove[i]) {
+          console.log(selectedfunc[numb_tmp]);
+          this.Required_substructures += selectedfunc[numb_tmp];
+          numb_tmp++;
+        }
+        nb_tmp2 = numb_tmp;
+        console.log(this.Required_substructures);
+
+
+        nb_removed = 0;
+
+        while ((numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))||(selectedfunc[numb_tmp] == "H")) && (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "("))))) {
+          console.log(selectedfunc[numb_tmp])
+          if (selectedfunc[numb_tmp] == remove[i]) {
+            nb_removed++;
+          }
+          numb_tmp++;
+
+        }
+        if(numb_tmp==selectedfunc.length && nb_removed<nb_remove){
+          numb_tmp=nb_tmp2;
+        }
+        console.log(this.Required_substructures);
+      }
+
 
       i++;
     }
