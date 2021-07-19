@@ -72,9 +72,6 @@ def displayRules(fctName):
         if fctName in rules[key]:
             found=True
             print(key)
-    if( not found):
-        for key,values in rules.items():
-            print(key)
             
         
     

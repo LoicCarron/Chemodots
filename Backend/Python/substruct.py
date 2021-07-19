@@ -15,17 +15,17 @@ remove["Boronate alkyl"]='HOBOH'
 functions["Boronate aryl"]='OB(O)c'
 remove["Boronate aryl"]='HOBOH'
 
-functions["Amine primaire alkyl"]='[C[NH2]]'
-remove["Amine primaire alkyl"]='H'
+functions["Amine primaire alkyl"]='C[NH2]'
+remove["Amine primaire alkyl"]='/NH'
 
-functions["Amine secondaire alkyl"]='[C[NH]C]'
-remove["Amine secondaire alkyl"]='H'
+functions["Amine secondaire alkyl"]='C[NH]C'
+remove["Amine secondaire alkyl"]='/NH'
 
 functions["Amine primaire aryl"]='c[NH2]'
-remove["Amine primaire aryl"]='H'
+remove["Amine primaire aryl"]='/NH'
 
 functions["Amine secondaire aryl"]='c[NH]c'
-remove["Amine secondaire aryl"]='H'
+remove["Amine secondaire aryl"]='/NH'
 
 ''' On enlève quoi sachant que ça risque de casser la molecule dans tout les cas'''
 functions["Amine tertiaire"]='cN(C)C'
@@ -56,10 +56,10 @@ functions["Azide aryl"]='[N-]=[N+]=Nc'
 remove["Azide aryl"]='3N'
    
 functions["Amidine alkyl"]='C[C;R0](N)=N'
-remove["Amidine alkyl"]='C[C;R0](N)=N'
+remove["Amidine alkyl"]='H/N/NH'
 
 functions["Amidine aryl"]='c[C;R0](N)=N'
-remove["Amidine aryl"]='c[C;R0](N)=N'
+remove["Amidine aryl"]='H/N/NH'
    
 functions["Hydrazine alkyl"]='C[NH;R0][NH2;R0]'
 remove["Hydrazine alkyl"]='C[NH;R0][NH2;R0]'

@@ -105,7 +105,7 @@
 
         <div id="FunctionsPart1" style="display:none">
           <div id="scroll1" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
-            <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
+            <label style="color:chocolate">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
             <div *ngFor = "let n of Detected_Functions1">
               <input type="radio" (click) = "Highlightfunction(1,n.Position,n.Bonds)" [(ngModel)]="Selected_Function1_name" value={{n.Name}} name="chemfunction1" id={{n.Name}}+1 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
               <label>{{n.Name}}</label>
@@ -116,7 +116,7 @@
           <h3 onmouseover="return overlib (' Select a function to highlight it in the sketcher',HAUTO, VAUTO);" onmouseout="return nd ();"> Functions for the second molecule </h3>
           <div id="FunctionsPart2" style="display:none">
           <div id="scroll2" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
-            <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
+            <label style="color:chocolate">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
             <div *ngFor = "let n of Detected_Functions2">
               <input type="radio" (click) = "Highlightfunction(2,n.Position,n.Bonds)" [(ngModel)]="Selected_Function2_name" value={{n.Name}} name="chemfunction2" id={{n.Name}}+2 style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
               <label>{{n.Name}}</label>

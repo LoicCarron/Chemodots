@@ -10,6 +10,8 @@ from rdkit.Chem import AllChem
 
 from IPython import get_ipython
 
+import re
+
 
 
 #Search chemical function (returns the index where the fct is, and its name)
@@ -28,9 +30,13 @@ def searchFct(smiles):
 
     boronate_alkyl.name="Boronate alkyl"
 
+    boronate_alkyl.exclu=[]
+
     boronate_aryl=Chem.MolFromSmarts('OB(O)c')
 
     boronate_aryl.name="Boronate aryl"
+
+    boronate_aryl.exclu=[]
 
     
 
@@ -49,73 +55,110 @@ def searchFct(smiles):
 
     amine_prim_alkyl.name="Amine primaire alkyl"
 
+    amine_prim_alkyl.exclu=[]
+
+
     amine_sec_alkyl=Chem.MolFromSmarts('C[NH]C')
 
     amine_sec_alkyl.name="Amine secondaire alkyl"
+
+    amine_sec_alkyl.exclu=[]
 
     amine_tert_alkyl=Chem.MolFromSmarts('CN(C)C')
 
     amine_tert_alkyl.name="Amine tertiaire alkyl"
 
+    amine_tert_alkyl.exclu=[]
+
     amine_prim_aryl=Chem.MolFromSmarts('c[NH2]')
 
     amine_prim_aryl.name="Amine primaire aryl"
+
+    amine_prim_aryl.exclu=[]
 
     amine_sec_aryl=Chem.MolFromSmarts('c[NH]c')
 
     amine_sec_aryl.name="Amine secondaire aryl"
 
+    amine_sec_aryl.exclu=[]
+
     amine_tert_aryl=Chem.MolFromSmarts('cN(C)C')
 
     amine_tert_aryl.name="Amine tertiaire aryl"
+
+    amine_tert_aryl.exclu=[]
 
     nitrile_alkyl=Chem.MolFromSmarts('CC#N')
 
     nitrile_alkyl.name="Nitrile alkyl"
 
+    nitrile_alkyl.exclu=[]
+
     nitrile_aryl=Chem.MolFromSmarts('cC#N')
 
     nitrile_aryl.name="Nitrile aryl"
+
+    nitrile_aryl.exclu=[]
 
     aziridine_alkyl=Chem.MolFromSmarts('C1NC1C')
 
     aziridine_alkyl.name="Aziridine alkyl"
 
+    aziridine_alkyl.exclu=["Amine secondaire alkyl"]
+
     aziridine_aryl=Chem.MolFromSmarts('C1NC1c')
 
     aziridine_aryl.name="Aziridine aryl"
+
+    aziridine_aryl.exclu=["Amine secondaire alkyl"]
 
     imine_alkyl=Chem.MolFromSmarts('[C;R0](=N)C')
 
     imine_alkyl.name="Imine alkyl"
 
+    imine_alkyl.exclu=[]
+
     imine_aryl=Chem.MolFromSmarts('[C;R0](=N)c')
 
     imine_aryl.name="Imine aryl"
+
+    imine_aryl.exclu=[]
 
     azide_alkyl=Chem.MolFromSmarts('[N-]=[N+]=NC')
 
     azide_alkyl.name="Azide alkyl"
 
+    azide_alkyl.exclu=[]
+
     azide_aryl=Chem.MolFromSmarts('[N-]=[N+]=Nc')
 
     azide_aryl.name="Azide aryl"
+
+    azide_aryl.exclu=[]
 
     amidine_alkyl=Chem.MolFromSmarts('C[C;R0](N)=N')
 
     amidine_alkyl.name="Amidine alkyl"
 
+    amidine_alkyl.exclu=[]
+
     amidine_aryl=Chem.MolFromSmarts('c[C;R0](N)=N')
 
     amidine_aryl.name="Amidine aryl"
+
+    amidine_aryl.exclu=[]
 
     hydrazine_alkyl=Chem.MolFromSmarts('C[NH;R0][NH2;R0]')
 
     hydrazine_alkyl.name="Hydrazine alkyl"
 
+    hydrazine_alkyl.exclu=[]
+
     hydrazine_aryl=Chem.MolFromSmarts('c[NH;R0][NH2;R0]')
 
     hydrazine_aryl.name="Hydrazine aryl"
+
+    hydrazine_aryl.exclu=[]
 
     
 
@@ -125,121 +168,182 @@ def searchFct(smiles):
 
     alcool.name="Alcool"
 
+    alcool.exclu=[]
+
     alcohol_alkyl=Chem.MolFromSmarts('C[OH]')
 
     alcohol_alkyl.name="Alcohol Alkyl"
+
+    alcohol_alkyl.exclu=[]
     
     alcohol_alkyl2=Chem.MolFromSmarts('[O-]C(=O)')
     
     alcohol_alkyl2.name="Alcohol Alkyl"
 
+    alcohol_alkyl2.exclu=[]
+
     alcohol_aryl=Chem.MolFromSmarts('c[OH]')
 
     alcohol_aryl.name="Alcohol Aryl"
 
+    alcohol_aryl.exclu=[]
+
     acid_alkyl=Chem.MolFromSmarts('C[C;R0]([OH])=O')
 
     acid_alkyl.name="Acide alkyl"
+
+    acid_alkyl.exclu=[]
     
     acid_alkyl2=Chem.MolFromSmarts('[O-]C(=O)C')
     
     acid_alkyl2.name="Acide alkyl"
 
+    acid_alkyl2.exclu=[]
+
     acid_aryl=Chem.MolFromSmarts('c[C;R0]([OH])=O')
 
     acid_aryl.name="Acide aryl"
+
+    acid_aryl.exclu=[]
     
     acid_aryl2=Chem.MolFromSmarts('[O-]C(=O)c')
     
     acid_aryl2.name="Acide aryl"
 
+    acid_aryl2.exclu=[]
+
     aldehyde_alkyl=Chem.MolFromSmarts('C[CH1;R0](=O)')
 
     aldehyde_alkyl.name="Aldehyde alkyl"
+
+    aldehyde_alkyl.exclu=[]
 
     aldehyde_aryl=Chem.MolFromSmarts('c[CH1;R0](=O)')
 
     aldehyde_aryl.name="Aldehyde aryl"
 
+    aldehyde_aryl.exclu=[]
+
     ketone_alkyl=Chem.MolFromSmarts('C[C;R0](=O)C')
 
     ketone_alkyl.name="Ketone alkyl"
+
+    ketone_alkyl.exclu=[]
 
     ketone_aryl=Chem.MolFromSmarts('c[C;R0](=O)c')
 
     ketone_aryl.name="Ketone aryl"
 
+    ketone_aryl.exclu=[]
+
     ester_alkyl=Chem.MolFromSmarts('C[C;R0](=O)OC')
 
     ester_alkyl.name="Ester alkyl"
+
+    ester_alkyl.exclu=[]
 
     ester_aryl=Chem.MolFromSmarts('c[C;R0](=O)OC')
 
     ester_aryl.name="Ester aryl"
 
+    ester_aryl.exclu=[]
+
     ether_alkyl=Chem.MolFromSmarts('C[O;R0]C')
 
     ether_alkyl.name="Ether alkyl"
+
+    ether_alkyl.exclu=[]
 
     ether_aryl=Chem.MolFromSmarts('C[O;R0]c')
 
     ether_aryl.name="Ether aryl"
 
+    ether_aryl.exclu=[]
+
     michael_acc_alkyl=Chem.MolFromSmarts('C[C;R0](=O)[C;R0]=[C;R0]')
 
     michael_acc_alkyl.name="Michael acc alkyl"
+
+    michael_acc_alkyl.exclu=[]
 
     michael_acc_aryl=Chem.MolFromSmarts('c[C;R0](=O)[C;R0]=[C;R0]')
 
     michael_acc_aryl.name="Michael acc aryl"
 
+    michael_acc_aryl=[]
+
     anhydride_alkyl=Chem.MolFromSmarts('C[C;R0](=O)O[C;R0](=O)C')
 
     anhydride_alkyl.name="Anhydride alkyl"
+
+    anhydride_alkyl.exclu=[]
+
 
     anhydride_aryl=Chem.MolFromSmarts('c[C;R0](=O)O[C;R0](=O)c')
 
     anhydride_aryl.name="Anhydride aryl"
 
+    anhydride_aryl.exclu=[]
+
     dicarbonyl_1_3_alkyl=Chem.MolFromSmarts('C[C;R0](=O)[CH2][C;R0](=O)C')
 
     dicarbonyl_1_3_alkyl.name="Dicarbonyl 1-3 alkyl"
+
+    dicarbonyl_1_3_alkyl.exclu=[]
 
     dicarbonyl_1_3_aryl=Chem.MolFromSmarts('[#6][C;R0](=O)[CH2;R0][C;R0]([#6])=O')
 
     dicarbonyl_1_3_aryl.name="Dicarbonyl 1-3 aryl"
 
+    dicarbonyl_1_3_aryl.exclu=[]
+
     dicarbonyl_1_4_alkyl=Chem.MolFromSmarts('C[C;R0](=O)[CH2][CH2][C;R0](=O)C')
 
     dicarbonyl_1_4_alkyl.name="Dicarbonyl 1-4 alkyl"
+
+    dicarbonyl_1_4_alkyl.exclu=[]
 
     dicarbonyl_1_4_aryl=Chem.MolFromSmarts('[#6][C;R0](=O)[CH2;R0][CH2;R0][C;R0]([#6])=O')
 
     dicarbonyl_1_4_aryl.name="Dicarbonyl 1-4 aryl"
 
+    dicarbonyl_1_4_aryl.exclu=[]
+
     ketone_alpha_halide=Chem.MolFromSmarts('C[C;R0](=O)[CH2][Cl,Br,I]')
 
     ketone_alpha_halide.name="Ketone alpha halide"
+
+    ketone_alpha_halide.exclu=[]
 
     ketone_beta_halide=Chem.MolFromSmarts('C[C;R0](=O)[CH2][CH2][Cl,Br,I]')
 
     ketone_beta_halide.name="Ketone beta halide"
 
+    ketone_beta_halide.exclu=[]
+
     epoxyde_alkyl=Chem.MolFromSmarts('C1OC1C')
 
     epoxyde_alkyl.name="Epoxyde alkyl"
+
+    epoxyde_alkyl.exclu=[]
 
     epoxyde_aryl=Chem.MolFromSmarts('C1OC1c')
 
     epoxyde_aryl.name="Epoxyde aryl"
 
+    epoxyde_aryl.exclu=[]
+
     acyl_chloride_alkyl=Chem.MolFromSmarts('C[C;R0](Cl)=O')
 
     acyl_chloride_alkyl.name="Acyl chloride alkyl"
 
+    acyl_chloride_alkyl.exclu=[]
+
     acyl_chloride_aryl=Chem.MolFromSmarts('c[C;R0](Cl)=O')
 
     acyl_chloride_aryl.name="Acyl chloride aryl"
+
+    acyl_chloride_aryl.exclu=[]
 
 
 
@@ -253,17 +357,25 @@ def searchFct(smiles):
 
     thioether_alkyl.name="Thioether alkyl"
 
+    thioether_alkyl.exclu=[]
+
     thioether_aryl=Chem.MolFromSmarts('C[S;R0]c')
 
     thioether_aryl.name="Thioether aryl"
+
+    thioether_aryl.exclu=[]
 
     thiol_alkyl=Chem.MolFromSmarts('C[SH]')
 
     thiol_alkyl.name="Thiol alkyl"
 
+    thiol_alkyl.exclu=[]
+
     thiol_aryl=Chem.MolFromSmarts('c[SH]')
 
     thiol_aryl.name="Thiol aryl"
+
+    thiol_aryl.exclu=[]
 
     
 
@@ -275,41 +387,61 @@ def searchFct(smiles):
 
     amide1.name="Amide 1"
 
+    amide1.exclu=[]
+
     amide2=Chem.MolFromSmarts('[#6][C;R0](=[OD1])[NH][#6]')
 
     amide2.name="Amide 2"
+
+    amide2.exclu=[]
 
     amide_alkyl=Chem.MolFromSmarts('C[C;R0]([NH2])=O')
 
     amide_alkyl.name="Amide alkyl"
 
+    amide_alkyl.exclu=[]
+
     amide_aryl=Chem.MolFromSmarts('c[C;R0]([NH2])=O')
 
     amide_aryl.name="Amide aryl"
+
+    amide_aryl.exclu=[]
 
     isocyanate_alkyl=Chem.MolFromSmarts('CN=C=O')
 
     isocyanate_alkyl.name="Isocyanate alkyl"
 
+    isocyanate_alkyl.exclu=[]
+
     isocyanate_aryl=Chem.MolFromSmarts('cN=C=O')
 
     isocyanate_aryl.name="Isocyanate aryl"
+
+    isocyanate_aryl.exclu=[]
 
     nitro_alkyl=Chem.MolFromSmarts('C[N+]([O-])=O')
 
     nitro_alkyl.name="Nitro alkyl"
 
+    nitro_alkyl.exclu=[]
+
     nitro_aryl=Chem.MolFromSmarts('c[N+]([O-])=O')
 
     nitro_aryl.name="Nitro aryl"
+
+    nitro_aryl.exclu=[]
 
     imide_alkyl=Chem.MolFromSmarts('C[C;R0](=O)N[C;R0](=O)C')
 
     imide_alkyl.name="Imide alkyl"
 
+    imide_alkyl.exclu=[]
+
     imide_aryl=Chem.MolFromSmarts('c[C;R0](=O)N[C;R0](=O)c')
 
     imide_aryl.name="Imide aryl"
+
+    imide_aryl.exclu=[]
 
    
 
@@ -323,21 +455,31 @@ def searchFct(smiles):
 
     thioester_alkyl.name="Thioester alkyl"
 
+    thioester_alkyl.exclu=[]
+
     thioester_aryl=Chem.MolFromSmarts('c[C;R0](=S)OC')
 
     thioester_aryl.name="Thioester aryl"
+
+    thioester_aryl.exclu=[]
 
     vinylsulfonyl_alkyl=Chem.MolFromSmarts('C[S;R0](=O)(=O)[C;R0]=[C;R0]')
 
     vinylsulfonyl_alkyl.name="Vinylsulfonyl Alkyl"
 
+    vinylsulfonyl_alkyl.exclu=[]
+
     vinylsulfonyl_aryl=Chem.MolFromSmarts('c[S;R0](=O)(=O)[C;R0]=[C;R0]')
 
     vinylsulfonyl_aryl.name="Vinylsulfonyl Aryl"
 
+    vinylsulfonyl_aryl.exclu=[]
+
     sulfonate_ester_alkyl=Chem.MolFromSmarts('[#6][O;R0][S;R0](=O)(=O)[#6]')
 
     sulfonate_ester_alkyl.name="Sulfonate ester alkyl"
+
+    sulfonate_ester_alkyl.exclu=[]
 
     sulfonate_ester_aryl=Chem.MolFromSmarts('c[S;R0](=O)(=O)Oc')
 
@@ -417,6 +559,7 @@ def searchFct(smiles):
 
     halo_pyrimidine.name="Halo pyrimidine"
 
+
     
 
     
@@ -440,8 +583,11 @@ def searchFct(smiles):
     fctElse = {1:halide_alkyl, 2:halide_aryl, 3:halo_pyrimidine, 4:alkyne_alkyl, 5:alkyne_aryl, 6:alkene_alkyl, 7:alkene_aryl}
 
     dico ={}
+    exclu=[]
+    posex=[]
 
-    
+
+
 
     
 
@@ -466,6 +612,8 @@ def searchFct(smiles):
                   if (len(t) != 0):
 
                     dico[fctB[i].name]=t
+                    exclu.extend(fctB[i].exclu)
+
 
                    
 
@@ -486,6 +634,10 @@ def searchFct(smiles):
                   if (len(t) != 0):
 
                     dico[fctN[i].name]=t
+                    if len(fctN[i].exclu)!=0:
+                        exclu.extend(fctN[i].exclu)
+                        pos=addpos(t)
+                        posex.extend(pos)
 
                     
 
@@ -502,7 +654,6 @@ def searchFct(smiles):
             
 
       #if O is present
-
       if (smiles[p] == 'O') & (p<len(smiles)):
 
                 
@@ -514,6 +665,7 @@ def searchFct(smiles):
                   if (len(t) != 0):
 
                     dico[fctO[i].name]=t
+                    exclu.extend(fctO[i].exclu)
 
                    
 
@@ -534,6 +686,7 @@ def searchFct(smiles):
                   if (len(t) != 0):
 
                     dico[fctS[i].name]=t
+                    exclu.extend(fctS[i].exclu)
 
         
 
@@ -560,6 +713,7 @@ def searchFct(smiles):
                         if (len(t) != 0):
 
                             dico[fctON[k].name]=t
+                            exclu.extend(fctON[k].exclu)
 
      
 
@@ -583,7 +737,8 @@ def searchFct(smiles):
 
                         if (len(t) != 0):
 
-                            dico[fctOS[k].name]=t    
+                            dico[fctOS[k].name]=t
+                            exclu.extend(fctOS[k].exclu)
 
      
 
@@ -610,6 +765,7 @@ def searchFct(smiles):
                         if (len(t) != 0):
 
                             dico[fctSN[k].name]=t
+                            exclu.extend(fctSN[k].exclu)
 
       
 
@@ -626,28 +782,44 @@ def searchFct(smiles):
              t=m.GetSubstructMatches(fctElse[i])
 
              if (len(t) != 0):
+                dico[fctElse[i].name]=t
 
-                 dico[fctElse[i].name]=t
 
           
 
     
 
 
-
     for v in dico:
+        pos=addpos(dico[v])
+        trouve=False
+        i=0
+        while (not trouve) & (i<len(pos)):
+            if pos[i] in posex:
+                trouve=True
+            i+=1
+        if (v not in exclu) | (not trouve) :
+            print(v)
+            print(dico[v])
 
-        print(v)
 
-        print(dico[v])
 
+def addpos(posi):
+    t=str(posi)
+    t=t.split(",")
+    posex=[]
+    for pos in t:
+        try:
+            x=re.findall('\d+', pos)[0]
+            posex.append(x)
+        except:
+            break
+    return posex
 import sys
 
 if __name__== '__main__':
 
 # simple argument echo script
-
    smiles=sys.argv[1]
-
    searchFct(smiles)
 

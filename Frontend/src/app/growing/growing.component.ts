@@ -323,45 +323,72 @@ export class GrowingComponent implements OnInit {
           i++;
 
         }
-      var doc = document.getElementById("RulesPart");
-      if (doc != null) {
-        if (doc.style.display == "none") {
-          doc.style.display = "block";
+        if(this.Selected_Function_name!="None") {
+          let data = {funcname: this.Selected_Function.Name_Func}
+          this.message.sendMessage('Callscript2', data).subscribe(res => {
+            if (res.status == "error") {
+            } else {
+              var doc = document.getElementById("RulesPart");
+              console.log(res);
+              if (res.data != null) {
+
+                if (doc != null) {
+                  if (doc.style.display == "none") {
+                    doc.style.display = "block";
+                  }
+                }
+
+                this.ConvertRestultRules(res.data);
+                // get array control
+                //
+                this.Form_Rules = new FormGroup({
+                  rules: new FormArray([])
+                });
+                const formArray = this.Form_Rules.get('rules') as FormArray;
+                // loop each existing value options from database
+                this.Detected_Rules.forEach(rule => {
+                  // generate control Group for each option and push to formArray
+                  formArray.push(new FormGroup({
+                    name: new FormControl(rule.Name),
+                    Id: new FormControl(rule.Id),
+                    checked: new FormControl(rule.checked)
+
+                  }))
+                })
+
+              } else {
+                this.Detected_Rules = [];
+                this.Form_Rules = new FormGroup({
+                  rules: new FormArray([])
+                });
+                const formArray = this.Form_Rules.get('rules') as FormArray;
+                // loop each existing value options from database
+                this.Detected_Rules.forEach(rule => {
+                  // generate control Group for each option and push to formArray
+                  formArray.push(new FormGroup({
+                    name: new FormControl(rule.Name),
+                    Id: new FormControl(rule.Id),
+                    checked: new FormControl(rule.checked)
+
+                  }))
+                })
+                //Attention ici il faudra peut être changer
+                if (doc != null) {
+                  if (doc.style.display == "block") {
+                    doc.style.display = "none";
+                  }
+                }
+                this.ShowSub(0);
+              }
+              //Generate required Substructure
+              this.GenerateSub();
+            }
+          });
         }
-      }
-      let data = {funcname: this.Selected_Function.Name_Func}
-      this.message.sendMessage('Callscript2', data).subscribe(res => {
-        if (res.status == "error") {
-        } else {
-          console.log(res);
-          if (res.data != null) {
-
-            this.ConvertRestultRules(res.data);
-            // get array control
-            //
-            this.Form_Rules = new FormGroup({
-              rules: new FormArray([])
-            });
-            const formArray = this.Form_Rules.get('rules') as FormArray;
-            // loop each existing value options from database
-            this.Detected_Rules.forEach(rule => {
-              // generate control Group for each option and push to formArray
-              formArray.push(new FormGroup({
-                name: new FormControl(rule.Name),
-                Id: new FormControl(rule.Id),
-                checked: new FormControl(rule.checked)
-
-              }))
-            })
-            //Generate required Substructure
-            this.GenerateSub();
-          } else {
-
-          }
-
+        else{
+          this.Required_substructures="";
+          this.ShowSub(0);
         }
-      });
-
     }
 
   }
@@ -395,7 +422,7 @@ export class GrowingComponent implements OnInit {
         smiles : this.smile,
         funcname:this.Selected_Function.Name_Func
       };
-        this.message.sendMessage('Callscript_UndSub', data ).subscribe(res => {
+        this.message.sendMessage('Callscript_UndSub', data).subscribe(res => {
           if (res.status == "error") {
           } else {
             console.log(res);
@@ -407,13 +434,12 @@ export class GrowingComponent implements OnInit {
             }
           }
         });
-
-    }
+      }
     ValidateReactions(){
       this.Selected_Rules=this.Form_Rules.value.rules.filter((f: { checked: any; }) => f.checked);
       console.log(this.Selected_Rules);
       //Ici mettre un truc qui vérifie que Selected rules n'est pas vide
-      if(this.Selected_Rules.length==0){
+      if(this.Selected_Rules.length==0 && this.Detected_Rules.length!=0){
         window.alert("Please choose at least one reaction rule.");
       }
       else{
@@ -519,15 +545,15 @@ export class GrowingComponent implements OnInit {
         }
       }
       //Special character, go to the next occurence of the character after this one, without remove it from the required substructure
-      if(remove[i]=="/"){
+      while(remove[i]=="/"){
         i++;
-        while(numb_tmp < selectedfunc.length&& selectedfunc[numb_tmp] !=remove[i]){
+        while(numb_tmp < selectedfunc.length&& selectedfunc[numb_tmp] !=remove[i] && numb_tmp!=1){
           this.Required_substructures+=selectedfunc[numb_tmp];
           numb_tmp++;
         }
         i++;
       }
-      console.log(remove[i]);
+      console.log("après le /",remove[i]);
 
       //If we have a Br or Cl to remove
       if((remove[i]=="C" && remove[i+1]=="l")||(remove[i]=="B" && remove[i+1]=="r")|| (remove[i]=="C" && remove[i+1]=="l")){
