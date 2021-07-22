@@ -531,7 +531,7 @@ export class GrowingComponent implements OnInit {
     console.log(posi)
     let k=0;
     //Find the position of the targeted function in the smiles
-    while(k<numb_tmp && numb_tmp!=2){
+    while(k<numb_tmp && numb_tmp!=2 && numb_tmp<selectedfunc.length){
       if (!this.isAlpha(selectedfunc[k])|| (+selectedfunc[k] >= 0 && +selectedfunc[k]<= 9) ||((selectedfunc[k]=="C" && selectedfunc[k+1]=="l" ) || (selectedfunc[k]=="B" && selectedfunc[k+1]=="r" )) ) {
           numb_tmp=numb_tmp + 1;
 
