@@ -573,7 +573,7 @@ export class GrowingComponent implements OnInit {
         i++;
         //If we want to remove an H in the first position of the smile, we don't moove
         console.log(numb_tmp);
-        while((numb_tmp < selectedfunc.length && selectedfunc[numb_tmp] !=remove[i]|| (posi.indexOf(num_atom)<0)) && (numb_tmp!=0 || remove[i+1]!="H") ){
+        while((numb_tmp < selectedfunc.length && (selectedfunc[numb_tmp] !=remove[i]|| (posi.indexOf(num_atom)<0)) && (numb_tmp!=0 || remove[i+1]!="H"))   ){
           this.Required_substructures+=selectedfunc[numb_tmp];
           console.log(num_atom)
           console.log((selectedfunc[numb_tmp]))

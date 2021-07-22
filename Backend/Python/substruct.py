@@ -62,10 +62,10 @@ functions["Amidine aryl"]='c[C;R0](N)=N'
 remove["Amidine aryl"]='/NH/NH'
    
 functions["Hydrazine alkyl"]='C[NH;R0][NH2;R0]'
-remove["Hydrazine alkyl"]='/NHH/NH'
+remove["Hydrazine alkyl"]='/NH/NHH'
     
 functions["Hydrazine aryl"]='c[NH;R0][NH2;R0]'
-remove["Hydrazine aryl"]='/NHH/NH'
+remove["Hydrazine aryl"]='/NH/NHH'
     
 functions["Alcool"]='[OH;R0][#6;!$([#6]=[O,S])]'
 remove["Alcool"]='/OH'
