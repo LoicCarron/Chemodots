@@ -38,16 +38,16 @@ functions["Nitrile aryl"]='cC#N'
 remove["Nitrile aryl"]='#N'
    
 functions["Aziridine alkyl"]='C1NC1C'
-remove["Aziridine alkyl"]='HNC2HCHC3H'
+remove["Aziridine alkyl"]='/NH'
     
 functions["Aziridine aryl"]='C1NC1c'
-remove["Aziridine aryl"]='C1NC1'
+remove["Aziridine aryl"]='/NH'
   
 functions["Imine alkyl"]='[C;R0](=N)C'
-remove["Imine alkyl"]='HN'
+remove["Imine alkyl"]='/NH'
    
 functions["Imine aryl"]='[C;R0](=N)c'
-remove["Imine aryl"]='HN'
+remove["Imine aryl"]='/NH'
   
 functions["Azide alkyl"]='[N-]=[N+]=NC'
 remove["Azide alkyl"]='3N'
@@ -56,103 +56,105 @@ functions["Azide aryl"]='[N-]=[N+]=Nc'
 remove["Azide aryl"]='3N'
    
 functions["Amidine alkyl"]='C[C;R0](N)=N'
-remove["Amidine alkyl"]='H/N/NH'
+remove["Amidine alkyl"]='/NH/NH'
 
 functions["Amidine aryl"]='c[C;R0](N)=N'
-remove["Amidine aryl"]='H/N/NH'
+remove["Amidine aryl"]='/NH/NH'
    
 functions["Hydrazine alkyl"]='C[NH;R0][NH2;R0]'
-remove["Hydrazine alkyl"]='C[NH;R0][NH2;R0]'
+remove["Hydrazine alkyl"]='/NHH/NH'
     
 functions["Hydrazine aryl"]='c[NH;R0][NH2;R0]'
-remove["Hydrazine aryl"]='c[NH;R0][NH2;R0]'
+remove["Hydrazine aryl"]='/NHH/NH'
     
 functions["Alcool"]='[OH;R0][#6;!$([#6]=[O,S])]'
-remove["Alcool"]='[OH;R0][#6;!$([#6]=[O,S])]'
+remove["Alcool"]='/OH'
     
 functions["Alcohol Alkyl"]='C[OH]'
-remove["Alcohol Alkyl"]='H'
+remove["Alcohol Alkyl"]='/OH'
   
 functions["Alcohol Aryl"]='c[OH]'
-remove["Alcohol Aryl"]='H'
+remove["Alcohol Aryl"]='/OH'
     
 functions["Acide alkyl"]='C[C;R0]([OH])=O'
-remove["Acide alkyl"]='H'
+remove["Acide alkyl"]='/OH'
     
 functions["Acide aryl"]='c[C;R0]([OH])=O'
-remove["Acide aryl"]='H'
+remove["Acide aryl"]='/OH'
     
 functions["Aldehyde alkyl"]='C[CH1;R0](=O)'
-remove["Aldehyde alkyl"]='C[CH1;R0](=O)'
+remove["Aldehyde alkyl"]='=O'
    
 functions["Aldehyde aryl"]='c[CH1;R0](=O)'
-remove["Aldehyde aryl"]='c[CH1;R0](=O)'
+remove["Aldehyde aryl"]='=O'
    
 functions["Ketone alkyl"]='C[C;R0](=O)C'
-remove["Ketone alkyl"]='C[C;R0](=O)C'
+remove["Ketone alkyl"]='=O'
    
 functions["Ketone aryl"]='c[C;R0](=O)c'
-remove["Ketone aryl"]='c[C;R0](=O)c'
-    
+remove["Ketone aryl"]='=O'
+
+#Rules found are false, there is a CH on the O
+#Moreover we put /C because if we not it will remove the O of /O and not the next O
 functions["Ester alkyl"]='C[C;R0](=O)OC'
-remove["Ester alkyl"]='C[C;R0](=O)OC'
+remove["Ester alkyl"]='OO'
    
 functions["Ester aryl"]='c[C;R0](=O)OC'
-remove["Ester aryl"]='c[C;R0](=O)OC'
+remove["Ester aryl"]='OOC'
     
 functions["Ether alkyl"]='C[O;R0]C'
-remove["Ether alkyl"]='C[O;R0]C'
+remove["Ether alkyl"]=''
     
 functions["Ether aryl"]='C[O;R0]c'
-remove["Ether aryl"]='C[O;R0]c'
+remove["Ether aryl"]=''
     
 functions["Michael acc alkyl"]='C[C;R0](=O)[C;R0]=[C;R0]'
-remove["Michael acc alkyl"]='C[C;R0](=O)[C;R0]=[C;R0]'
+remove["Michael acc alkyl"]=''
     
 functions["Michael acc aryl"]='c[C;R0](=O)[C;R0]=[C;R0]'
-remove["Michael acc aryl"]='c[C;R0](=O)[C;R0]=[C;R0]'
+remove["Michael acc aryl"]=''
 
 functions["Anhydride alkyl"]='C[C;R0](=O)O[C;R0](=O)C'
-remove["Anhydride alkyl"]='C[C;R0](=O)O[C;R0](=O)C'
+remove["Anhydride alkyl"]=''
    
 functions["Anhydride aryl"]='c[C;R0](=O)O[C;R0](=O)c'
-remove["Anhydride aryl"]='c[C;R0](=O)O[C;R0](=O)c'
+remove["Anhydride aryl"]=''
    
 functions["Dicarbonyl 1-3 alkyl"]='C[C;R0](=O)[CH2][C;R0](=O)C'
-remove["Dicarbonyl 1-3 alkyl"]='C[C;R0](=O)[CH2][C;R0](=O)C'
+remove["Dicarbonyl 1-3 alkyl"]='OO'
    
-functions["Dicarbonyl 1-3 aryl"]='[#6][C;R0](=O)[CH2;R0][C;R0]([#6])=O'
-remove["Dicarbonyl 1-3 aryl"]='[#6][C;R0](=O)[CH2;R0][C;R0]([#6])=O'
+functions["Dicarbonyl 1-3 aryl"]='c[C;R0](=O)[CH2][C;R0](=O)c'
+remove["Dicarbonyl 1-3 aryl"]='OO'
     
 functions["Dicarbonyl 1-4 alkyl"]='C[C;R0](=O)[CH2][CH2][C;R0](=O)C'
-remove["Dicarbonyl 1-4 alkyl"]='C[C;R0](=O)[CH2][CH2][C;R0](=O)C'
+remove["Dicarbonyl 1-4 alkyl"]='OO'
    
-functions["Dicarbonyl 1-4 aryl"]='[#6][C;R0](=O)[CH2;R0][CH2;R0][C;R0]([#6])=O'
-remove["Dicarbonyl 1-4 aryl"]='[#6][C;R0](=O)[CH2;R0][CH2;R0][C;R0]([#6])=O'
+functions["Dicarbonyl 1-4 aryl"]='c[C;R0](=O)[CH2][CH2][C;R0](=O)c'
+remove["Dicarbonyl 1-4 aryl"]='OO'
    
 functions["Ketone alpha halide"]='C[C;R0](=O)[CH2][Cl,Br,I]'
-remove["Ketone alpha halide"]='[Cl,Br,I]'
+remove["Ketone alpha halide"]='O'
    
 functions["Ketone beta halide"]='C[C;R0](=O)[CH2][CH2][Cl,Br,I]'
-remove["Ketone beta halide"]='[Cl,Br,I]'
+remove["Ketone beta halide"]='O'
     
 functions["Epoxyde alkyl"]='C1OC1C'
-remove["Epoxyde alkyl"]='C1OC1C'
+remove["Epoxyde alkyl"]=''
    
 functions["Epoxyde aryl"]='C1OC1c'
-remove["Epoxyde aryl"]='C1OC1c'
+remove["Epoxyde aryl"]=''
    
 functions["Acyl chloride alkyl"]='C[C;R0](Cl)=O'
-remove["Acyl chloride alkyl"]='C[C;R0](Cl)=O'
+remove["Acyl chloride alkyl"]=''
 
 functions["Acyl chloride aryl"]='c[C;R0](Cl)=O'
-remove["Acyl chloride aryl"]='c[C;R0](Cl)=O'
+remove["Acyl chloride aryl"]=''
 
 functions["Thioether alkyl"]='C[S;R0]C'
-remove["Thioether alkyl"]='C[S;R0]C'
+remove["Thioether alkyl"]=''
 
 functions["Thioether aryl"]='C[S;R0]c'
-remove["Thioether aryl"]='C[S;R0]c'
+remove["Thioether aryl"]=''
 
 functions["Thiol alkyl"]='C[SH]'
 remove["Thiol alkyl"]='H'
@@ -170,40 +172,40 @@ functions["Amide alkyl"]='C[C;R0]([NH2])=O'
 remove["Amide alkyl"]='H'
   
 functions["Amide aryl"]='c[C;R0]([NH2])=O'
-remove["Amide aryl"]='H'
+remove["Amide aryl"]='O/NH'
     
 functions["Isocyanate alkyl"]='CN=C=O'
-remove["Isocyanate alkyl"]='CN=C=O'
+remove["Isocyanate alkyl"]='N=C=O'
     
 functions["Isocyanate aryl"]='cN=C=O'
-remove["Isocyanate aryl"]='cN=C=O'
+remove["Isocyanate aryl"]='N=C=O'
    
 functions["Nitro alkyl"]='C[N+]([O-])=O'
-remove["Nitro alkyl"]='C[N+]([O-])=O'
+remove["Nitro alkyl"]=''
     
 functions["Nitro aryl"]='c[N+]([O-])=O'
-remove["Nitro aryl"]='c[N+]([O-])=O'
+remove["Nitro aryl"]=''
     
 functions["Imide alkyl"]='C[C;R0](=O)N[C;R0](=O)C'
-remove["Imide alkyl"]='C[C;R0](=O)N[C;R0](=O)C'
+remove["Imide alkyl"]='/NH'
    
 functions["Imide aryl"]='c[C;R0](=O)N[C;R0](=O)c'
-remove["Imide aryl"]='c[C;R0](=O)N[C;R0](=O)c'
+remove["Imide aryl"]='/NH'
 
 functions["Thioester alkyl"]='C[C;R0](=S)OC'
-remove["Thioester alkyl"]='C[C;R0](=S)OC'
+remove["Thioester alkyl"]=''
    
 functions["Thioester aryl"]='c[C;R0](=S)OC'
-remove["Thioester aryl"]='c[C;R0](=S)OC'
+remove["Thioester aryl"]=''
    
 functions["Vinylsulfonyl Alkyl"]='C[S;R0](=O)(=O)[C;R0]=[C;R0]'
-remove["Vinylsulfonyl Alkyl"]='C[S;R0](=O)(=O)[C;R0]=[C;R0]'
+remove["Vinylsulfonyl Alkyl"]=''
     
 functions["Vinylsulfonyl Aryl"]='c[S;R0](=O)(=O)[C;R0]=[C;R0]'
 remove["Vinylsulfonyl Aryl"]='c[S;R0](=O)(=O)[C;R0]=[C;R0]'
     
 functions["Sulfonate ester alkyl"]='[#6][O;R0][S;R0](=O)(=O)[#6]'
-remove["Sulfonate ester alkyl"]='OS(=O)(=O)'
+remove["Sulfonate ester alkyl"]=''
    
 functions["Sulfonate ester aryl"]='c[S;R0](=O)(=O)Oc'
 remove["Sulfonate ester aryl"]='S(=O)(=O)Oc'
@@ -227,10 +229,10 @@ functions["Thioisocyanate aryl"]='cN=C=S'
 remove["Thioisocyanate aryl"]='N=C=S'
 
 functions["Sulfonamide alkyl"]='C[S;R0]([NH2])(=O)=O'
-remove["Sulfonamide alkyl"]='H'
+remove["Sulfonamide alkyl"]='/NH'
    
 functions["Sulfonamide aryl"]='c[S;R0]([NH2])(=O)=O'
-remove["Sulfonamide aryl"]='H'
+remove["Sulfonamide aryl"]='/NH'
    
 functions["Alkyne alkyl"]='CC#C'
 remove["Alkyne alkyl"]='C#C'

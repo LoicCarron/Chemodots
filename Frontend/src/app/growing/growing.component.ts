@@ -78,10 +78,10 @@ export class GrowingComponent implements OnInit {
   //1 you want to hide the reactions
   //anything else, if it's hide you show it, if it's not you hide it
   ShowReactions(Status:Number):void {
-    var doc=document.getElementById("reac");
-    var doc1=document.getElementById("FunctionsPart");
-    var vThis=document.getElementById("Fleche1");
-    var doc2=document.getElementById("RulesPart");
+    let doc=document.getElementById("reac");
+    let doc1=document.getElementById("FunctionsPart");
+    let vThis=document.getElementById("Fleche1");
+    let doc2=document.getElementById("RulesPart");
     if(doc!=null && vThis!=null && doc1!=null && doc2!=null) {
       if (Status==0) {
         if (doc.style.display == "none") {
@@ -116,9 +116,9 @@ export class GrowingComponent implements OnInit {
   }
   //Show the Substructure part
   ShowSub(Status:Number):void {
-    var doc=document.getElementById("sub");
-    var vThis=document.getElementById("Fleche2");
-    var doc1=document.getElementById("Undesired_sub");
+    let doc=document.getElementById("sub");
+    let vThis=document.getElementById("Fleche2");
+    let doc1=document.getElementById("Undesired_sub");
     if (doc != null && vThis != null && doc1!=null) {
 
     if (Status==0) {
@@ -151,8 +151,8 @@ export class GrowingComponent implements OnInit {
   }
   //Show the sett part
   ShowSett():void {
-    var doc=document.getElementById("sett");
-    var vThis=document.getElementById("Fleche3");
+    let doc=document.getElementById("sett");
+    let vThis=document.getElementById("Fleche3");
     if(doc!=null && vThis!=null) {
       if (doc.style.display == "none") {
         vThis.className = "fas fa-caret-up";
@@ -292,7 +292,7 @@ export class GrowingComponent implements OnInit {
   }
   //There is a problem with ngmodel so we get the smile from the textbox tu update the smile that we have in our typescript
   Update_smile(){
-    var smildoc =(<HTMLInputElement>document.getElementById("smilesMolecule"));
+    let smildoc =(<HTMLInputElement>document.getElementById("smilesMolecule"));
     if(smildoc!=null){
       this.smile=smildoc.value;
     }
@@ -328,7 +328,7 @@ export class GrowingComponent implements OnInit {
           this.message.sendMessage('Callscript2', data).subscribe(res => {
             if (res.status == "error") {
             } else {
-              var doc = document.getElementById("RulesPart");
+              let doc = document.getElementById("RulesPart");
               console.log(res);
               if (res.data != null) {
 
@@ -372,6 +372,7 @@ export class GrowingComponent implements OnInit {
 
                   }))
                 })
+                window.alert("We could not find any rule corresponding to the selected function")
                 //Attention ici il faudra peut être changer
                 if (doc != null) {
                   if (doc.style.display == "block") {
@@ -457,7 +458,7 @@ export class GrowingComponent implements OnInit {
 
   }
   isAlpha(str:string) {
-    var code, i, len;
+    let code, i, len;
 
     for (i = 0, len = str.length; i < len; i++) {
       code = str.charCodeAt(i);
@@ -478,6 +479,8 @@ export class GrowingComponent implements OnInit {
     let tmp="";
     let numb_tmp:number=0;
     let nb_tmp2:number;
+    let num_tmp_atom:number;
+    let required_sub_tmp2=""
     let remove=res[2];
     let j=0;
     let found:boolean=false
@@ -485,6 +488,9 @@ export class GrowingComponent implements OnInit {
     this.Required_substructures="";
     let min=100;
     let id=1;
+    //Usefull for the / in case if there is the same atom not in the function but in the range of the pos of the function
+    let posi=[];
+    let num_atom=1;
     //Go to the begining of the pos of the targeted function in the smile
     console.log(this.Selected_Function.ID);
     while (id<this.Selected_Function.ID &&(j<res[1].length)) {
@@ -500,14 +506,20 @@ export class GrowingComponent implements OnInit {
     //Search the min of the pos of the targeted function
     if(j<res[1].length) {
       while (res[1][j] != ")") {
-        tmp="";
+        tmp = "";
         while ((+res[1][j] >= 0 && +res[1][j] <= 9)) {
           tmp += res[1][j];
           j++;
         }
-        j++;
-        numb_tmp=Number(tmp);
-        if(numb_tmp<min && numb_tmp!=0){
+        //Because we will skip it if we have a number and juste a ) after
+        if(res[1][j] != ")") {
+          j++;
+        }
+        numb_tmp = Number(tmp) + 1;
+        if (numb_tmp != 1){
+          posi.push(numb_tmp);
+      }
+        if(numb_tmp<min && numb_tmp!=1){
           min=numb_tmp;
         }
       }
@@ -516,21 +528,33 @@ export class GrowingComponent implements OnInit {
     }
     numb_tmp=min;
     console.log(numb_tmp);
+    console.log(posi)
     let k=0;
     //Find the position of the targeted function in the smiles
-    while(k<numb_tmp && numb_tmp!=1){
-      if (!this.isAlpha(selectedfunc[k])) {
+    while(k<numb_tmp && numb_tmp!=2){
+      if (!this.isAlpha(selectedfunc[k])|| (+selectedfunc[k] >= 0 && +selectedfunc[k]<= 9) ||((selectedfunc[k]=="C" && selectedfunc[k+1]=="l" ) || (selectedfunc[k]=="B" && selectedfunc[k+1]=="r" )) ) {
           numb_tmp=numb_tmp + 1;
 
       }
+      if (this.isAlpha(selectedfunc[k]) && selectedfunc[k]!="l" && selectedfunc[k+1]!="r" ){
+        num_atom+=1;
+      }
       this.Required_substructures+=selectedfunc[k];
       k++;
+    }
+    //If it's the first atom we don't want to loose the first character of the smile
+    if(numb_tmp==2){
+      numb_tmp=0;
     }
     console.log(this.Required_substructures);
     i=0;
 
 
-
+    let nb_open_parenthesis=0;
+    let nb_close_parenthesis=0;
+    nb_tmp2=numb_tmp;
+    num_tmp_atom=num_atom;
+    required_sub_tmp2=this.Required_substructures
     while(i<remove.length){
       nb_remove=1;
       found=false
@@ -547,90 +571,180 @@ export class GrowingComponent implements OnInit {
       //Special character, go to the next occurence of the character after this one, without remove it from the required substructure
       while(remove[i]=="/"){
         i++;
-        while(numb_tmp < selectedfunc.length&& selectedfunc[numb_tmp] !=remove[i] && numb_tmp!=1){
+        //If we want to remove an H in the first position of the smile, we don't moove
+        console.log(numb_tmp);
+        while((numb_tmp < selectedfunc.length && selectedfunc[numb_tmp] !=remove[i]|| (posi.indexOf(num_atom)<0)) && (numb_tmp!=0 || remove[i+1]!="H") ){
           this.Required_substructures+=selectedfunc[numb_tmp];
+          console.log(num_atom)
+          console.log((selectedfunc[numb_tmp]))
+          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            num_atom+=1;
+          }
+          numb_tmp++;
+        }
+        //We go after the atom we wanted to go
+        if(numb_tmp < selectedfunc.length && (numb_tmp!=0 || remove[i+1]!="H" ) && this.isAlpha(remove[i])) {
+          this.Required_substructures += selectedfunc[numb_tmp];
+          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            num_atom+=1;
+          }
           numb_tmp++;
         }
         i++;
+        console.log("après le /",remove[i]);
       }
-      console.log("après le /",remove[i]);
+
+      console.log(this.Required_substructures)
+
 
       //If we have a Br or Cl to remove
       if((remove[i]=="C" && remove[i+1]=="l")||(remove[i]=="B" && remove[i+1]=="r")|| (remove[i]=="C" && remove[i+1]=="l")){
         To_remove=remove[i];
         i++;
         To_remove+=remove[i];
+        console.log(To_remove)
         while ((numb_tmp < selectedfunc.length - 2)&&(selectedfunc[numb_tmp] != To_remove[0] && selectedfunc[numb_tmp + 1] != To_remove[1]) && (selectedfunc[numb_tmp + 1] != To_remove[0] && selectedfunc[numb_tmp + 2] != To_remove[1]) ) {
           console.log(selectedfunc[numb_tmp]);
           this.Required_substructures += selectedfunc[numb_tmp];
-          numb_tmp++;
-
-        }
-        if ((selectedfunc[numb_tmp] == To_remove[0] && selectedfunc[numb_tmp + 1] == To_remove[1])||((selectedfunc[numb_tmp+1] == To_remove[0]) && (selectedfunc[numb_tmp + 2] == To_remove[1]))) {
-          found = true
-        }
-        console.log(found);
-        console.log(selectedfunc[numb_tmp]);
-        while (found && (this.isAlpha(selectedfunc[numb_tmp]) || (selectedfunc[numb_tmp] == ")") || (selectedfunc[numb_tmp] == "]")) && selectedfunc[numb_tmp] != To_remove[0]  && selectedfunc[numb_tmp+1] != To_remove[1]) {
-          console.log(selectedfunc[numb_tmp]);
-          this.Required_substructures += selectedfunc[numb_tmp];
-          numb_tmp++;
-        }
-        nb_tmp2 = numb_tmp;
-        console.log(this.Required_substructures);
-
-
-        nb_removed = 0;
-
-        while ((numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || ((!this.isAlpha(selectedfunc[numb_tmp])) && (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "("))))) {
-          console.log(selectedfunc[numb_tmp])
-          if ((selectedfunc[numb_tmp]==To_remove[0])&&(selectedfunc[numb_tmp+1]==To_remove[1])) {
-            nb_removed++;
-            numb_tmp++;
+          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            num_atom+=1;
           }
           numb_tmp++;
 
         }
-        if(numb_tmp==selectedfunc.length && nb_removed<nb_remove){
+        console.log(num_atom)
+        while(!found && numb_tmp<selectedfunc.length) {
+          if ((selectedfunc[numb_tmp] == To_remove[0] && selectedfunc[numb_tmp + 1] == To_remove[1]) && (posi.indexOf(num_atom) > -1)) {
+            found = true
+          } else if (((selectedfunc[numb_tmp + 1] == To_remove[0]) && (selectedfunc[numb_tmp + 2] == To_remove[1]) && (posi.indexOf(num_atom) > -1) && (selectedfunc[numb_tmp] == "("))) {
+            found = true
+            numb_tmp++;
+            nb_open_parenthesis+=1;
+          }
+          else{
+            this.Required_substructures+=selectedfunc[numb_tmp];
+            numb_tmp++;
+          }
+
+          console.log(selectedfunc[numb_tmp]+selectedfunc[numb_tmp + 1]);
+        }
+        console.log(found);
+        console.log(selectedfunc[numb_tmp]);
+        //Not sure if this while loop is usefull
+        while (found  && (selectedfunc[numb_tmp] != To_remove[0]  && selectedfunc[numb_tmp+1] != To_remove[1])) {
+          console.log(selectedfunc[numb_tmp]);
+          this.Required_substructures += selectedfunc[numb_tmp];
+          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            num_atom+=1;
+          }
+          numb_tmp++;
+        }
+        console.log(this.Required_substructures);
+
+
+        nb_removed = 0;
+        //Remove what we wan
+        while (found &&(numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))&& (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "(") &&((selectedfunc[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis))))))){
+          console.log(selectedfunc[numb_tmp])
+          if ((selectedfunc[numb_tmp]==To_remove[0])&&(selectedfunc[numb_tmp+1]==To_remove[1])) {
+            nb_removed++;
+            if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+              num_atom+=1;
+            }
+            if (selectedfunc[numb_tmp] == remove[i]) {
+              nb_removed++;
+            }
+            if(selectedfunc[numb_tmp]=="("){
+              nb_open_parenthesis+=1;
+            }
+            else if(selectedfunc[numb_tmp]==")"){
+              nb_close_parenthesis+=1;
+            }
+            numb_tmp++;
+          }
+          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            num_atom+=1;
+          }
+          numb_tmp++;
+
+        }
+        if(!found){
           numb_tmp=nb_tmp2;
+          num_atom=num_tmp_atom;
+          this.Required_substructures=required_sub_tmp2;
+        }
+        else{
+          nb_tmp2=numb_tmp;
+          num_tmp_atom=num_atom;
+          required_sub_tmp2=this.Required_substructures;
         }
         console.log(this.Required_substructures);
       }
       else {
         while (selectedfunc[numb_tmp] != remove[i] && selectedfunc[numb_tmp + 1] != remove[i] && selectedfunc[numb_tmp + 2] != remove[i] && numb_tmp < selectedfunc.length - 2) {
-          console.log(selectedfunc[numb_tmp]);
           this.Required_substructures += selectedfunc[numb_tmp];
+          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            num_atom+=1;
+          }
           numb_tmp++;
 
         }
-        if (selectedfunc[numb_tmp] == remove[i] || selectedfunc[numb_tmp + 1] == remove[i] || selectedfunc[numb_tmp + 2] == remove[i]) {
-          found = true
+        while(!found && numb_tmp<selectedfunc.length) {
+          if (selectedfunc[numb_tmp] == remove[i] || selectedfunc[numb_tmp + 1] == remove[i] || selectedfunc[numb_tmp + 2] == remove[i]) {
+            found = true
+          }
+          else{
+            this.Required_substructures+=selectedfunc[numb_tmp];
+            numb_tmp++;
+          }
+
         }
         console.log(found);
         console.log(selectedfunc[numb_tmp]);
-        while (found && (this.isAlpha(selectedfunc[numb_tmp]) || (selectedfunc[numb_tmp] == ")") || (selectedfunc[numb_tmp] == "]")) && selectedfunc[numb_tmp] != remove[i]) {
+        console.log(remove[i])
+        //Not sure if this while loop is usefull
+          while (found && (this.isAlpha(selectedfunc[numb_tmp]) || (selectedfunc[numb_tmp] == ")") || (selectedfunc[numb_tmp] == "]")) && selectedfunc[numb_tmp] != remove[i]) {
           console.log(selectedfunc[numb_tmp]);
           this.Required_substructures += selectedfunc[numb_tmp];
-          numb_tmp++;
+            if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+              num_atom+=1;
+            }
+            numb_tmp++;
         }
-        nb_tmp2 = numb_tmp;
         console.log(this.Required_substructures);
 
 
         nb_removed = 0;
 
-        while ((numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))||(selectedfunc[numb_tmp] == "H")) && (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "("))))) {
-          console.log(selectedfunc[numb_tmp])
+        while (found &&(numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))||(selectedfunc[numb_tmp] == "H")) && (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "(") &&((selectedfunc[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis)))))) {
+          console.log(selectedfunc[numb_tmp]);
+          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            num_atom+=1;
+          }
           if (selectedfunc[numb_tmp] == remove[i]) {
             nb_removed++;
+          }
+          if(selectedfunc[numb_tmp]=="("){
+            nb_open_parenthesis+=1;
+          }
+          else if(selectedfunc[numb_tmp]==")"){
+            nb_close_parenthesis+=1;
           }
           numb_tmp++;
 
         }
-        if(numb_tmp==selectedfunc.length && nb_removed<nb_remove){
+        if(!found){
           numb_tmp=nb_tmp2;
+          num_atom=num_tmp_atom;
+          this.Required_substructures=required_sub_tmp2;
+        }
+        else{
+          nb_tmp2=numb_tmp;
+          num_tmp_atom=num_atom;
+          required_sub_tmp2=this.Required_substructures;
         }
         console.log(this.Required_substructures);
+        console.log(selectedfunc[numb_tmp]);
       }
 
 

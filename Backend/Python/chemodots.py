@@ -140,13 +140,13 @@ def searchFct(smiles):
 
     amidine_alkyl.name="Amidine alkyl"
 
-    amidine_alkyl.exclu=[]
+    amidine_alkyl.exclu=["Imine alkyl","Amine primaire alkyl"]
 
     amidine_aryl=Chem.MolFromSmarts('c[C;R0](N)=N')
 
     amidine_aryl.name="Amidine aryl"
 
-    amidine_aryl.exclu=[]
+    amidine_aryl.exclu=["Imine aryl","Amine primaire alkyl"]
 
     hydrazine_alkyl=Chem.MolFromSmarts('C[NH;R0][NH2;R0]')
 
@@ -174,7 +174,7 @@ def searchFct(smiles):
 
     alcohol_alkyl.name="Alcohol Alkyl"
 
-    alcohol_alkyl.exclu=[]
+    alcohol_alkyl.exclu=["Alcool"]
     
     alcohol_alkyl2=Chem.MolFromSmarts('[O-]C(=O)')
     
@@ -186,31 +186,31 @@ def searchFct(smiles):
 
     alcohol_aryl.name="Alcohol Aryl"
 
-    alcohol_aryl.exclu=[]
+    alcohol_aryl.exclu=["Alcool"]
 
     acid_alkyl=Chem.MolFromSmarts('C[C;R0]([OH])=O')
 
     acid_alkyl.name="Acide alkyl"
 
-    acid_alkyl.exclu=[]
+    acid_alkyl.exclu=["Alcohol Alkyl"]
     
     acid_alkyl2=Chem.MolFromSmarts('[O-]C(=O)C')
     
     acid_alkyl2.name="Acide alkyl"
 
-    acid_alkyl2.exclu=[]
+    acid_alkyl2.exclu=["Alcohol Alkyl"]
 
     acid_aryl=Chem.MolFromSmarts('c[C;R0]([OH])=O')
 
     acid_aryl.name="Acide aryl"
 
-    acid_aryl.exclu=[]
+    acid_aryl.exclu=["Alcohol Alkyl"]
     
     acid_aryl2=Chem.MolFromSmarts('[O-]C(=O)c')
     
     acid_aryl2.name="Acide aryl"
 
-    acid_aryl2.exclu=[]
+    acid_aryl2.exclu=["Alcohol Alkyl"]
 
     aldehyde_alkyl=Chem.MolFromSmarts('C[CH1;R0](=O)')
 
@@ -240,13 +240,13 @@ def searchFct(smiles):
 
     ester_alkyl.name="Ester alkyl"
 
-    ester_alkyl.exclu=[]
+    ester_alkyl.exclu=["Ether alkyl"]
 
     ester_aryl=Chem.MolFromSmarts('c[C;R0](=O)OC')
 
     ester_aryl.name="Ester aryl"
 
-    ester_aryl.exclu=[]
+    ester_aryl.exclu=["Ether alkyl"]
 
     ether_alkyl=Chem.MolFromSmarts('C[O;R0]C')
 
@@ -264,34 +264,34 @@ def searchFct(smiles):
 
     michael_acc_alkyl.name="Michael acc alkyl"
 
-    michael_acc_alkyl.exclu=[]
+    michael_acc_alkyl.exclu=["Ketone alkyl","Alkene alkyl"]
 
     michael_acc_aryl=Chem.MolFromSmarts('c[C;R0](=O)[C;R0]=[C;R0]')
 
     michael_acc_aryl.name="Michael acc aryl"
 
-    michael_acc_aryl=[]
+    michael_acc_aryl.exclu=["Alkene alkyl"]
 
     anhydride_alkyl=Chem.MolFromSmarts('C[C;R0](=O)O[C;R0](=O)C')
 
     anhydride_alkyl.name="Anhydride alkyl"
 
-    anhydride_alkyl.exclu=[]
+    anhydride_alkyl.exclu=["Ester alkyl"]
 
 
     anhydride_aryl=Chem.MolFromSmarts('c[C;R0](=O)O[C;R0](=O)c')
 
     anhydride_aryl.name="Anhydride aryl"
 
-    anhydride_aryl.exclu=[]
+    anhydride_aryl.exclu=["Ester aryl"]
 
     dicarbonyl_1_3_alkyl=Chem.MolFromSmarts('C[C;R0](=O)[CH2][C;R0](=O)C')
 
     dicarbonyl_1_3_alkyl.name="Dicarbonyl 1-3 alkyl"
 
-    dicarbonyl_1_3_alkyl.exclu=[]
+    dicarbonyl_1_3_alkyl.exclu=["Ketone alkyl"]
 
-    dicarbonyl_1_3_aryl=Chem.MolFromSmarts('[#6][C;R0](=O)[CH2;R0][C;R0]([#6])=O')
+    dicarbonyl_1_3_aryl=Chem.MolFromSmarts('c[C;R0](=O)[CH2][C;R0](=O)c')
 
     dicarbonyl_1_3_aryl.name="Dicarbonyl 1-3 aryl"
 
@@ -301,9 +301,9 @@ def searchFct(smiles):
 
     dicarbonyl_1_4_alkyl.name="Dicarbonyl 1-4 alkyl"
 
-    dicarbonyl_1_4_alkyl.exclu=[]
+    dicarbonyl_1_4_alkyl.exclu=["Ketone alkyl"]
 
-    dicarbonyl_1_4_aryl=Chem.MolFromSmarts('[#6][C;R0](=O)[CH2;R0][CH2;R0][C;R0]([#6])=O')
+    dicarbonyl_1_4_aryl=Chem.MolFromSmarts('c[C;R0](=O)[CH2][CH2][C;R0](=O)c')
 
     dicarbonyl_1_4_aryl.name="Dicarbonyl 1-4 aryl"
 
@@ -313,13 +313,13 @@ def searchFct(smiles):
 
     ketone_alpha_halide.name="Ketone alpha halide"
 
-    ketone_alpha_halide.exclu=[]
+    ketone_alpha_halide.exclu=["Halide alkyl","Ketone alkyl"]
 
     ketone_beta_halide=Chem.MolFromSmarts('C[C;R0](=O)[CH2][CH2][Cl,Br,I]')
 
     ketone_beta_halide.name="Ketone beta halide"
 
-    ketone_beta_halide.exclu=[]
+    ketone_beta_halide.exclu=["Halide alkyl","Ketone alkyl"]
 
     epoxyde_alkyl=Chem.MolFromSmarts('C1OC1C')
 
@@ -382,7 +382,6 @@ def searchFct(smiles):
     
 
     #O & N
-
     amide1=Chem.MolFromSmarts('[#6][C;R0](=[OD1])[NH2]')
 
     amide1.name="Amide 1"
@@ -399,13 +398,13 @@ def searchFct(smiles):
 
     amide_alkyl.name="Amide alkyl"
 
-    amide_alkyl.exclu=[]
+    amide_alkyl.exclu=["Amide 1","Amine primaire alkyl"]
 
     amide_aryl=Chem.MolFromSmarts('c[C;R0]([NH2])=O')
 
     amide_aryl.name="Amide aryl"
 
-    amide_aryl.exclu=[]
+    amide_aryl.exclu=["Amide 1","Amine primaire alkyl"]
 
     isocyanate_alkyl=Chem.MolFromSmarts('CN=C=O')
 
@@ -435,13 +434,13 @@ def searchFct(smiles):
 
     imide_alkyl.name="Imide alkyl"
 
-    imide_alkyl.exclu=[]
+    imide_alkyl.exclu=["Amide 2","Amine secondaire alkyl"]
 
     imide_aryl=Chem.MolFromSmarts('c[C;R0](=O)N[C;R0](=O)c')
 
     imide_aryl.name="Imide aryl"
 
-    imide_aryl.exclu=[]
+    imide_aryl.exclu=["Amide 2","Amine secondaire alkyl"]
 
    
 
@@ -455,27 +454,27 @@ def searchFct(smiles):
 
     thioester_alkyl.name="Thioester alkyl"
 
-    thioester_alkyl.exclu=[]
+    thioester_alkyl.exclu=["Ether alkyl"]
 
     thioester_aryl=Chem.MolFromSmarts('c[C;R0](=S)OC')
 
     thioester_aryl.name="Thioester aryl"
 
-    thioester_aryl.exclu=[]
+    thioester_aryl.exclu=["Ether alkyl"]
 
     vinylsulfonyl_alkyl=Chem.MolFromSmarts('C[S;R0](=O)(=O)[C;R0]=[C;R0]')
 
     vinylsulfonyl_alkyl.name="Vinylsulfonyl Alkyl"
 
-    vinylsulfonyl_alkyl.exclu=[]
+    vinylsulfonyl_alkyl.exclu=["Thioether alkyl"]
 
     vinylsulfonyl_aryl=Chem.MolFromSmarts('c[S;R0](=O)(=O)[C;R0]=[C;R0]')
 
     vinylsulfonyl_aryl.name="Vinylsulfonyl Aryl"
 
-    vinylsulfonyl_aryl.exclu=[]
+    vinylsulfonyl_aryl.exclu=["Thioether aryl"]
 
-    sulfonate_ester_alkyl=Chem.MolFromSmarts('[#6][O;R0][S;R0](=O)(=O)[#6]')
+    sulfonate_ester_alkyl=Chem.MolFromSmarts('C[S;R0](=O)(=O)OC')
 
     sulfonate_ester_alkyl.name="Sulfonate ester alkyl"
 
@@ -485,13 +484,19 @@ def searchFct(smiles):
 
     sulfonate_ester_aryl.name="Sulfonate ester aryl"
 
+    sulfonate_ester_aryl.exclu=[]
+
     sulfonylhalide_alkyl=Chem.MolFromSmarts('C[S;R0](Cl)(=O)=O')
 
     sulfonylhalide_alkyl.name="Sulfonylhalide alkyl"
 
+    sulfonylhalide_alkyl.exclu=[]
+
     sulfonylhalide_aryl=Chem.MolFromSmarts('c[S;R0](Cl)(=O)=O')
 
     sulfonylhalide_aryl.name="Sulfonylhalide aryl"
+
+    sulfonylhalide_aryl.exclu=[]
 
     
 
@@ -501,17 +506,25 @@ def searchFct(smiles):
 
     thioamide_alkyl1.name="Thioamide alkyl 1"
 
+    thioamide_alkyl1.exclu=["Amine primaire alkyl"]
+
     thioamide_alkyl2=Chem.MolFromSmarts('c[C;R0]([NH2])=S')
 
     thioamide_alkyl2.name="Thioamide alkyl 2"
+
+    thioamide_alkyl2.exclu=["Amine primaire alkyl"]
 
     thioisocyanate_alkyl=Chem.MolFromSmarts('CN=C=S')
 
     thioisocyanate_alkyl.name="Thioisocyanate alkyl"
 
+    thioisocyanate_alkyl.exclu=[]
+
     thioisocyanate_aryl=Chem.MolFromSmarts('cN=C=S')
 
     thioisocyanate_aryl.name="Thioisocyanate aryl"
+
+    thioisocyanate_aryl.exclu=[]
 
     
 
@@ -523,9 +536,13 @@ def searchFct(smiles):
 
     sulfonamide_alkyl.name="Sulfonamide alkyl"
 
+    sulfonamide_alkyl.exclu=[]
+
     sulfonamide_aryl=Chem.MolFromSmarts('c[S;R0]([NH2])(=O)=O')
 
     sulfonamide_aryl.name="Sulfonamide aryl"
+
+    sulfonamide_aryl.exclu=[]
 
     
 
@@ -535,29 +552,43 @@ def searchFct(smiles):
 
     alkyne_alkyl.name="Alkyne alkyl"
 
+    alkyne_alkyl.exclu=[]
+
     alkyne_aryl=Chem.MolFromSmarts('cC#C')
 
     alkyne_aryl.name="Alkyne aryl"
+
+    alkyne_aryl.exclu=[]
 
     alkene_alkyl=Chem.MolFromSmarts('C[C;R0]=[C;R0]')
 
     alkene_alkyl.name="Alkene alkyl"
 
+    alkene_alkyl.exclu=[]
+
     alkene_aryl=Chem.MolFromSmarts('c[C;R0]=[C;R0]')
 
     alkene_aryl.name="Alkene aryl"
+
+    alkene_aryl.exclu=[]
 
     halide_alkyl=Chem.MolFromSmarts('[CH2][Cl,Br,I]')
 
     halide_alkyl.name="Halide alkyl"
 
+    halide_alkyl.exclu=[]
+
     halide_aryl=Chem.MolFromSmarts('c[Cl,Br,I]')
 
     halide_aryl.name="Halide aryl"
 
+    halide_aryl.exclu=[]
+
     halo_pyrimidine=Chem.MolFromSmarts('[Cl,Br,I]c1ncccn1')
 
     halo_pyrimidine.name="Halo pyrimidine"
+
+    halo_pyrimidine.exclu=["Halide aryl"]
 
 
     
@@ -589,8 +620,6 @@ def searchFct(smiles):
 
 
 
-    
-
     for p in range (len(smiles)) :
 
      
@@ -610,9 +639,11 @@ def searchFct(smiles):
                   t=m.GetSubstructMatches(fctB[i])
 
                   if (len(t) != 0):
-
                     dico[fctB[i].name]=t
-                    exclu.extend(fctB[i].exclu)
+                    if len(fctB[i].exclu)!=0:
+                        exclu.extend(fctB[i].exclu)
+                        pos=addpos(t)
+                        posex.extend(pos)
 
 
                    
@@ -632,7 +663,6 @@ def searchFct(smiles):
                   t=m.GetSubstructMatches(fctN[i])
 
                   if (len(t) != 0):
-
                     dico[fctN[i].name]=t
                     if len(fctN[i].exclu)!=0:
                         exclu.extend(fctN[i].exclu)
@@ -659,13 +689,14 @@ def searchFct(smiles):
                 
 
               for i in range (1,len(fctO)+1):
-
-                  t=m.GetSubstructMatches(fctO[i])
-
-                  if (len(t) != 0):
-
+                t=m.GetSubstructMatches(fctO[i])
+                if (len(t) != 0):
                     dico[fctO[i].name]=t
-                    exclu.extend(fctO[i].exclu)
+                    if len(fctO[i].exclu)!=0:
+                        exclu.extend(fctO[i].exclu)
+                        pos=addpos(t)
+                        posex.extend(pos)
+
 
                    
 
@@ -682,11 +713,12 @@ def searchFct(smiles):
               for i in range (1,len(fctS)+1):
 
                   t=m.GetSubstructMatches(fctS[i])
-
                   if (len(t) != 0):
-
                     dico[fctS[i].name]=t
-                    exclu.extend(fctS[i].exclu)
+                    if len(fctS[i].exclu)!=0:
+                        exclu.extend(fctS[i].exclu)
+                        pos=addpos(t)
+                        posex.extend(pos)
 
         
 
@@ -711,9 +743,11 @@ def searchFct(smiles):
                         t=m.GetSubstructMatches(fctON[k])
 
                         if (len(t) != 0):
-
                             dico[fctON[k].name]=t
-                            exclu.extend(fctON[k].exclu)
+                            if len(fctON[k].exclu)!=0:
+                                exclu.extend(fctON[k].exclu)
+                                pos=addpos(t)
+                                posex.extend(pos)
 
      
 
@@ -736,9 +770,11 @@ def searchFct(smiles):
                         t=m.GetSubstructMatches(fctOS[k])
 
                         if (len(t) != 0):
-
                             dico[fctOS[k].name]=t
-                            exclu.extend(fctOS[k].exclu)
+                            if len(fctOS[k].exclu)!=0:
+                                exclu.extend(fctOS[k].exclu)
+                                pos=addpos(t)
+                                posex.extend(pos)
 
      
 
@@ -763,9 +799,11 @@ def searchFct(smiles):
                         t=m.GetSubstructMatches(fctSN[k])
 
                         if (len(t) != 0):
-
                             dico[fctSN[k].name]=t
-                            exclu.extend(fctSN[k].exclu)
+                            if len(fctSN[k].exclu)!=0:
+                                exclu.extend(fctSN[k].exclu)
+                                pos=addpos(t)
+                                posex.extend(pos)
 
       
 
@@ -783,24 +821,45 @@ def searchFct(smiles):
 
              if (len(t) != 0):
                 dico[fctElse[i].name]=t
+                if len(fctElse[i].exclu)!=0:
+                    exclu.extend(fctElse[i].exclu)
+                    pos=addpos(t)
+                    posex.extend(pos)
 
 
           
 
     
 
-
     for v in dico:
-        pos=addpos(dico[v])
+        pos=str(dico[v])
+        pos_tmp=addpos(dico[v])
         trouve=False
         i=0
-        while (not trouve) & (i<len(pos)):
-            if pos[i] in posex:
+        h=0
+        cpt=0
+        compt=0
+        pos_finale=""
+        while (not trouve) & (i<len(pos)-1):
+            if pos_tmp[h] in posex:
                 trouve=True
+            if(pos[i]==")") & ((pos[i+1]==",")|(i==len(pos)-2)) & (not trouve):
+                while (compt<=i+1):
+                    pos_finale+=pos[compt]
+                    compt+=1
+                trouve=False
+                cpt+=1
+            elif(pos[i]==","):
+                h+=1
             i+=1
-        if (v not in exclu) | (not trouve) :
+        if (v not in exclu):
             print(v)
             print(dico[v])
+        elif(compt>0):
+            print(v)
+            print(pos_finale)
+
+
 
 
 
