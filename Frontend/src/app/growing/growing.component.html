@@ -26,9 +26,9 @@
 
   <div id="left" > <!-- left part-->
 
-    <div id="sketcher" style="width:100%;height: 40%;min-height: 430px;max-height: 630px">
+    <div id="sketcher" style="width:100%;min-height: 430px;max-height: 730px;max-width:850px;">
       <h2><i class="fas fa-pen-square"></i> Sketcher</h2>
-      <div id="marvin-test" style="width: 100%; height: 70%;min-height: 400px;max-height: 600px"></div>
+      <div id="marvin-test" style="width: 100%; height: 80%;min-height: 400px;max-height: 700px"></div>
       <input id="validate-button" type="button" (click)="ValidateMol()" name="generateMol" value="Validate" class="btnFormSettings"
              onmouseover="return overlib (' Click here to validate your molecule',HAUTO, VAUTO);" onmouseout="return nd ();">
     </div>
@@ -82,9 +82,9 @@
 
         <div id="FunctionsPart" style="display:none">
         <div id="scroll2" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
-          <label style="color:red">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
+          <label style="color:chocolate">Choose the targeted function, if you have changed your molecule, please click again on the Validate button.</label>
           <div  *ngFor="let n of Detected_Functions" >
-                  <input type="radio" [(ngModel)]="Selected_Function" id="{{n.Name}}" value="{{n.Name}}" name="checked" (click) = "Highlightfunction(0,n.Position,n.Bonds) "  style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
+                  <input type="radio" [(ngModel)]="Selected_Function_name" id="{{n.Name}}" value="{{n.Name}}" name="checked" (click) = "Highlightfunction(0,n.Position,n.Bonds) "  style="font-family:verdana;font-weight:600;height:30px;font-size:0.8rem;">
                   <label>{{n.Name}}</label>
             </div>
 
@@ -128,12 +128,12 @@
 
       <div id="sub" style="display:none">
 
-        <h3 onmouseover="return overlib(' At least 1. Compounds that contain at least 1 of these substructures will be kept for subsequent stages. Explicit hydrogen or SMARTS patterns can also be used.',HAUTO, VAUTO, WIDTH,300,BGCOLOR,'#4B4BF2',BORDER,2,CAPTION,'Paste required substructures',CELLPAD,3,CAPCOLOR,'#FFFFFF',TEXTCOLOR,'#000000',TEXTSIZE,2,TEXTFONT,'Courier New',CAPTIONFONT,'Courier New-bold',CAPTIONSIZE,3,CENTER, );" onmouseout="return nd();" width="70%" > Required substructures</h3>
+        <h3 onmouseover="return overlib(' At least 1. Compounds that contain at least 1 of these substructures will be kept for subsequent stages. Explicit hydrogen or SMARTS patterns can also be used.',HAUTO, VAUTO,2,CAPTION,'Paste required substructures',CELLPAD,3,CAPCOLOR,'#FFFFFF',TEXTCOLOR,'#000000',TEXTSIZE,2,TEXTFONT,'Courier New',CAPTIONFONT,'Courier New-bold',CAPTIONSIZE,3,CENTER, );" onmouseout="return nd();" width="70%" > Required substructures</h3>
         <input type="text" id="required" [(ngModel)]="Required_substructures" placeholder="Paste or write" size="50">
 
 
 
-        <h3 onmouseover="return overlib(' Compounds that contain at least 1 of these substructures will be discarded.',HAUTO, VAUTO, WIDTH,300,BGCOLOR,'#4B4BF2',BORDER,2,CAPTION,'Paste undesired substructures (optional)',CELLPAD,3,CAPCOLOR,'#FFFFFF',TEXTCOLOR,'#000000',TEXTSIZE,2,TEXTFONT,'Courier New',CAPTIONFONT,'Courier New-bold',CAPTIONSIZE,3,CENTER, );" onmouseout="return nd();" width="70%" > Undesired substructures</h3>
+        <h3 onmouseover="return overlib(' Compounds that contain at least 1 of these substructures will be discarded.',HAUTO, VAUTO,BORDER,2,CAPTION,'Paste undesired substructures (optional)',CELLPAD,3,CAPCOLOR,'#FFFFFF',TEXTCOLOR,'#000000',TEXTSIZE,2,TEXTFONT,'Courier New',CAPTIONFONT,'Courier New-bold',CAPTIONSIZE,3,CENTER, );" onmouseout="return nd();" width="70%" > Undesired substructures</h3>
         <div id="Undesired_sub" style="display:none">
           <div id="scroll3" style="overflow-y:scroll; height:150px; background:#D5E9EB;">
             <form [formGroup]="Form_UndSub" >
