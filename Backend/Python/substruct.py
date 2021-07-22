@@ -27,7 +27,6 @@ remove["Amine primaire aryl"]='/NH'
 functions["Amine secondaire aryl"]='c[NH]c'
 remove["Amine secondaire aryl"]='/NH'
 
-''' On enlève quoi sachant que ça risque de casser la molecule dans tout les cas'''
 functions["Amine tertiaire"]='cN(C)C'
 remove["Amine tertiaire"]='cN(C)C'
 
@@ -266,10 +265,6 @@ def substruct(smiles, function):
     m=Chem.MolFromSmiles(AllChem.MolToSmiles(m),params)
     print(Chem.MolToSmiles(m))
 
-    '''
-    fct = Chem.MolFromSmarts(functions[function])
-    rm = AllChem.DeleteSubstructs(m,fct)
-    print(Chem.MolToSmiles(rm))'''
     tmp=Chem.MolFromSmarts(functions[function])
     try:
         tmp2=AllChem.AddHs(tmp)

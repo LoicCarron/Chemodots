@@ -555,7 +555,7 @@ export class GrowingComponent implements OnInit {
     nb_tmp2=numb_tmp;
     num_tmp_atom=num_atom;
     required_sub_tmp2=this.Required_substructures
-    while(i<remove.length){
+    while(remove!=undefined && i<remove.length){
       nb_remove=1;
       found=false
       To_remove="";
