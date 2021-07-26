@@ -7,6 +7,7 @@ from chemodots import *
 
 
 functions ={}
+#What we have to remove from the smile to generate the required substructure
 remove={}
 
 functions["Boronate alkyl"]='OB(O)C'
@@ -22,6 +23,7 @@ functions["Amine secondaire alkyl"]='C[NH]C'
 remove["Amine secondaire alkyl"]='/NH'
 
 functions["Amine primaire aryl"]='c[NH2]'
+#/ means you want to go to the next atom here N without remove it, Here we will go to the N atom and remove the H after this atom
 remove["Amine primaire aryl"]='/NH'
 
 functions["Amine secondaire aryl"]='c[NH]c'

@@ -48,6 +48,11 @@ export class GrowingComponent implements OnInit {
   Undesired_Substructures:UndesiredSubstructures[]=[];
   Form_UndSub!:FormGroup;
 
+  Name:string='';
+
+  Rmode:string='default';
+  BBD:string='standard';
+
 
   constructor(private message : MessageService) {}
 
@@ -150,10 +155,23 @@ export class GrowingComponent implements OnInit {
     return;
   }
   //Show the sett part
-  ShowSett():void {
+  ShowSett(Status:number):void {
     let doc=document.getElementById("sett");
     let vThis=document.getElementById("Fleche3");
-    if(doc!=null && vThis!=null) {
+    if (doc != null && vThis != null ) {
+      if (Status==0) {
+      if (doc.style.display == "none") {
+        vThis.className = "fas fa-caret-up";
+        doc.style.display = "block";
+      }
+    }
+    else if (Status==1) {
+      if (doc.style.display == "block") {
+        doc.style.display = "none";
+        vThis.className = "fas fa-caret-down";
+      }
+    }
+    else {
       if (doc.style.display == "none") {
         vThis.className = "fas fa-caret-up";
         doc.style.display = "block";
@@ -162,6 +180,8 @@ export class GrowingComponent implements OnInit {
         vThis.className = "fas fa-caret-down";
       }
     }
+
+  }
     return;
   }
   //Highlight on the sketcher
@@ -303,6 +323,7 @@ export class GrowingComponent implements OnInit {
     this.GenerateMol();
     this.ShowReactions(0);
     this.ShowSub(1)
+    this.ShowSett(1)
     this.Detected_Functions = [];
     this.LaunchPytonFindFunction();
   }
@@ -393,6 +414,8 @@ export class GrowingComponent implements OnInit {
     }
 
   }
+
+  //Take the result of th epython script and generate the rules that we will show on the site
   ConvertRestultRules(output:string []){
     let name:string="";
     let id:number;
@@ -455,6 +478,7 @@ export class GrowingComponent implements OnInit {
   ValidateUndSub() {
     this.Selected_Undesired_Substructures=this.Form_UndSub.value.UndSub.filter((f: { checked: any; }) => f.checked);
     console.log(this.Selected_Undesired_Substructures);
+    this.ShowSett(0);
 
   }
   isAlpha(str:string) {
@@ -469,7 +493,7 @@ export class GrowingComponent implements OnInit {
     }
     return true;
   };
-//Remove the substurcture
+//Remove the substurcture to generate the required substructure
   Remove_Sub(res:string []){
     //Mettre L'id de la fonction choisit.
     let i=0;
@@ -757,6 +781,18 @@ export class GrowingComponent implements OnInit {
     console.log(this.Required_substructures);
 
 
+  }
+  Send_To_Galaxy(){
+    let data={
+      Name:this.Name,
+      Smile:this.smile,
+      Rules:this.Selected_Rules,
+      Required_Sub:this.Required_substructures,
+      Undesired_Sub:this.Selected_Undesired_Substructures,
+      Rmode:this.Rmode,
+      BBD:this.BBD,
+    }
+    console.log(data);
   }
 
 

@@ -47,8 +47,8 @@
       <h2><i class="fab fa-react"></i> Structure</h2>
 
 
-      <h3 onmouseover="return overlib (' Type the name of the fragment ',HAUTO, VAUTO);" onmouseout="return nd ();" > Name (optional)</h3>
-      <input type="text" id="name" placeholder="Type the name of the molecule" size="30">
+      <h3 onmouseover="return overlib (' Type the name of the fragment ',HAUTO, VAUTO);" onmouseout="return nd ();"> Name (optional)</h3>
+      <input type="text" id="name" placeholder="Type the name of the molecule" size="30" [(ngModel)]="this.Name">
 
 
       <h3 onmouseover="return overlib (' The smiles of the fragment drawn in the sketcher will automatically appear in the textbox ',HAUTO, VAUTO);" onmouseout="return nd ();">Smiles</h3>
@@ -128,7 +128,7 @@
 
       <div id="sub" style="display:none">
 
-        <h3 onmouseover="return overlib(' At least 1. Compounds that contain at least 1 of these substructures will be kept for subsequent stages. Explicit hydrogen or SMARTS patterns can also be used.',HAUTO, VAUTO,2,CAPTION,'Paste required substructures',CELLPAD,3,CAPCOLOR,'#FFFFFF',TEXTCOLOR,'#000000',TEXTSIZE,2,TEXTFONT,'Courier New',CAPTIONFONT,'Courier New-bold',CAPTIONSIZE,3,CENTER, );" onmouseout="return nd();" width="70%" > Required substructures</h3>
+        <h3 onmouseover="return overlib(' At least 1. Compounds that contain at least 1 of these substructures will be kept for subsequent stages. Explicit hydrogen or SMARTS patterns can also be used.',HAUTO, VAUTO,2,CAPTION,'Paste required substructures',CELLPAD,3,CAPCOLOR,'#FFFFFF',TEXTCOLOR,'#000000',TEXTSIZE,2,TEXTFONT,'Courier New',CAPTIONFONT,'Courier New-bold',CAPTIONSIZE,3,CENTER, );" onmouseout="return nd();" width="70%" > Required substructure</h3>
         <input type="text" id="required" [(ngModel)]="Required_substructures" placeholder="Paste or write" size="50">
 
 
@@ -169,7 +169,7 @@
       <h2><i class="fas fa-cog"></i>
         Additional settings
 
-        <i id="Fleche3" class="fas fa-caret-down" (click)="ShowSett()"></i>
+        <i id="Fleche3" class="fas fa-caret-down" (click)="ShowSett(2)"></i>
       </h2>
 
       <div id="sett" style="display:none">
@@ -177,16 +177,16 @@
         <h3 onmouseover="return overlib (' Define the reaction mode',HAUTO, VAUTO);" onmouseout="return nd ();"> Reaction mode</h3>
 
 
-        <select>
-          <option value="default" selected>Default</option>
+        <select [ngModel]="this.Rmode">
+          <option value="default" selected="selected">Default</option>
           <option value="strict">Strict</option>
         </select>
 
 
         <h3 onmouseover="return overlib (' Define the library of building blocks (BBs)',HAUTO, VAUTO);" onmouseout="return nd ();">Building blocks database</h3>
 
-        <select >
-          <option value="standard" selected>Standard</option>
+        <select [(ngModel)]="this.BBD">
+          <option value="standard" selected="selected">Standard</option>
           <option value="large">Large</option>
           <option value="test">Test</option>
         </select>
@@ -194,14 +194,16 @@
       </div> <!-- end sett -->
 
     </fieldset> <!-- end settings-->
+    <br>
+    <input type="button" class="exec" name="exec" value="Execute"
+           onmouseover="return overlib (' Send to Galaxy ChemoDOTS',HAUTO, VAUTO);" onmouseout="return nd ();" (click)="Send_To_Galaxy()">
 
 
 
 
     <Br> <Br>
 
-    <input type="button" class="exec" name="exec" value="Execute"
-           onmouseover="return overlib (' Send to Galaxy ChemoDOTS',HAUTO, VAUTO);" onmouseout="return nd ();">
+
 
 
 

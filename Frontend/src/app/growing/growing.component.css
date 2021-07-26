@@ -102,6 +102,9 @@ body{
   #main #Validate_Function {
     font-size: x-large;
   }
+  .exec{
+    font-size:x-large;
+  }
 }
 @media screen and (max-height: 800px){
 
@@ -187,6 +190,11 @@ input[type="button"]:hover{
 
 /*Execute button*/
 .exec{
-  margin-left:40%;
+  margin-left: 25%;
+  height: 2%;
+  font-size: xx-large;
+  width: 40%;
+  max-width: 400px;
+
 }
 
