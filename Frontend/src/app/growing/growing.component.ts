@@ -329,6 +329,7 @@ export class GrowingComponent implements OnInit {
   }
   //When you validate which function is targeted
   ValidateFunction() {
+    this.ShowSub(1);
     //Generate Reactions :
     if(this.Selected_Function_name==""){
       window.alert("Please select a targeted function or none before generate reactions rules.");
@@ -400,7 +401,7 @@ export class GrowingComponent implements OnInit {
                     doc.style.display = "none";
                   }
                 }
-                this.ShowSub(0);
+                this.ShowSub(1);
               }
               //Generate required Substructure
               this.GenerateSub();
@@ -408,19 +409,57 @@ export class GrowingComponent implements OnInit {
           });
         }
         else{
-          this.Required_substructures="";
-          this.ShowSub(0);
+          this.Detected_Rules=[];
+          let doc = document.getElementById("RulesPart");
+          for(let i in this.Detected_Functions) {
+            if (this.Detected_Functions[i].Name != "None") {
+              console.log(this.Detected_Functions[i].Name_Func);
+              let data = {funcname: this.Detected_Functions[i].Name_Func}
+              this.message.sendMessage('Callscript2', data).subscribe(res => {
+                if (res.status == "error") {
+                } else {
+                  console.log(res);
+                  if (res.data != null) {
+
+                    if (doc != null) {
+                      if (doc.style.display == "none") {
+                        doc.style.display = "block";
+                      }
+                    }
+                    this.ConvertRestultRules(res.data);
+                    this.Form_Rules = new FormGroup({
+                      rules: new FormArray([])
+                    });
+                    if (this.Detected_Rules != []) {
+                      const formArray = this.Form_Rules.get('rules') as FormArray;
+                      // loop each existing value options from database
+                      this.Detected_Rules.forEach(rule => {
+                        // generate control Group for each option and push to formArray
+                        formArray.push(new FormGroup({
+                          name: new FormControl(rule.Name),
+                          Id: new FormControl(rule.Id),
+                          checked: new FormControl(rule.checked)
+
+                        }))
+                      })
+                    }
+                  }
+                }
+              });
+            }
+            }
+
+          }
+
         }
     }
 
-  }
-
-  //Take the result of th epython script and generate the rules that we will show on the site
+  //Take the result of the python script and generate the rules that we will show on the site
   ConvertRestultRules(output:string []){
     let name:string="";
     let id:number;
     let tmp:string="";
-    this.Detected_Rules=[];
+
     for(let i = 0; i < output.length; i++) {
       let j = 0;
         name = "";
@@ -437,7 +476,18 @@ export class GrowingComponent implements OnInit {
             name+=output[i][j];
             j++;
           }
-          this.Detected_Rules.push({checked:false,Id: id,Name:name,Image:"assets/Images_Rules/Rules"+id+".png"});
+          let trouve=false;
+          let h=0;
+          while(!trouve && h<this.Detected_Rules.length){
+            if(this.Detected_Rules[h].Name==name){
+              trouve=true;
+            }
+            h++;
+          }
+          if(!trouve){
+            this.Detected_Rules.push({checked:false,Id: id,Name:name,Image:"assets/Images_Rules/Rules"+id+".png"});
+          }
+
     }
 
   }
@@ -794,6 +844,8 @@ export class GrowingComponent implements OnInit {
     }
     console.log(data);
   }
-
+  async delay(ms: number) {
+    await new Promise<void>(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
+  }
 
 }
