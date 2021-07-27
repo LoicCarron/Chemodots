@@ -21,20 +21,18 @@
   <div id="left" > <!-- left part-->
 <div id="sketchers">
     <div id="sketcher1" style="width:100%;height: 40%;max-height: 480px">
-      <h2><i class="fas fa-pen-square"></i> Sketcher 1</h2>
+      <h2><i class="fas fa-pen-square"></i>Structure 1</h2>
       <div id="marvin-test1" style="width: 100%; height: 100%;min-height: 350px;max-height: 450px"></div>
 
     </div>
   <br>
-  <input id="validate-button" type="button" (click)="ValidateMol(1)" name="generateMol" value="Validate" class="btnFormSettings"
-         onmouseover="return overlib (' Click here to validate your molecule',HAUTO, VAUTO);" onmouseout="return nd ();">
       <div id="sketcher2" style="width:100%;height: 40%;max-height: 480px">
-        <h2><i class="fas fa-pen-square"></i> Sketcher 2</h2>
+        <h2><i class="fas fa-pen-square"></i>Structure 2</h2>
         <div id="marvin-test2" style="width: 100%; height: 100%;min-height: 350px;max-height: 450px"></div>
+        <input id="validate-button" type="button" (click)="ValidateMol()" name="generateMol" value="Validate" class="btnFormSettings"
+               onmouseover="return overlib (' Click here to validate your molecule',HAUTO, VAUTO);" onmouseout="return nd ();">
       </div>
   <br>
-  <input id="validate-button" type="button" (click)="ValidateMol(2)" name="generateMol" value="Validate" class="btnFormSettings"
-         onmouseover="return overlib (' Click here to validate your molecule',HAUTO, VAUTO);" onmouseout="return nd ();">
 </div>
 
 
@@ -51,6 +49,8 @@
     <fieldset id="struct">
 
       <h2><i class="fab fa-react"></i> Structure</h2>
+      <input id="Demo" type="button" (click)="LaunchDemo()"  value="Launch Demo" class="btnFormSettings"
+             onmouseover="return overlib (' Click here to launch the demo',HAUTO, VAUTO);" onmouseout="return nd ();">
 
 
       <h3 onmouseover="return overlib (' Type the name of the fragment ',HAUTO, VAUTO);" onmouseout="return nd ();" > Name 1st structure(optional)</h3>
@@ -63,7 +63,7 @@
         <input type="text" [(ngModel)]="smile1" id="smilesMolecule1" name="smilesMolecule1" size="30" placeholder="Paste or write the SMILES" value="" class="fieldSMILES" form="formSmiles"
                onmouseover="return overlib (' Paste your molecule in SMILES format ',HAUTO, VAUTO);" onmouseout="return nd ();" >
 
-        <input type="button" (click)="ValidateMol(1)" name="generateMol1" value="Generate molecule in sketcher" class="btnFormSettings"
+        <input type="button" (click)="GenerateMol(1)" name="generateMol1" value="Generate molecule in sketcher" class="btnFormSettings"
                onmouseover="return overlib (' Click here and the smiles will be automatically drawn in the sketcher ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
       </form>
@@ -81,7 +81,7 @@
         <input type="text" [(ngModel)]="smile2" id="smilesMolecule2" name="smilesMolecule" size="30" placeholder="Paste or write the SMILES" value="" class="fieldSMILES" form="formSmiles"
                onmouseover="return overlib (' Paste your molecule in SMILES format ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
-        <input type="button" (click)="ValidateMol(2)" name="generateMol2" value="Generate molecule in sketcher" class="btnFormSettings"
+        <input type="button" (click)="GenerateMol(2)" name="generateMol2" value="Generate molecule in sketcher" class="btnFormSettings"
                onmouseover="return overlib (' Click here and the smiles will be automatically drawn in the sketcher ',HAUTO, VAUTO);" onmouseout="return nd ();">
 
       </form>
@@ -221,7 +221,7 @@
       <h2><i class="fas fa-cog"></i>
         Additional settings
 
-        <i id="Fleche3" class="fas fa-caret-down" (click)="ShowSett()"></i>
+        <i id="Fleche3" class="fas fa-caret-down" (click)="ShowSett(2)"></i>
       </h2>
 
       <div id="sett" style="display:none">

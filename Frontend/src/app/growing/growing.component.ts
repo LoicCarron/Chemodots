@@ -48,7 +48,7 @@ export class GrowingComponent implements OnInit {
   Undesired_Substructures:UndesiredSubstructures[]=[];
   Form_UndSub!:FormGroup;
 
-  Name:string='';
+  Name:string='frag';
 
   Rmode:string='default';
   BBD:string='standard';
@@ -210,6 +210,7 @@ export class GrowingComponent implements OnInit {
           if (res.data != null) {
             this.Detected_Functions=[];
             this.ConvertRestultFunction(res.data);
+            this.ShowReactions(0);
           } else {
             window.alert("We could not find functions for your molecule, they may not be available yet or there is an error in the molecule.");
             }
@@ -321,7 +322,6 @@ export class GrowingComponent implements OnInit {
   ValidateMol() {
     this.Update_smile();
     this.GenerateMol();
-    this.ShowReactions(0);
     this.ShowSub(1)
     this.ShowSett(1)
     this.Detected_Functions = [];

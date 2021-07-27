@@ -32,8 +32,8 @@ export interface Rule {
   styleUrls: ['./linking.component.css']
 })
 export class LinkingComponent implements OnInit {
-  Name1:string='';
-  Name2:string='';
+  Name1:string='frag 1';
+  Name2:string='frag 2';
   smile1:string='';
   smile2:string='';
   Required_substructures:string='';
@@ -175,17 +175,32 @@ export class LinkingComponent implements OnInit {
     return;
   }
   //Show the sett part
-  ShowSett():void {
+  ShowSett(Status:number):void {
     let doc=document.getElementById("sett");
     let vThis=document.getElementById("Fleche3");
-    if(doc!=null && vThis!=null) {
-      if (doc.style.display == "none") {
-        vThis.className = "fas fa-caret-up";
-        doc.style.display = "block";
-      } else {
-        doc.style.display = "none";
-        vThis.className = "fas fa-caret-down";
+    if (doc != null && vThis != null ) {
+      if (Status==0) {
+        if (doc.style.display == "none") {
+          vThis.className = "fas fa-caret-up";
+          doc.style.display = "block";
+        }
       }
+      else if (Status==1) {
+        if (doc.style.display == "block") {
+          doc.style.display = "none";
+          vThis.className = "fas fa-caret-down";
+        }
+      }
+      else {
+        if (doc.style.display == "none") {
+          vThis.className = "fas fa-caret-up";
+          doc.style.display = "block";
+        } else {
+          doc.style.display = "none";
+          vThis.className = "fas fa-caret-down";
+        }
+      }
+
     }
     return;
   }
@@ -207,48 +222,58 @@ export class LinkingComponent implements OnInit {
     }
   }
   //Launch the python Script
-  LaunchPytonFindFunction(nb_sketch:number) {
-    this.Update_smile(nb_sketch);
+  LaunchPytonFindFunction() {
+    this.Update_smile(1);
     let data;
-    if(nb_sketch==1) {
       data = {
         smiles: this.smile1
       }
-    }
-    else if (nb_sketch==2){
-       data= {
-        smiles: this.smile2
-      }
-
-
-    }
-    else{
-      console.log("Wrong numsketch")
-      return;
-    }
-
-      if(this.Detected_Functions.length==0){
         this.message.sendMessage('Callscript', data ).subscribe(res => {
+          this.Detected_Functions = [];
           if (res.status == "error") {
           } else {
             console.log(res);
             if (res.data != null) {
-              this.Detected_Functions=[];
-              this.ConvertRestultFunction(res.data,nb_sketch);
-              if(nb_sketch==1) {
-                this.Detected_Functions1=this.Detected_Functions;
+              this.ConvertRestultFunction(res.data,1);
+              this.Detected_Functions1 = this.Detected_Functions;
+              this.Update_smile(2);
+              data = {
+                smiles: this.smile2
               }
-              else if(nb_sketch==2){
-                this.Detected_Functions2=this.Detected_Functions;
+              this.message.sendMessage('Callscript', data).subscribe(res => {
+                this.Detected_Functions = [];
+                if (res.status == "error") {
+                } else {
+                  console.log(res);
+                  if (res.data != null) {
 
-              }
-              this.ShowReactions(0,nb_sketch);
-            } else {
-              window.alert("We could not find functions for your molecule, they may not be available yet or there is an error in the molecule.");
+                    this.ConvertRestultFunction(res.data, 2);
+                    this.Detected_Functions2 = this.Detected_Functions;
+
+                  }
+                  else {
+                    window.alert("We could not find functions for your molecules, it may be that they are not yet available or there is an error in the molecules.");
+                    this.Detected_Functions2 = this.Detected_Functions;
+                    this.ShowReactions(1);
+                  }
+                }
+                if (this.Detected_Functions1.length != 0 && this.Detected_Functions2.length != 0) {
+                  this.ShowReactions(0, 1);
+                  this.ShowReactions(0, 2);
+                }
+              });
+            }
+            else {
+              window.alert("We could not find functions for your molecules, it may be that they are not yet available or there is an error in the molecules.");
+              this.Detected_Functions1 = this.Detected_Functions;
+              this.ShowReactions(1);
             }
           }
+          console.log(this.Detected_Functions1);
+          console.log(this.Detected_Functions2);
+
+
         });
-      }
 
     return;
   }
@@ -371,16 +396,15 @@ export class LinkingComponent implements OnInit {
       return;
     }
   }
-  //When you Validate your Molecule
-  ValidateMol(num_sketch:number){
-    this.Update_smile(num_sketch);
-    console.log(this.smile1);
-    this.GenerateMol(num_sketch);
+  //When you ValidValidate your Molecule
+  ValidateMol(){
+    this.Update_smile(1);
+    this.Update_smile(2);
+    this.GenerateMol(1);
+    this.GenerateMol(2);
     this.ShowSub(1)
-    this.Detected_Functions=[];
-    this.LaunchPytonFindFunction(num_sketch)
-
-
+    this.ShowSett(1)
+    this.LaunchPytonFindFunction();
   }
   //When you validate which function is targeted
   //Attention ici on test avec juste le premier smile on s'occupera après du reste
@@ -392,7 +416,7 @@ export class LinkingComponent implements OnInit {
       window.alert("Please select a targeted function or none before generate reactions rules.");
     }
     else {
-      if(this.Selected_Function1_name!="None") {
+      if(this.Selected_Function1_name!="None" && this.Selected_Function2_name!="None") {
         let i = 0;
         let trouve = false;
         while (!trouve) {
@@ -415,7 +439,7 @@ export class LinkingComponent implements OnInit {
         }
         let doc = document.getElementById("RulesPart");
 
-        let data = {funcname: this.Selected_Function1_name}
+        let data = {funcname: this.Selected_Function1.Name_Func}
         this.message.sendMessage('Callscript2', data).subscribe(res => {
           if (res.status == "error") {
           } else {
@@ -444,6 +468,59 @@ export class LinkingComponent implements OnInit {
 
                 }))
               })
+              let data = {funcname:this.Selected_Function2.Name_Func}
+              this.message.sendMessage('Callscript2', data).subscribe(res => {
+                if (res.status == "error") {
+                } else {
+                  console.log(res);
+                  if (res.data != null) {
+
+                    this.ConvertRestultRules(res.data, 2);
+                    // get array control
+                    //
+                    this.Form_Rules2 = new FormGroup({
+                      rules: new FormArray([])
+                    });
+                    const formArray = this.Form_Rules2.get('rules') as FormArray;
+                    // loop each existing value options from database
+                    this.Detected_Rules2.forEach(rule => {
+                      // generate control Group for each option and push to formArray
+                      formArray.push(new FormGroup({
+                        name: new FormControl(rule.Name),
+                        Id: new FormControl(rule.Id),
+                        checked: new FormControl(rule.checked)
+
+                      }))
+                    })
+
+                  } else {
+                    this.Detected_Rules2 = [];
+                    this.Form_Rules2 = new FormGroup({
+                      rules: new FormArray([])
+                    });
+                    const formArray = this.Form_Rules2.get('rules') as FormArray;
+                    // loop each existing value options from database
+                    this.Detected_Rules2.forEach(rule => {
+                      // generate control Group for each option and push to formArray
+                      formArray.push(new FormGroup({
+                        name: new FormControl(rule.Name),
+                        Id: new FormControl(rule.Id),
+                        checked: new FormControl(rule.checked)
+
+                      }))
+                    })
+                    window.alert("We couldn't find reactions for your molecules")
+                    if (doc != null) {
+                      if (doc.style.display == "block") {
+                        doc.style.display = "none";
+                      }
+                    }
+
+                  }
+                }
+                //Generate required Substructure
+                this.GenerateSub();
+              });
             } else {
               if (doc != null) {
                 if (doc.style.display == "block") {
@@ -465,61 +542,17 @@ export class LinkingComponent implements OnInit {
 
                 }))
               })
-
+              window.alert("We couldn't find reactions for your molecules")
+              if (doc != null) {
+                if (doc.style.display == "block") {
+                  doc.style.display = "none";
+                }
+              }
             }
           }
         });
       }
-      let data = {funcname:this.Selected_Function2_name}
-      if(this.Selected_Function2_name!="None") {
-        this.message.sendMessage('Callscript2', data).subscribe(res => {
-          if (res.status == "error") {
-          } else {
-            console.log(res);
-            if (res.data != null) {
 
-              this.ConvertRestultRules(res.data, 2);
-              // get array control
-              //
-              this.Form_Rules2 = new FormGroup({
-                rules: new FormArray([])
-              });
-              const formArray = this.Form_Rules2.get('rules') as FormArray;
-              // loop each existing value options from database
-              this.Detected_Rules2.forEach(rule => {
-                // generate control Group for each option and push to formArray
-                formArray.push(new FormGroup({
-                  name: new FormControl(rule.Name),
-                  Id: new FormControl(rule.Id),
-                  checked: new FormControl(rule.checked)
-
-                }))
-              })
-
-            } else {
-              this.Detected_Rules2 = [];
-              this.Form_Rules2 = new FormGroup({
-                rules: new FormArray([])
-              });
-              const formArray = this.Form_Rules2.get('rules') as FormArray;
-              // loop each existing value options from database
-              this.Detected_Rules2.forEach(rule => {
-                // generate control Group for each option and push to formArray
-                formArray.push(new FormGroup({
-                  name: new FormControl(rule.Name),
-                  Id: new FormControl(rule.Id),
-                  checked: new FormControl(rule.checked)
-
-                }))
-              })
-
-
-            }
-          }
-          //Generate required Substructure
-          this.GenerateSub();
-        });
-      }
       if(this.Selected_Function2_name=="None" && this.Selected_Function1_name=="None"){
         this.ShowSub(0)
       }
@@ -596,7 +629,7 @@ export class LinkingComponent implements OnInit {
     //Ici mettre un truc qui vérifie que Selected rules n'est pas vide
     this.Selected_Rules2=this.Form_Rules2.value.rules.filter((f: { checked: any; }) => f.checked);
     console.log(this.Selected_Rules2);
-    if(((this.Selected_Rules1.length==0 && (this.Detected_Rules1.length!=0)))||((this.Selected_Rules2.length==0)&& (this.Detected_Rules2.length!=0)) ){
+    if((this.Selected_Rules1.length==0)||(this.Selected_Rules2.length==0) ){
       window.alert("Please choose at least one reaction rule for each functions.");
     }
     else{
@@ -612,7 +645,7 @@ export class LinkingComponent implements OnInit {
   ValidateUndSub() {
     this.Selected_Undesired_Substructures=this.Form_UndSub.value.UndSub.filter((f: { checked: any; }) => f.checked);
     console.log(this.Selected_Undesired_Substructures);
-    this.ShowSett();
+    this.ShowSett(0);
 
   }
   isAlpha(str:string) {
@@ -943,6 +976,21 @@ export class LinkingComponent implements OnInit {
       BBD:this.BBD,
     }
     console.log(data);
+  }
+  LaunchDemo(){
+    this.smile1="CC(C)N1CCC(N)CC1";
+    this.Name1="piperidine";
+    this.GenerateMol(1);
+    this.smile2="OC(=O)c1ccc(Cl)s1";
+    this.Name2 = "thiophene";
+    this.GenerateMol(2);
+    this.delay(200).then(any=>{
+      this.ValidateMol();
+    });
+
+  }
+  async delay(ms: number) {
+    await new Promise<void>(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
   }
 
 }

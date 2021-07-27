@@ -144,14 +144,14 @@ fieldset{
 @media screen and (max-height: 800px){
 
   #struct{
-    height: 320px;
+    height: 350px;
     font-size: x-small;
   }
   #struct input{
     font-size: x-small;
   }
   #main #validate-button{
-    height: 3%;
+    height: 40px;
     font-size: large;
   }
   #main #sketchers{
@@ -197,8 +197,11 @@ input[type="button"]:hover{
 /*Execute button*/
 .exec{
   margin-left: 10%;
-  height: 100px;
   font-size: xx-large;
-  width: 400px;
+  width: 60%;
+  max-width: 400px;
+}
+#Demo{
+  margin-left: 40%;
 }
 
