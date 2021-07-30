@@ -32,8 +32,8 @@ export interface Rule {
   styleUrls: ['./linking.component.css']
 })
 export class LinkingComponent implements OnInit {
-  Name1:string='frag 1';
-  Name2:string='frag 2';
+  Name1:string='frag_1';
+  Name2:string='frag_2';
   smile1:string='';
   smile2:string='';
   Required_substructures:string='';
@@ -279,7 +279,6 @@ export class LinkingComponent implements OnInit {
   }
   //Convert the result from the python script for function
   ConvertRestultFunction(output:string [],nb_sketch:number){
-    this.Detected_Functions.push({Position:'',Name:"None",Name_Func:'',Bonds:"",ID:0});
     let name:string;
     let pos:number[]=[];
     let tmp:string="";
@@ -412,346 +411,145 @@ export class LinkingComponent implements OnInit {
 
 
     //Generate Reactions :
-    if(this.Selected_Function1_name=="" || this.Selected_Function2_name==""){
+    if (this.Selected_Function1_name == "" || this.Selected_Function2_name == "") {
       window.alert("Please select a targeted function or none before generate reactions rules.");
-    }
-    else {
-      this.Detected_Rules1=[];
-      this.Detected_Rules2=[];
-      let i=0;
-      let trouve=false;
-      while(!trouve){
-        if(this.Detected_Functions1[i].Name==this.Selected_Function1_name){
-          this.Selected_Function1=this.Detected_Functions1[i];
-          trouve=true;
+    } else {
+      this.Detected_Rules1 = [];
+      this.Detected_Rules2 = [];
+      let i = 0;
+      let trouve = false;
+      while (!trouve) {
+        if (this.Detected_Functions1[i].Name == this.Selected_Function1_name) {
+          this.Selected_Function1 = this.Detected_Functions1[i];
+          trouve = true;
         }
         i++;
 
       }
-      if(this.Selected_Function1_name!="None") {
-        let data = {funcname: this.Selected_Function1.Name_Func}
-        this.message.sendMessage('Callscript2', data).subscribe(res => {
-          if (res.status == "error") {
-          } else {
-            let doc = document.getElementById("RulesPart");
-            console.log(res);
-            if (res.data != null) {
-              this.ConvertRestultRules(res.data,1);
-              // get array control
-              //
-              this.Form_Rules1 = new FormGroup({
-                rules: new FormArray([])
-              });
-              const formArray = this.Form_Rules1.get('rules') as FormArray;
-              // loop each existing value options from database
-              this.Detected_Rules1.forEach(rule => {
-                // generate control Group for each option and push to formArray
-                formArray.push(new FormGroup({
-                  name: new FormControl(rule.Name),
-                  Id: new FormControl(rule.Id),
-                  checked: new FormControl(rule.checked)
+      let data = {funcname: this.Selected_Function1.Name_Func}
+      this.message.sendMessage('Callscript2', data).subscribe(res => {
+        if (res.status == "error") {
+        } else {
+          let doc = document.getElementById("RulesPart");
+          console.log(res);
+          if (res.data != null) {
+            this.ConvertRestultRules(res.data, 1);
+            // get array control
+            //
+            this.Form_Rules1 = new FormGroup({
+              rules: new FormArray([])
+            });
+            const formArray = this.Form_Rules1.get('rules') as FormArray;
+            // loop each existing value options from database
+            this.Detected_Rules1.forEach(rule => {
+              // generate control Group for each option and push to formArray
+              formArray.push(new FormGroup({
+                name: new FormControl(rule.Name),
+                Id: new FormControl(rule.Id),
+                checked: new FormControl(rule.checked)
 
-                }))
-              })
-              let i=0;
-              let trouve=false;
-              while(!trouve){
-                if(this.Detected_Functions2[i].Name==this.Selected_Function2_name){
-                  this.Selected_Function2=this.Detected_Functions2[i];
-                  trouve=true;
-                }
-                i++;
-
+              }))
+            })
+            let i = 0;
+            let trouve = false;
+            while (!trouve) {
+              if (this.Detected_Functions2[i].Name == this.Selected_Function2_name) {
+                this.Selected_Function2 = this.Detected_Functions2[i];
+                trouve = true;
               }
-              if(this.Selected_Function2_name!="None") {
-                let data = {funcname: this.Selected_Function2.Name_Func}
-                this.message.sendMessage('Callscript2', data).subscribe(res => {
-                  if (res.status == "error") {
-                  } else {
-                    let doc = document.getElementById("RulesPart");
-                    console.log(res);
-                    if (res.data != null) {
+              i++;
 
-                      if (doc != null) {
-                        if (doc.style.display == "none") {
-                          doc.style.display = "block";
-                        }
-                      }
-
-                      this.ConvertRestultRules(res.data,2);
-                      // get array control
-                      //
-                      this.Form_Rules2 = new FormGroup({
-                        rules: new FormArray([])
-                      });
-                      const formArray = this.Form_Rules2.get('rules') as FormArray;
-                      // loop each existing value options from database
-                      this.Detected_Rules2.forEach(rule => {
-                        // generate control Group for each option and push to formArray
-                        formArray.push(new FormGroup({
-                          name: new FormControl(rule.Name),
-                          Id: new FormControl(rule.Id),
-                          checked: new FormControl(rule.checked)
-
-                        }))
-                      })
-
-                    } else {
-                      this.Detected_Rules2 = [];
-                      this.Form_Rules2 = new FormGroup({
-                        rules: new FormArray([])
-                      });
-                      const formArray = this.Form_Rules2.get('rules') as FormArray;
-                      // loop each existing value options from database
-                      this.Detected_Rules2.forEach(rule => {
-                        // generate control Group for each option and push to formArray
-                        formArray.push(new FormGroup({
-                          name: new FormControl(rule.Name),
-                          Id: new FormControl(rule.Id),
-                          checked: new FormControl(rule.checked)
-
-                        }))
-                      })
-                      window.alert("We could not find any rule corresponding to the selected function")
-                      //Attention ici il faudra peut être changer
-                      if (doc != null) {
-                        if (doc.style.display == "block") {
-                          doc.style.display = "none";
-                        }
-                      }
-                      this.ShowSub(1);
-                    }
-                    //Generate required Substructure
-                    this.GenerateSub();
-                  }
-                });
-              }
-              else {
-                this.Detected_Rules2 = [];
-                let doc = document.getElementById("RulesPart");
-                for (let i in this.Detected_Functions2) {
-                  if (this.Detected_Functions2[i].Name != "None") {
-                    console.log(this.Detected_Functions2[i].Name_Func);
-                    let data = {funcname: this.Detected_Functions2[i].Name_Func}
-                    this.message.sendMessage('Callscript2', data).subscribe(res => {
-                      if (res.status == "error") {
-                      } else {
-                        console.log(res);
-                        if (res.data != null) {
-
-                          if (doc != null) {
-                            if (doc.style.display == "none") {
-                              doc.style.display = "block";
-                            }
-                          }
-                          this.ConvertRestultRules(res.data, 2);
-                          this.Form_Rules2 = new FormGroup({
-                            rules: new FormArray([])
-                          });
-                          if (this.Detected_Rules2 != []) {
-                            const formArray = this.Form_Rules2.get('rules') as FormArray;
-                            // loop each existing value options from database
-                            this.Detected_Rules2.forEach(rule => {
-                              // generate control Group for each option and push to formArray
-                              formArray.push(new FormGroup({
-                                name: new FormControl(rule.Name),
-                                Id: new FormControl(rule.Id),
-                                checked: new FormControl(rule.checked)
-
-                              }))
-                            })
-                          }
-                        }
-                      }
-                    });
-                  }
-                }
-
-              }
-              } else {
-              this.Detected_Rules1 = [];
-              this.Form_Rules1 = new FormGroup({
-                rules: new FormArray([])
-              });
-              const formArray = this.Form_Rules1.get('rules') as FormArray;
-              // loop each existing value options from database
-              this.Detected_Rules1.forEach(rule => {
-                // generate control Group for each option and push to formArray
-                formArray.push(new FormGroup({
-                  name: new FormControl(rule.Name),
-                  Id: new FormControl(rule.Id),
-                  checked: new FormControl(rule.checked)
-
-                }))
-              })
-              window.alert("We could not find any rule corresponding to the selected function");
-              //Attention ici il faudra peut être changer
-              if (doc != null) {
-                if (doc.style.display == "block") {
-                  doc.style.display = "none";
-                }
-              }
-              this.ShowSub(1);
             }
-            //Generate required Substructure
-            this.GenerateSub();
-          }
-        });
-      }
-      else{
-        this.Detected_Rules1=[];
-        let doc = document.getElementById("RulesPart");
-        for(let i in this.Detected_Functions1) {
-          if (this.Detected_Functions1[i].Name != "None") {
-            console.log(this.Detected_Functions1[i].Name_Func);
-            let data = {funcname: this.Detected_Functions1[i].Name_Func}
+            let data = {funcname: this.Selected_Function2.Name_Func}
             this.message.sendMessage('Callscript2', data).subscribe(res => {
               if (res.status == "error") {
               } else {
+                let doc = document.getElementById("RulesPart");
                 console.log(res);
                 if (res.data != null) {
-                  this.ConvertRestultRules(res.data, 1);
-                  if (this.Detected_Rules1 != []) {
-                    this.Form_Rules1 = new FormGroup({
-                      rules: new FormArray([])
-                    });
-                    const formArray = this.Form_Rules1.get('rules') as FormArray;
-                    // loop each existing value options from database
-                    this.Detected_Rules1.forEach(rule => {
-                      // generate control Group for each option and push to formArray
-                      formArray.push(new FormGroup({
-                        name: new FormControl(rule.Name),
-                        Id: new FormControl(rule.Id),
-                        checked: new FormControl(rule.checked)
 
-                      }))
-                    })
-                  }
-                  else{
-                    this.ShowSub(1);
+                  if (doc != null) {
+                    if (doc.style.display == "none") {
+                      doc.style.display = "block";
+                    }
                   }
 
-                }
-                }
-            });
-          }
-        }
-        let i=0;
-        let trouve=false;
-        while(!trouve){
-          if(this.Detected_Functions2[i].Name==this.Selected_Function2_name){
-            this.Selected_Function2=this.Detected_Functions2[i];
-            trouve=true;
-          }
-          i++;
+                  this.ConvertRestultRules(res.data, 2);
+                  // get array control
+                  //
+                  this.Form_Rules2 = new FormGroup({
+                    rules: new FormArray([])
+                  });
+                  const formArray = this.Form_Rules2.get('rules') as FormArray;
+                  // loop each existing value options from database
+                  this.Detected_Rules2.forEach(rule => {
+                    // generate control Group for each option and push to formArray
+                    formArray.push(new FormGroup({
+                      name: new FormControl(rule.Name),
+                      Id: new FormControl(rule.Id),
+                      checked: new FormControl(rule.checked)
 
-        }
-        if(this.Selected_Function2_name!="None") {
-          let data = {funcname: this.Selected_Function2.Name_Func}
-          this.message.sendMessage('Callscript2', data).subscribe(res => {
-            if (res.status == "error") {
-            } else {
-              let doc = document.getElementById("RulesPart");
-              console.log(res);
-              if (res.data != null) {
+                    }))
+                  })
 
-                if (doc != null) {
-                  if (doc.style.display == "none") {
-                    doc.style.display = "block";
-                  }
-                }
-
-                this.ConvertRestultRules(res.data,2);
-                // get array control
-                //
-                this.Form_Rules2 = new FormGroup({
-                  rules: new FormArray([])
-                });
-                const formArray = this.Form_Rules2.get('rules') as FormArray;
-                // loop each existing value options from database
-                this.Detected_Rules2.forEach(rule => {
-                  // generate control Group for each option and push to formArray
-                  formArray.push(new FormGroup({
-                    name: new FormControl(rule.Name),
-                    Id: new FormControl(rule.Id),
-                    checked: new FormControl(rule.checked)
-
-                  }))
-                })
-
-              } else {
-                this.Detected_Rules2 = [];
-                this.Form_Rules2 = new FormGroup({
-                  rules: new FormArray([])
-                });
-                const formArray = this.Form_Rules2.get('rules') as FormArray;
-                // loop each existing value options from database
-                this.Detected_Rules2.forEach(rule => {
-                  // generate control Group for each option and push to formArray
-                  formArray.push(new FormGroup({
-                    name: new FormControl(rule.Name),
-                    Id: new FormControl(rule.Id),
-                    checked: new FormControl(rule.checked)
-
-                  }))
-                })
-                window.alert("We could not find any rule corresponding to the selected function")
-                //Attention ici il faudra peut être changer
-                if (doc != null) {
-                  if (doc.style.display == "block") {
-                    doc.style.display = "none";
-                  }
-                }
-                this.ShowSub(1);
-              }
-              //Generate required Substructure
-              this.GenerateSub();
-            }
-          });
-        }
-        else {
-          this.Detected_Rules2 = [];
-          let doc = document.getElementById("RulesPart");
-          for (let i in this.Detected_Functions2) {
-            if (this.Detected_Functions2[i].Name != "None") {
-              console.log(this.Detected_Functions2[i].Name_Func);
-              let data = {funcname: this.Detected_Functions2[i].Name_Func}
-              this.message.sendMessage('Callscript2', data).subscribe(res => {
-                if (res.status == "error") {
                 } else {
-                  console.log(res);
-                  if (res.data != null) {
+                  this.Detected_Rules2 = [];
+                  this.Form_Rules2 = new FormGroup({
+                    rules: new FormArray([])
+                  });
+                  const formArray = this.Form_Rules2.get('rules') as FormArray;
+                  // loop each existing value options from database
+                  this.Detected_Rules2.forEach(rule => {
+                    // generate control Group for each option and push to formArray
+                    formArray.push(new FormGroup({
+                      name: new FormControl(rule.Name),
+                      Id: new FormControl(rule.Id),
+                      checked: new FormControl(rule.checked)
 
-                    if (doc != null) {
-                      if (doc.style.display == "none") {
-                        doc.style.display = "block";
-                      }
-                    }
-                    this.ConvertRestultRules(res.data, 2);
-                    this.Form_Rules2 = new FormGroup({
-                      rules: new FormArray([])
-                    });
-                    if (this.Detected_Rules2 != []) {
-                      const formArray = this.Form_Rules2.get('rules') as FormArray;
-                      // loop each existing value options from database
-                      this.Detected_Rules2.forEach(rule => {
-                        // generate control Group for each option and push to formArray
-                        formArray.push(new FormGroup({
-                          name: new FormControl(rule.Name),
-                          Id: new FormControl(rule.Id),
-                          checked: new FormControl(rule.checked)
-
-                        }))
-                      })
+                    }))
+                  })
+                  window.alert("We could not find any rule corresponding to the selected function")
+                  //Attention ici il faudra peut être changer
+                  if (doc != null) {
+                    if (doc.style.display == "block") {
+                      doc.style.display = "none";
                     }
                   }
+                  this.ShowSub(1);
                 }
-              });
-            }
-          }
-        }
+                //Generate required Substructure
+                this.GenerateSub();
+              }
+            });
+          } else {
+            this.Detected_Rules1 = [];
+            this.Form_Rules1 = new FormGroup({
+              rules: new FormArray([])
+            });
+            const formArray = this.Form_Rules1.get('rules') as FormArray;
+            // loop each existing value options from database
+            this.Detected_Rules1.forEach(rule => {
+              // generate control Group for each option and push to formArray
+              formArray.push(new FormGroup({
+                name: new FormControl(rule.Name),
+                Id: new FormControl(rule.Id),
+                checked: new FormControl(rule.checked)
 
-      }
+              }))
+            })
+            window.alert("We could not find any rule corresponding to the selected function");
+            //Attention ici il faudra peut être changer
+            if (doc != null) {
+              if (doc.style.display == "block") {
+                doc.style.display = "none";
+              }
+            }
+            this.ShowSub(1);
+          }
+          //Generate required Substructure
+          this.GenerateSub();
+        }
+      });
     }
   }
   ConvertRestultRules(output:string [],numb_func:number){
@@ -1167,21 +965,27 @@ export class LinkingComponent implements OnInit {
     }
   }
   Send_To_Galaxy(){
-    let data={
-      Name1:this.Name1,
-      Smile1:this.smile1,
-      Rules1:this.Selected_Rules1,
-      Required_Sub1:this.Required_substructures1,
-      Name2:this.Name2,
-      Smile2:this.smile2,
-      Rules2:this.Selected_Rules2,
-      Required_Sub2:this.Required_substructures2,
-
-      Undesired_Sub:this.Selected_Undesired_Substructures,
-      Rmode:this.Rmode,
-      BBD:this.BBD,
+    let regex = /^[a-zA-Z0-9\-_]+[a-zA-Z0-9\-_]*$/;
+    if(!regex.test(this.Name1) || !regex.test(this.Name2)){
+      window.alert("The name of the fragment (s) is (are) not valid, only alphanumeric characters, '-' and '_' are allowed")
     }
-    console.log(data);
+    else {
+      let data = {
+        Name1: this.Name1,
+        Smile1: this.smile1,
+        Rules1: this.Selected_Rules1,
+        Required_Sub1: this.Required_substructures1,
+        Name2: this.Name2,
+        Smile2: this.smile2,
+        Rules2: this.Selected_Rules2,
+        Required_Sub2: this.Required_substructures2,
+
+        Undesired_Sub: this.Selected_Undesired_Substructures,
+        Rmode: this.Rmode,
+        BBD: this.BBD,
+      }
+      console.log(data);
+    }
   }
   LaunchDemo(){
     this.smile1="CC(C)N1CCC(N)CC1";
@@ -1197,6 +1001,28 @@ export class LinkingComponent implements OnInit {
   }
   async delay(ms: number) {
     await new Promise<void>(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
+  }
+  Check_Name(event:any){
+    let regex = /^[a-zA-Z0-9\-_]+[a-zA-Z0-9\-_]*$/;
+    if(!regex.test(event.target.value))
+    {
+      this.surligne(event.target, true);
+      return false;
+    }
+    else
+    { this.surligne(event.target, false);
+      return true;
+    }
+
+  }
+  surligne(input:HTMLInputElement, error:any)//change de couleur selon la conformité de ce qui est rentré
+  {
+    if(error){
+      input.style.borderColor = "#D10C13";
+    }
+    else{
+      input.style.borderColor = "#04DC13";
+    }
   }
 
 }

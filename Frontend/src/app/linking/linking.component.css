@@ -196,12 +196,14 @@ input[type="button"]:hover{
 
 /*Execute button*/
 .exec{
-  margin-left: 10%;
+  margin-left: 20%;
   font-size: xx-large;
-  width: 60%;
-  max-width: 400px;
+  width: 40%;
+  max-width: 600px;
 }
 #Demo{
   margin-left: 40%;
+  width: 20%;
+  min-width: 120px;
 }
 

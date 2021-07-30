@@ -8,7 +8,6 @@ import { GrowingComponent } from './growing/growing.component';
 import { LinkingComponent } from './linking/linking.component';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {LocationStrategy, HashLocationStrategy} from '@angular/common';
-import { BonjourComponent } from './bonjour/bonjour.component';
 
 // @ts-ignore
 @NgModule({
@@ -17,7 +16,6 @@ import { BonjourComponent } from './bonjour/bonjour.component';
     MenuComponent,
     GrowingComponent,
     LinkingComponent,
-    BonjourComponent
   ],
     imports: [
         BrowserModule,

@@ -221,7 +221,6 @@ export class GrowingComponent implements OnInit {
   }
   //Convert the result from the python script for function
   ConvertRestultFunction(output:string []){
-    this.Detected_Functions.push({Position:'',Name:"None",Name_Func:'',Bonds:"",ID:0});
     let name:string;
     let pos:number[]=[];
     let tmp:string="";
@@ -345,7 +344,6 @@ export class GrowingComponent implements OnInit {
           i++;
 
         }
-        if(this.Selected_Function_name!="None") {
           let data = {funcname: this.Selected_Function.Name_Func}
           this.message.sendMessage('Callscript2', data).subscribe(res => {
             if (res.status == "error") {
@@ -408,51 +406,7 @@ export class GrowingComponent implements OnInit {
             }
           });
         }
-        else{
-          this.Detected_Rules=[];
-          let doc = document.getElementById("RulesPart");
-          for(let i in this.Detected_Functions) {
-            if (this.Detected_Functions[i].Name != "None") {
-              console.log(this.Detected_Functions[i].Name_Func);
-              let data = {funcname: this.Detected_Functions[i].Name_Func}
-              this.message.sendMessage('Callscript2', data).subscribe(res => {
-                if (res.status == "error") {
-                } else {
-                  console.log(res);
-                  if (res.data != null) {
-
-                    if (doc != null) {
-                      if (doc.style.display == "none") {
-                        doc.style.display = "block";
-                      }
-                    }
-                    this.ConvertRestultRules(res.data);
-                    this.Form_Rules = new FormGroup({
-                      rules: new FormArray([])
-                    });
-                    if (this.Detected_Rules != []) {
-                      const formArray = this.Form_Rules.get('rules') as FormArray;
-                      // loop each existing value options from database
-                      this.Detected_Rules.forEach(rule => {
-                        // generate control Group for each option and push to formArray
-                        formArray.push(new FormGroup({
-                          name: new FormControl(rule.Name),
-                          Id: new FormControl(rule.Id),
-                          checked: new FormControl(rule.checked)
-
-                        }))
-                      })
-                    }
-                  }
-                }
-              });
-            }
-            }
-
-          }
-
-        }
-    }
+  }
 
   //Take the result of the python script and generate the rules that we will show on the site
   ConvertRestultRules(output:string []){
@@ -833,6 +787,11 @@ export class GrowingComponent implements OnInit {
 
   }
   Send_To_Galaxy(){
+    let regex = /^[a-zA-Z0-9\-_]+[a-zA-Z0-9\-_]*$/;
+    if(!regex.test(this.Name)){
+      window.alert("The Fragment Name is invalid, only alphanumeric characters, '-' and '_' are allowed")
+    }
+    else{
     let data={
       Name:this.Name,
       Smile:this.smile,
@@ -843,9 +802,28 @@ export class GrowingComponent implements OnInit {
       BBD:this.BBD,
     }
     console.log(data);
+    }
   }
-  async delay(ms: number) {
-    await new Promise<void>(resolve => setTimeout(()=>resolve(), ms)).then(()=>console.log("fired"));
-  }
+  Check_Name(event:any){
+    let regex = /^[a-zA-Z0-9\-_]+[a-zA-Z0-9\-_]*$/;
+    if(!regex.test(event.target.value))
+    {
+      this.surligne(event.target, true);
+      return false;
+    }
+    else
+    { this.surligne(event.target, false);
+      return true;
+    }
 
+  }
+  surligne(input:HTMLInputElement, error:any)//change de couleur selon la conformité de ce qui est rentré
+  {
+    if(error){
+      input.style.borderColor = "#D10C13";
+    }
+    else{
+      input.style.borderColor = "#04DC13";
+    }
+  }
 }
