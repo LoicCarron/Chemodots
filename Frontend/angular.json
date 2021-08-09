@@ -34,7 +34,7 @@
               "src/styles.css"
             ],
             "scripts": [
-              "./src/assets/overlib.js"
+              "../Backend/overlib.js"
             ]
           },
           "configurations": {

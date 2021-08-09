@@ -55,7 +55,7 @@ export class GrowingComponent implements OnInit {
 
 
   constructor(private message : MessageService) {}
-
+  //Do something when all the page have been launched
   ngOnInit(): void {
     this.Undesired_Substructures=Undesired_substructures_DATA_BASE;
     this.Form_Rules=new FormGroup({
@@ -79,6 +79,8 @@ export class GrowingComponent implements OnInit {
     //Lauch the sketcher
     main_Growing();
   }
+
+
   //0 ypu want to show the reactions
   //1 you want to hide the reactions
   //anything else, if it's hide you show it, if it's not you hide it
@@ -119,7 +121,11 @@ export class GrowingComponent implements OnInit {
       }
     return;
   }
+
+
+
   //Show the Substructure part
+  //Work like show reaction
   ShowSub(Status:Number):void {
     let doc=document.getElementById("sub");
     let vThis=document.getElementById("Fleche2");
@@ -154,7 +160,11 @@ export class GrowingComponent implements OnInit {
     }
     return;
   }
+
+
+
   //Show the sett part
+  //Work like showreaction
   ShowSett(Status:number):void {
     let doc=document.getElementById("sett");
     let vThis=document.getElementById("Fleche3");
@@ -184,10 +194,16 @@ export class GrowingComponent implements OnInit {
   }
     return;
   }
+
+
+
   //Highlight on the sketcher
   Highlightfunction(num_sketch:Number,pos:string,bonds:string){
     SetAtomSelect(num_sketch,pos,bonds);
   }
+
+
+
 
   //GenerateMol button
   GenerateMol() {
@@ -195,6 +211,9 @@ export class GrowingComponent implements OnInit {
       generateMolSketcherGrowing(this.smile);
     }
   }
+
+
+
   //Launch the python Script
   LaunchPytonFindFunction() {
     this.Update_smile();
@@ -205,6 +224,7 @@ export class GrowingComponent implements OnInit {
     if(this.Detected_Functions.length==0){
       this.message.sendMessage('Callscript', data ).subscribe(res => {
         if (res.status == "error") {
+          window.alert("There is an error in the molecule");
         } else {
           console.log(res);
           if (res.data != null) {
@@ -219,6 +239,9 @@ export class GrowingComponent implements OnInit {
     }
       return;
   }
+
+
+
   //Convert the result from the python script for function
   ConvertRestultFunction(output:string []){
     let name:string;
@@ -310,6 +333,9 @@ export class GrowingComponent implements OnInit {
     }
 
   }
+
+
+
   //There is a problem with ngmodel so we get the smile from the textbox tu update the smile that we have in our typescript
   Update_smile(){
     let smildoc =(<HTMLInputElement>document.getElementById("smilesMolecule"));
@@ -317,6 +343,9 @@ export class GrowingComponent implements OnInit {
       this.smile=smildoc.value;
     }
   }
+
+
+
   //When you Validate your Molecule
   ValidateMol() {
     this.Update_smile();
@@ -326,12 +355,15 @@ export class GrowingComponent implements OnInit {
     this.Detected_Functions = [];
     this.LaunchPytonFindFunction();
   }
+
+
+
   //When you validate which function is targeted
   ValidateFunction() {
     this.ShowSub(1);
     //Generate Reactions :
     if(this.Selected_Function_name==""){
-      window.alert("Please select a targeted function or none before generate reactions rules.");
+      window.alert("Please select a targeted function before generate reactions rules.");
     }
       else {
         let i=0;
@@ -393,7 +425,6 @@ export class GrowingComponent implements OnInit {
                   }))
                 })
                 window.alert("We could not find any rule corresponding to the selected function")
-                //Attention ici il faudra peut être changer
                 if (doc != null) {
                   if (doc.style.display == "block") {
                     doc.style.display = "none";
@@ -407,6 +438,8 @@ export class GrowingComponent implements OnInit {
           });
         }
   }
+
+
 
   //Take the result of the python script and generate the rules that we will show on the site
   ConvertRestultRules(output:string []){
@@ -445,6 +478,11 @@ export class GrowingComponent implements OnInit {
     }
 
   }
+
+
+
+
+  //Launch the python script that will return what we have to remove to the smile to get the required substructure
     GenerateSub(){
       let data = {
         smiles : this.smile,
@@ -455,7 +493,6 @@ export class GrowingComponent implements OnInit {
           } else {
             console.log(res);
             if (res.data != null) {
-              //this.Required_substructures=res.data[0];
 
               this.Remove_Sub(res.data);
 
@@ -463,7 +500,12 @@ export class GrowingComponent implements OnInit {
           }
         });
       }
+
+
+
+      //When you validate the choice of the reaction
     ValidateReactions(){
+      //Keep only checked value
       this.Selected_Rules=this.Form_Rules.value.rules.filter((f: { checked: any; }) => f.checked);
       console.log(this.Selected_Rules);
       //Ici mettre un truc qui vérifie que Selected rules n'est pas vide
@@ -476,15 +518,24 @@ export class GrowingComponent implements OnInit {
       }
 
     }
+
+
     //For the HTML
   get FormRules() { return <FormArray>this.Form_Rules.get('rules'); }
   get FormUndSub() { return <FormArray>this.Form_UndSub.get('UndSub'); }
+
+
+  //When you have selected your undesired substructure
   ValidateUndSub() {
     this.Selected_Undesired_Substructures=this.Form_UndSub.value.UndSub.filter((f: { checked: any; }) => f.checked);
     console.log(this.Selected_Undesired_Substructures);
     this.ShowSett(0);
 
   }
+
+
+
+  //Check if str contain only alphabetic character
   isAlpha(str:string) {
     let code, i, len;
 
@@ -497,9 +548,11 @@ export class GrowingComponent implements OnInit {
     }
     return true;
   };
-//Remove the substurcture to generate the required substructure
+
+
+
+//Remove the substructure to generate the required substructure
   Remove_Sub(res:string []){
-    //Mettre L'id de la fonction choisit.
     let i=0;
     let nb_remove=1;
     let nb_removed=0;
@@ -786,6 +839,10 @@ export class GrowingComponent implements OnInit {
 
 
   }
+
+
+
+  //Create a Json object with all the value of the form
   Send_To_Galaxy(){
     let regex = /^[a-zA-Z0-9\-_]+[a-zA-Z0-9\-_]*$/;
     if(!regex.test(this.Name)){
@@ -804,6 +861,9 @@ export class GrowingComponent implements OnInit {
     console.log(data);
     }
   }
+
+
+  //Check if the name is valid, use (blur) in the html
   Check_Name(event:any){
     let regex = /^[a-zA-Z0-9\-_]+[a-zA-Z0-9\-_]*$/;
     if(!regex.test(event.target.value))
@@ -817,7 +877,10 @@ export class GrowingComponent implements OnInit {
     }
 
   }
-  surligne(input:HTMLInputElement, error:any)//change de couleur selon la conformité de ce qui est rentré
+
+
+  //Highlight in red or green the input of the name
+  surligne(input:HTMLInputElement, error:any)
   {
     if(error){
       input.style.borderColor = "#D10C13";

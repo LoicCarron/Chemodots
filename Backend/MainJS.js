@@ -113,6 +113,18 @@ export function main_Linking() {
 
         marvin.on("molchange", handleMolChange);
 
+        //Button: clear all
+        var Clear = {
+            name: "Clean Sketcher",
+            toolbar: "W",
+            imageUrl: "data:image/gif;base64,R0lGODlhGAAYAPMAAORHHOVSKulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwQAAAAAAAAAAAAAAAAAAACH5BAEAAAsALAAAAAAYABgAAARccMlJq7046827/xogAiA1kqV0fog5Ui2WAEGRLGtSBMB9EacAjzYUETCnpBJlGSyXA03CIFAKDD5OQVlgPWMbxUlQHSk4RVSQ4xQdJIdRlHMICCiCwDvF7/v/EhEAOw==",
+        };
+        marvin.addButton(Clear, function () {
+            marvin.importStructure("smiles", " ");
+        });
+
+
+
         //Button: tuto
         var tuto = {
             name: "Tutorial",
@@ -165,6 +177,17 @@ export function main_Linking() {
         }
 
         marvin.on("molchange", handleMolChange);
+
+        //Button: clear all
+        var Clear = {
+            name: "Clean Sketcher",
+            toolbar: "W",
+            imageUrl: "data:image/gif;base64,R0lGODlhGAAYAPMAAORHHOVSKulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwQAAAAAAAAAAAAAAAAAAACH5BAEAAAsALAAAAAAYABgAAARccMlJq7046827/xogAiA1kqV0fog5Ui2WAEGRLGtSBMB9EacAjzYUETCnpBJlGSyXA03CIFAKDD5OQVlgPWMbxUlQHSk4RVSQ4xQdJIdRlHMICCiCwDvF7/v/EhEAOw==",
+        };
+        marvin.addButton(Clear, function () {
+            marvin.importStructure("smiles", " ");
+        });
+
 
 
         //Button: tuto

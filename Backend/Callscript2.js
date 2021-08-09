@@ -1,3 +1,4 @@
+// Launch the script rules_dico
 const {sendError, sendMessage} = require ("./message");
 const {PythonShell} = require('python-shell')
 async function Callscript2(req, res) {

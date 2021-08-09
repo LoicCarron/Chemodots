@@ -72,7 +72,7 @@
 
 
       <h3 onmouseover="return overlib (' Type the name of the fragment ',HAUTO, VAUTO);" onmouseout="return nd ();" > Name 2nd structure (optional)</h3>
-      <input type="text"  id="name2" placeholder="Type the name of the molecule" size="30" [(ngModel)]="this.Name2">
+      <input type="text"  id="name2" placeholder="Type the name of the molecule" size="30" [(ngModel)]="this.Name2" (blur)="Check_Name($event)">
 
 
       <h3 onmouseover="return overlib (' The smiles of the fragment drawn in the sketcher will automatically appear in the textbox ',HAUTO, VAUTO);" onmouseout="return nd ();">Smiles</h3>

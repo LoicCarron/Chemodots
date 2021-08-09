@@ -231,6 +231,7 @@ export class LinkingComponent implements OnInit {
         this.message.sendMessage('Callscript', data ).subscribe(res => {
           this.Detected_Functions = [];
           if (res.status == "error") {
+            window.alert("There is an error in the structure 1");
           } else {
             console.log(res);
             if (res.data != null) {
@@ -243,6 +244,7 @@ export class LinkingComponent implements OnInit {
               this.message.sendMessage('Callscript', data).subscribe(res => {
                 this.Detected_Functions = [];
                 if (res.status == "error") {
+                  window.alert("There is an error in the structure 2");
                 } else {
                   console.log(res);
                   if (res.data != null) {
@@ -412,7 +414,7 @@ export class LinkingComponent implements OnInit {
 
     //Generate Reactions :
     if (this.Selected_Function1_name == "" || this.Selected_Function2_name == "") {
-      window.alert("Please select a targeted function or none before generate reactions rules.");
+      window.alert("Please select a targeted function before generate reactions rules.");
     } else {
       this.Detected_Rules1 = [];
       this.Detected_Rules2 = [];

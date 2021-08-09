@@ -1,7 +1,6 @@
-// renvoie un message au format JSON. On a besoin de passer en paramètre
-// res, la réponse que l'on envoie au client (Angular). Le paramètre
-// data est un objet JavaScript. Globalement, cette fonction est
-// équivalente au "echo json_encode(data);" que vous utilisiez en PHP
+// return a message in JSON format. We need to pass as a parameter
+// res, the response we send to the client (Angular). The parameter
+// the data is a JavaScript object.
 function sendMessage (res, data) {
     res.json ({ status: 'ok', data: data });
 }

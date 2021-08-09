@@ -1,3 +1,4 @@
+// Launch the script substruct
 const {sendError, sendMessage} = require ("./message");
 const {PythonShell} = require('python-shell')
 async function Callscript_UndSub(req, res) {

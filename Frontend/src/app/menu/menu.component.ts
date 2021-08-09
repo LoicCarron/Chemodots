@@ -12,16 +12,16 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  //Navigate to the growing
   on_click_Growing() {
     this.router.navigateByUrl('Growing');
   }
+
+  //Navigate to the linking
   on_click_Linking() {
     this.router.navigateByUrl('/Linking');
   }
-  Afficher_image(){
-    let doc=document.getElementById("Growingimg");
-    if(doc!=null){
-      doc.style.display = "Block"
-    }
-  }
+
+
 }
