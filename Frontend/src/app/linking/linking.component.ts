@@ -727,8 +727,6 @@ export class LinkingComponent implements OnInit {
 
     }
     numb_tmp=min;
-    console.log(numb_tmp);
-    console.log(posi)
     let k=0;
     //Find the position of the targeted function in the smiles
     while(k<numb_tmp && numb_tmp!=2 && numb_tmp<smiles_with_H.length){
@@ -746,7 +744,6 @@ export class LinkingComponent implements OnInit {
     if(numb_tmp==2){
       numb_tmp=0;
     }
-    console.log(this.Required_substructures);
     i=0;
 
 
@@ -790,7 +787,6 @@ export class LinkingComponent implements OnInit {
         i++;
       }
 
-      console.log(this.Required_substructures)
 
 
       //If we have a Br or Cl to remove
@@ -798,9 +794,7 @@ export class LinkingComponent implements OnInit {
         To_remove=remove[i];
         i++;
         To_remove+=remove[i];
-        console.log(To_remove)
         while ((numb_tmp < smiles_with_H.length - 2)&&(smiles_with_H[numb_tmp] != To_remove[0] && smiles_with_H[numb_tmp + 1] != To_remove[1]) && (smiles_with_H[numb_tmp + 1] != To_remove[0] && smiles_with_H[numb_tmp + 2] != To_remove[1]) ) {
-          console.log(smiles_with_H[numb_tmp]);
           this.Required_substructures += smiles_with_H[numb_tmp];
           if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
@@ -854,7 +848,6 @@ export class LinkingComponent implements OnInit {
           num_tmp_atom=num_atom;
           required_sub_tmp2=this.Required_substructures;
         }
-        console.log(this.Required_substructures);
       }
       else {
         while (smiles_with_H[numb_tmp] != remove[i] && smiles_with_H[numb_tmp + 1] != remove[i] && smiles_with_H[numb_tmp + 2] != remove[i] && numb_tmp < smiles_with_H.length - 2) {
@@ -873,7 +866,6 @@ export class LinkingComponent implements OnInit {
         nb_removed = 0;
 
         while (found &&(numb_tmp < smiles_with_H.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(smiles_with_H[numb_tmp]))||(smiles_with_H[numb_tmp] == "H")) && (smiles_with_H[numb_tmp] != "[") && (smiles_with_H[numb_tmp] != "(") &&((smiles_with_H[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis)))))) {
-          console.log(smiles_with_H[numb_tmp]);
           if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }

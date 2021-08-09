@@ -489,7 +489,6 @@ export class GrowingComponent implements OnInit {
         smiles : this.smile,
         funcname:this.Selected_Function.Name_Func
       };
-      console.log(data);
         this.message.sendMessage('Callscript_Sub', data).subscribe(res => {
           if (res.status == "error") {
           } else {
