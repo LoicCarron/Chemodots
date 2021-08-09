@@ -222,7 +222,7 @@ export class GrowingComponent implements OnInit {
     }
 
     if(this.Detected_Functions.length==0){
-      this.message.sendMessage('Callscript', data ).subscribe(res => {
+      this.message.sendMessage('Callscript_Func', data ).subscribe(res => {
         if (res.status == "error") {
           window.alert("There is an error in the molecule");
         } else {
@@ -261,6 +261,7 @@ export class GrowingComponent implements OnInit {
         pos = [];
         bond = [];
         let nametemp:string=name;
+        //In case we detect one function more than on time
         if(cpt!=0){
           nametemp+='_'+cpt;
         }
@@ -302,7 +303,6 @@ export class GrowingComponent implements OnInit {
           if (tmp != "") {
             limit=Number(tmp);
             numb_tmp=limit;
-            //test
             let k=0
             while(k<=limit){
               if (this.smile[k] == "H" || !this.isAlpha(this.smile[k])) {
@@ -336,7 +336,7 @@ export class GrowingComponent implements OnInit {
 
 
 
-  //There is a problem with ngmodel so we get the smile from the textbox tu update the smile that we have in our typescript
+  //We have to update the smile because if marvin change the smile in the textbox, it will not change it in out typescript.
   Update_smile(){
     let smildoc =(<HTMLInputElement>document.getElementById("smilesMolecule"));
     if(smildoc!=null){
@@ -376,8 +376,9 @@ export class GrowingComponent implements OnInit {
           i++;
 
         }
+          //Args for python script are in data
           let data = {funcname: this.Selected_Function.Name_Func}
-          this.message.sendMessage('Callscript2', data).subscribe(res => {
+          this.message.sendMessage('Callscript_rules', data).subscribe(res => {
             if (res.status == "error") {
             } else {
               let doc = document.getElementById("RulesPart");
@@ -488,7 +489,8 @@ export class GrowingComponent implements OnInit {
         smiles : this.smile,
         funcname:this.Selected_Function.Name_Func
       };
-        this.message.sendMessage('Callscript_UndSub', data).subscribe(res => {
+      console.log(data);
+        this.message.sendMessage('Callscript_Sub', data).subscribe(res => {
           if (res.status == "error") {
           } else {
             console.log(res);
@@ -508,7 +510,6 @@ export class GrowingComponent implements OnInit {
       //Keep only checked value
       this.Selected_Rules=this.Form_Rules.value.rules.filter((f: { checked: any; }) => f.checked);
       console.log(this.Selected_Rules);
-      //Ici mettre un truc qui vérifie que Selected rules n'est pas vide
       if(this.Selected_Rules.length==0 && this.Detected_Rules.length!=0){
         window.alert("Please choose at least one reaction rule.");
       }
@@ -556,7 +557,7 @@ export class GrowingComponent implements OnInit {
     let i=0;
     let nb_remove=1;
     let nb_removed=0;
-    let selectedfunc=res[0]
+    let smiles_with_H=res[0]
     let tmp="";
     let numb_tmp:number=0;
     let nb_tmp2:number;
@@ -571,9 +572,9 @@ export class GrowingComponent implements OnInit {
     let id=1;
     //Usefull for the / in case if there is the same atom not in the function but in the range of the pos of the function
     let posi=[];
+    // Save the position of the current atom, change when we move in the smile and we meet an atom
     let num_atom=1;
     //Go to the begining of the pos of the targeted function in the smile
-    console.log(this.Selected_Function.ID);
     while (id<this.Selected_Function.ID &&(j<res[1].length)) {
       if ((res[1][j] == ")")) {
         id++;
@@ -597,6 +598,7 @@ export class GrowingComponent implements OnInit {
           j++;
         }
         numb_tmp = Number(tmp) + 1;
+        //If it's equal to 1 so Number(tmp)=0 so it was not a number
         if (numb_tmp != 1){
           posi.push(numb_tmp);
       }
@@ -608,26 +610,23 @@ export class GrowingComponent implements OnInit {
 
     }
     numb_tmp=min;
-    console.log(numb_tmp);
-    console.log(posi)
     let k=0;
     //Find the position of the targeted function in the smiles
-    while(k<numb_tmp && numb_tmp!=2 && numb_tmp<selectedfunc.length){
-      if (!this.isAlpha(selectedfunc[k])|| (+selectedfunc[k] >= 0 && +selectedfunc[k]<= 9) ||((selectedfunc[k]=="C" && selectedfunc[k+1]=="l" ) || (selectedfunc[k]=="B" && selectedfunc[k+1]=="r" )) ) {
+    while(k<numb_tmp && numb_tmp!=2 && numb_tmp<smiles_with_H.length){
+      if (!this.isAlpha(smiles_with_H[k])|| (+smiles_with_H[k] >= 0 && +smiles_with_H[k]<= 9) ||((smiles_with_H[k]=="C" && smiles_with_H[k+1]=="l" ) || (smiles_with_H[k]=="B" && smiles_with_H[k+1]=="r" )) ) {
           numb_tmp=numb_tmp + 1;
 
       }
-      if (this.isAlpha(selectedfunc[k]) && selectedfunc[k]!="l" && selectedfunc[k+1]!="r" ){
+      if (this.isAlpha(smiles_with_H[k]) && smiles_with_H[k]!="l" && smiles_with_H[k+1]!="r" ){
         num_atom+=1;
       }
-      this.Required_substructures+=selectedfunc[k];
+      this.Required_substructures+=smiles_with_H[k];
       k++;
     }
     //If it's the first atom we don't want to loose the first character of the smile
     if(numb_tmp==2){
       numb_tmp=0;
     }
-    console.log(this.Required_substructures);
     i=0;
 
 
@@ -649,33 +648,28 @@ export class GrowingComponent implements OnInit {
           i++;
         }
       }
-      //Special character, go to the next occurence of the character after this one, without remove it from the required substructure
+      //Special character, go to the next occurrence of the character after this one, without remove it from the required substructure
       while(remove[i]=="/"){
         i++;
-        //If we want to remove an H in the first position of the smile, we don't moove
-        console.log(numb_tmp);
-        while((numb_tmp < selectedfunc.length && (selectedfunc[numb_tmp] !=remove[i]|| (posi.indexOf(num_atom)<0)) && (numb_tmp!=0 || remove[i+1]!="H"))   ){
-          this.Required_substructures+=selectedfunc[numb_tmp];
-          console.log(num_atom)
-          console.log((selectedfunc[numb_tmp]))
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        //If we want to remove an H in the first position of the smile, we don't move
+        while((numb_tmp < smiles_with_H.length && (smiles_with_H[numb_tmp] !=remove[i]|| (posi.indexOf(num_atom)<0)) && (numb_tmp!=0 || remove[i+1]!="H"))   ){
+          this.Required_substructures+=smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
         }
         //We go after the atom we wanted to go
-        if(numb_tmp < selectedfunc.length && (numb_tmp!=0 || remove[i+1]!="H" ) && this.isAlpha(remove[i])) {
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        if(numb_tmp < smiles_with_H.length && (numb_tmp!=0 || remove[i+1]!="H" ) && this.isAlpha(remove[i])) {
+          this.Required_substructures += smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
         }
         i++;
-        console.log("après le /",remove[i]);
       }
 
-      console.log(this.Required_substructures)
 
 
       //If we have a Br or Cl to remove
@@ -683,67 +677,46 @@ export class GrowingComponent implements OnInit {
         To_remove=remove[i];
         i++;
         To_remove+=remove[i];
-        console.log(To_remove)
-        while ((numb_tmp < selectedfunc.length - 2)&&(selectedfunc[numb_tmp] != To_remove[0] && selectedfunc[numb_tmp + 1] != To_remove[1]) && (selectedfunc[numb_tmp + 1] != To_remove[0] && selectedfunc[numb_tmp + 2] != To_remove[1]) ) {
-          console.log(selectedfunc[numb_tmp]);
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        while ((numb_tmp < smiles_with_H.length - 2)&&(smiles_with_H[numb_tmp] != To_remove[0] && smiles_with_H[numb_tmp + 1] != To_remove[1]) && (smiles_with_H[numb_tmp + 1] != To_remove[0] && smiles_with_H[numb_tmp + 2] != To_remove[1]) ) {
+          this.Required_substructures += smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
 
         }
-        console.log(num_atom)
-        while(!found && numb_tmp<selectedfunc.length) {
-          if ((selectedfunc[numb_tmp] == To_remove[0] && selectedfunc[numb_tmp + 1] == To_remove[1]) && (posi.indexOf(num_atom) > -1)) {
+        //Check if we are at the atom that we want to remove
+          if ((smiles_with_H[numb_tmp] == To_remove[0] && smiles_with_H[numb_tmp + 1] == To_remove[1]) && (posi.indexOf(num_atom) > -1)) {
             found = true
-          } else if (((selectedfunc[numb_tmp + 1] == To_remove[0]) && (selectedfunc[numb_tmp + 2] == To_remove[1]) && (posi.indexOf(num_atom) > -1) && (selectedfunc[numb_tmp] == "("))) {
+          }
+          //Check if there is a parenthesis and then the atom that we want to remove
+          else if (((smiles_with_H[numb_tmp + 1] == To_remove[0]) && (smiles_with_H[numb_tmp + 2] == To_remove[1]) && (posi.indexOf(num_atom) > -1) && (smiles_with_H[numb_tmp] == "("))) {
             found = true
             numb_tmp++;
             nb_open_parenthesis+=1;
           }
-          else{
-            this.Required_substructures+=selectedfunc[numb_tmp];
-            numb_tmp++;
-          }
-
-          console.log(selectedfunc[numb_tmp]+selectedfunc[numb_tmp + 1]);
-        }
-        console.log(found);
-        console.log(selectedfunc[numb_tmp]);
-        //Not sure if this while loop is usefull
-        while (found  && (selectedfunc[numb_tmp] != To_remove[0]  && selectedfunc[numb_tmp+1] != To_remove[1])) {
-          console.log(selectedfunc[numb_tmp]);
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
-            num_atom+=1;
-          }
-          numb_tmp++;
-        }
-        console.log(this.Required_substructures);
 
 
         nb_removed = 0;
-        //Remove what we wan
-        while (found &&(numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))&& (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "(") &&((selectedfunc[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis))))))){
-          console.log(selectedfunc[numb_tmp])
-          if ((selectedfunc[numb_tmp]==To_remove[0])&&(selectedfunc[numb_tmp+1]==To_remove[1])) {
+        //Remove what we want and close as mush parenthesis as we have open in this while loop
+        while (found &&(numb_tmp < smiles_with_H.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(smiles_with_H[numb_tmp]))&& (smiles_with_H[numb_tmp] != "[") && (smiles_with_H[numb_tmp] != "(") &&((smiles_with_H[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis))))))){
+          if ((smiles_with_H[numb_tmp]==To_remove[0])&&(smiles_with_H[numb_tmp+1]==To_remove[1])) {
             nb_removed++;
-            if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
               num_atom+=1;
             }
-            if (selectedfunc[numb_tmp] == remove[i]) {
+            if (smiles_with_H[numb_tmp] == remove[i]) {
               nb_removed++;
             }
-            if(selectedfunc[numb_tmp]=="("){
+            if(smiles_with_H[numb_tmp]=="("){
               nb_open_parenthesis+=1;
             }
-            else if(selectedfunc[numb_tmp]==")"){
+            else if(smiles_with_H[numb_tmp]==")"){
               nb_close_parenthesis+=1;
             }
             numb_tmp++;
           }
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
@@ -759,61 +732,43 @@ export class GrowingComponent implements OnInit {
           num_tmp_atom=num_atom;
           required_sub_tmp2=this.Required_substructures;
         }
-        console.log(this.Required_substructures);
       }
       else {
-        while (selectedfunc[numb_tmp] != remove[i] && selectedfunc[numb_tmp + 1] != remove[i] && selectedfunc[numb_tmp + 2] != remove[i] && numb_tmp < selectedfunc.length - 2) {
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        //while we are not near the atom that we want to remove we add the smiles to the required sub
+        while (smiles_with_H[numb_tmp] != remove[i] && smiles_with_H[numb_tmp + 1] != remove[i] && smiles_with_H[numb_tmp + 2] != remove[i] && numb_tmp < smiles_with_H.length - 2) {
+          this.Required_substructures += smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
 
         }
-        while(!found && numb_tmp<selectedfunc.length) {
-          if (selectedfunc[numb_tmp] == remove[i] || selectedfunc[numb_tmp + 1] == remove[i] || selectedfunc[numb_tmp + 2] == remove[i]) {
+        //If we have found what we want to remove
+          if (smiles_with_H[numb_tmp] == remove[i] || smiles_with_H[numb_tmp + 1] == remove[i] || smiles_with_H[numb_tmp + 2] == remove[i]) {
             found = true
           }
-          else{
-            this.Required_substructures+=selectedfunc[numb_tmp];
-            numb_tmp++;
-          }
-
-        }
-        console.log(found);
-        console.log(selectedfunc[numb_tmp]);
-        console.log(remove[i])
-        //Not sure if this while loop is usefull
-          while (found && (this.isAlpha(selectedfunc[numb_tmp]) || (selectedfunc[numb_tmp] == ")") || (selectedfunc[numb_tmp] == "]")) && selectedfunc[numb_tmp] != remove[i]) {
-          console.log(selectedfunc[numb_tmp]);
-          this.Required_substructures += selectedfunc[numb_tmp];
-            if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
-              num_atom+=1;
-            }
-            numb_tmp++;
-        }
-        console.log(this.Required_substructures);
 
 
         nb_removed = 0;
-
-        while (found &&(numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))||(selectedfunc[numb_tmp] == "H")) && (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "(") &&((selectedfunc[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis)))))) {
-          console.log(selectedfunc[numb_tmp]);
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        //While we haven't remove the atom or the number of this atom that we want to remove we skip
+        //I think && (smiles_with_H[numb_tmp] != "[") && (smiles_with_H[numb_tmp] != "(") &&((smiles_with_H[numb_tmp] != ")") are not useful but not sure
+        while (found &&(numb_tmp < smiles_with_H.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(smiles_with_H[numb_tmp]))||(smiles_with_H[numb_tmp] == "H")) && (smiles_with_H[numb_tmp] != "[") && (smiles_with_H[numb_tmp] != "(") &&((smiles_with_H[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis)))))) {
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
-          if (selectedfunc[numb_tmp] == remove[i]) {
+          if (smiles_with_H[numb_tmp] == remove[i]) {
             nb_removed++;
           }
-          if(selectedfunc[numb_tmp]=="("){
+          if(smiles_with_H[numb_tmp]=="("){
             nb_open_parenthesis+=1;
           }
-          else if(selectedfunc[numb_tmp]==")"){
+          else if(smiles_with_H[numb_tmp]==")"){
             nb_close_parenthesis+=1;
           }
           numb_tmp++;
 
         }
+        //If we haven't found what we want to remove we go back to the position before we tried to remove (useful for Halide aryl for example because we don't know what we want to remove)
         if(!found){
           numb_tmp=nb_tmp2;
           num_atom=num_tmp_atom;
@@ -824,16 +779,14 @@ export class GrowingComponent implements OnInit {
           num_tmp_atom=num_atom;
           required_sub_tmp2=this.Required_substructures;
         }
-        console.log(this.Required_substructures);
-        console.log(selectedfunc[numb_tmp]);
       }
 
 
       i++;
     }
-    console.log(this.Required_substructures);
-    for(numb_tmp;numb_tmp<selectedfunc.length;numb_tmp++){
-      this.Required_substructures+=selectedfunc[numb_tmp];
+    //We add the end of the smiles to the required_sub
+    for(numb_tmp;numb_tmp<smiles_with_H.length;numb_tmp++){
+      this.Required_substructures+=smiles_with_H[numb_tmp];
     }
     console.log(this.Required_substructures);
 

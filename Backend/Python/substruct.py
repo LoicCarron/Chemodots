@@ -2,7 +2,9 @@
 #substruct returns the smiles of the molecule without the function given in the parameters --> removes the fct
 
 
-from chemodots import *
+from Search_Function import *
+import sys
+
 
 
 
@@ -275,9 +277,8 @@ def substruct(smiles, function):
         print(m.GetSubstructMatches(tmp))
 
     print(remove[function])
-import sys
+
 if __name__== '__main__':
-# simple argument echo script
    smiles=sys.argv[1]
    function=sys.argv[2]
    substruct(smiles, function)

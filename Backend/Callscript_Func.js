@@ -1,7 +1,7 @@
 // Launch the script Search_Function
 const {sendError, sendMessage} = require ("./message");
 const {PythonShell} = require('python-shell')
-async function Callscript(req,res) {
+async function Callscript_Func(req, res) {
 
     let options= {
         pythonOptions: ['-u'], // get print results in real-time
@@ -13,4 +13,4 @@ async function Callscript(req,res) {
 
 
 }
-module.exports=Callscript;
+module.exports=Callscript_Func;

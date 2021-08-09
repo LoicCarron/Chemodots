@@ -1,7 +1,7 @@
 // Launch the script substruct
 const {sendError, sendMessage} = require ("./message");
 const {PythonShell} = require('python-shell')
-async function Callscript_UndSub(req, res) {
+async function Callscript_Sub(req, res) {
 
     let options= {
         pythonOptions: ['-u'], // get print results in real-time
@@ -13,4 +13,4 @@ async function Callscript_UndSub(req, res) {
 
 
 }
-module.exports=Callscript_UndSub;
+module.exports=Callscript_Sub;

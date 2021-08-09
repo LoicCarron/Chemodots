@@ -228,7 +228,7 @@ export class LinkingComponent implements OnInit {
       data = {
         smiles: this.smile1
       }
-        this.message.sendMessage('Callscript', data ).subscribe(res => {
+        this.message.sendMessage('Callscript_Func', data ).subscribe(res => {
           this.Detected_Functions = [];
           if (res.status == "error") {
             window.alert("There is an error in the structure 1");
@@ -241,7 +241,7 @@ export class LinkingComponent implements OnInit {
               data = {
                 smiles: this.smile2
               }
-              this.message.sendMessage('Callscript', data).subscribe(res => {
+              this.message.sendMessage('Callscript_Func', data).subscribe(res => {
                 this.Detected_Functions = [];
                 if (res.status == "error") {
                   window.alert("There is an error in the structure 2");
@@ -429,7 +429,7 @@ export class LinkingComponent implements OnInit {
 
       }
       let data = {funcname: this.Selected_Function1.Name_Func}
-      this.message.sendMessage('Callscript2', data).subscribe(res => {
+      this.message.sendMessage('Callscript_rules', data).subscribe(res => {
         if (res.status == "error") {
         } else {
           let doc = document.getElementById("RulesPart");
@@ -463,7 +463,7 @@ export class LinkingComponent implements OnInit {
 
             }
             let data = {funcname: this.Selected_Function2.Name_Func}
-            this.message.sendMessage('Callscript2', data).subscribe(res => {
+            this.message.sendMessage('Callscript_rules', data).subscribe(res => {
               if (res.status == "error") {
               } else {
                 let doc = document.getElementById("RulesPart");
@@ -600,7 +600,7 @@ export class LinkingComponent implements OnInit {
       smiles : this.smile1,
       funcname:this.Selected_Function1.Name_Func
     };
-    this.message.sendMessage('Callscript_UndSub', data1).subscribe(res => {
+    this.message.sendMessage('Callscript_Sub', data1).subscribe(res => {
       if (res.status == "error") {
       } else {
         console.log(res);
@@ -616,13 +616,11 @@ export class LinkingComponent implements OnInit {
       smiles : this.smile2,
       funcname:this.Selected_Function2.Name_Func
     };
-    this.message.sendMessage('Callscript_UndSub', data2).subscribe(res => {
+    this.message.sendMessage('Callscript_Sub', data2).subscribe(res => {
       if (res.status == "error") {
       } else {
         console.log(res);
         if (res.data != null) {
-          //this.Required_substructures=res.data[0];
-
           this.Remove_Sub(res.data,2);
 
         }
@@ -632,7 +630,6 @@ export class LinkingComponent implements OnInit {
   ValidateReactions(){
     this.Selected_Rules1=this.Form_Rules1.value.rules.filter((f: { checked: any; }) => f.checked);
     console.log(this.Selected_Rules1);
-    //Ici mettre un truc qui vérifie que Selected rules n'est pas vide
     this.Selected_Rules2=this.Form_Rules2.value.rules.filter((f: { checked: any; }) => f.checked);
     console.log(this.Selected_Rules2);
     if((this.Selected_Rules1.length==0)||(this.Selected_Rules2.length==0) ){
@@ -667,12 +664,12 @@ export class LinkingComponent implements OnInit {
     return true;
   };
   //Remove the substurcture
+  //More information in the same function in growing.component.ts
   Remove_Sub(res:string [],nb_func:number){
-    //Mettre L'id de la fonction choisit.
     let i=0;
     let nb_remove=1;
     let nb_removed=0;
-    let selectedfunc=res[0]
+    let smiles_with_H=res[0]
     let tmp="";
     let numb_tmp:number=0;
     let nb_tmp2:number;
@@ -734,15 +731,15 @@ export class LinkingComponent implements OnInit {
     console.log(posi)
     let k=0;
     //Find the position of the targeted function in the smiles
-    while(k<numb_tmp && numb_tmp!=2 && numb_tmp<selectedfunc.length){
-      if (!this.isAlpha(selectedfunc[k])|| (+selectedfunc[k] >= 0 && +selectedfunc[k]<= 9) ||((selectedfunc[k]=="C" && selectedfunc[k+1]=="l" ) || (selectedfunc[k]=="B" && selectedfunc[k+1]=="r" )) ) {
+    while(k<numb_tmp && numb_tmp!=2 && numb_tmp<smiles_with_H.length){
+      if (!this.isAlpha(smiles_with_H[k])|| (+smiles_with_H[k] >= 0 && +smiles_with_H[k]<= 9) ||((smiles_with_H[k]=="C" && smiles_with_H[k+1]=="l" ) || (smiles_with_H[k]=="B" && smiles_with_H[k+1]=="r" )) ) {
         numb_tmp=numb_tmp + 1;
 
       }
-      if (this.isAlpha(selectedfunc[k]) && selectedfunc[k]!="l" && selectedfunc[k+1]!="r" ){
+      if (this.isAlpha(smiles_with_H[k]) && smiles_with_H[k]!="l" && smiles_with_H[k+1]!="r" ){
         num_atom+=1;
       }
-      this.Required_substructures+=selectedfunc[k];
+      this.Required_substructures+=smiles_with_H[k];
       k++;
     }
     //If it's the first atom we don't want to loose the first character of the smile
@@ -775,26 +772,22 @@ export class LinkingComponent implements OnInit {
       while(remove[i]=="/"){
         i++;
         //If we want to remove an H in the first position of the smile, we don't moove
-        console.log(numb_tmp);
-        while((numb_tmp < selectedfunc.length && (selectedfunc[numb_tmp] !=remove[i]|| (posi.indexOf(num_atom)<0)) && (numb_tmp!=0 || remove[i+1]!="H"))   ){
-          this.Required_substructures+=selectedfunc[numb_tmp];
-          console.log(num_atom)
-          console.log((selectedfunc[numb_tmp]))
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        while((numb_tmp < smiles_with_H.length && (smiles_with_H[numb_tmp] !=remove[i]|| (posi.indexOf(num_atom)<0)) && (numb_tmp!=0 || remove[i+1]!="H"))   ){
+          this.Required_substructures+=smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
         }
         //We go after the atom we wanted to go
-        if(numb_tmp < selectedfunc.length && (numb_tmp!=0 || remove[i+1]!="H" ) && this.isAlpha(remove[i])) {
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        if(numb_tmp < smiles_with_H.length && (numb_tmp!=0 || remove[i+1]!="H" ) && this.isAlpha(remove[i])) {
+          this.Required_substructures += smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
         }
         i++;
-        console.log("après le /",remove[i]);
       }
 
       console.log(this.Required_substructures)
@@ -806,66 +799,46 @@ export class LinkingComponent implements OnInit {
         i++;
         To_remove+=remove[i];
         console.log(To_remove)
-        while ((numb_tmp < selectedfunc.length - 2)&&(selectedfunc[numb_tmp] != To_remove[0] && selectedfunc[numb_tmp + 1] != To_remove[1]) && (selectedfunc[numb_tmp + 1] != To_remove[0] && selectedfunc[numb_tmp + 2] != To_remove[1]) ) {
-          console.log(selectedfunc[numb_tmp]);
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        while ((numb_tmp < smiles_with_H.length - 2)&&(smiles_with_H[numb_tmp] != To_remove[0] && smiles_with_H[numb_tmp + 1] != To_remove[1]) && (smiles_with_H[numb_tmp + 1] != To_remove[0] && smiles_with_H[numb_tmp + 2] != To_remove[1]) ) {
+          console.log(smiles_with_H[numb_tmp]);
+          this.Required_substructures += smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
 
         }
-        console.log(num_atom)
-        while(!found && numb_tmp<selectedfunc.length) {
-          if ((selectedfunc[numb_tmp] == To_remove[0] && selectedfunc[numb_tmp + 1] == To_remove[1]) && (posi.indexOf(num_atom) > -1)) {
+          if ((smiles_with_H[numb_tmp] == To_remove[0] && smiles_with_H[numb_tmp + 1] == To_remove[1]) && (posi.indexOf(num_atom) > -1)) {
             found = true
-          } else if (((selectedfunc[numb_tmp + 1] == To_remove[0]) && (selectedfunc[numb_tmp + 2] == To_remove[1]) && (posi.indexOf(num_atom) > -1) && (selectedfunc[numb_tmp] == "("))) {
+          }
+          else if (((smiles_with_H[numb_tmp + 1] == To_remove[0]) && (smiles_with_H[numb_tmp + 2] == To_remove[1]) && (posi.indexOf(num_atom) > -1) && (smiles_with_H[numb_tmp] == "("))) {
             found = true
             numb_tmp++;
             nb_open_parenthesis+=1;
-          }
-          else{
-            this.Required_substructures+=selectedfunc[numb_tmp];
-            numb_tmp++;
-          }
 
-          console.log(selectedfunc[numb_tmp]+selectedfunc[numb_tmp + 1]);
         }
-        console.log(found);
-        console.log(selectedfunc[numb_tmp]);
-        //Not sure if this while loop is usefull
-        while (found  && (selectedfunc[numb_tmp] != To_remove[0]  && selectedfunc[numb_tmp+1] != To_remove[1])) {
-          console.log(selectedfunc[numb_tmp]);
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
-            num_atom+=1;
-          }
-          numb_tmp++;
-        }
-        console.log(this.Required_substructures);
 
 
         nb_removed = 0;
         //Remove what we wan
-        while (found &&(numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))&& (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "(") &&((selectedfunc[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis))))))){
-          console.log(selectedfunc[numb_tmp])
-          if ((selectedfunc[numb_tmp]==To_remove[0])&&(selectedfunc[numb_tmp+1]==To_remove[1])) {
+        while (found &&(numb_tmp < smiles_with_H.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(smiles_with_H[numb_tmp]))&& (smiles_with_H[numb_tmp] != "[") && (smiles_with_H[numb_tmp] != "(") &&((smiles_with_H[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis))))))){
+          if ((smiles_with_H[numb_tmp]==To_remove[0])&&(smiles_with_H[numb_tmp+1]==To_remove[1])) {
             nb_removed++;
-            if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+            if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
               num_atom+=1;
             }
-            if (selectedfunc[numb_tmp] == remove[i]) {
+            if (smiles_with_H[numb_tmp] == remove[i]) {
               nb_removed++;
             }
-            if(selectedfunc[numb_tmp]=="("){
+            if(smiles_with_H[numb_tmp]=="("){
               nb_open_parenthesis+=1;
             }
-            else if(selectedfunc[numb_tmp]==")"){
+            else if(smiles_with_H[numb_tmp]==")"){
               nb_close_parenthesis+=1;
             }
             numb_tmp++;
           }
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
@@ -884,53 +857,33 @@ export class LinkingComponent implements OnInit {
         console.log(this.Required_substructures);
       }
       else {
-        while (selectedfunc[numb_tmp] != remove[i] && selectedfunc[numb_tmp + 1] != remove[i] && selectedfunc[numb_tmp + 2] != remove[i] && numb_tmp < selectedfunc.length - 2) {
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        while (smiles_with_H[numb_tmp] != remove[i] && smiles_with_H[numb_tmp + 1] != remove[i] && smiles_with_H[numb_tmp + 2] != remove[i] && numb_tmp < smiles_with_H.length - 2) {
+          this.Required_substructures += smiles_with_H[numb_tmp];
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
           numb_tmp++;
 
         }
-        while(!found && numb_tmp<selectedfunc.length) {
-          if (selectedfunc[numb_tmp] == remove[i] || selectedfunc[numb_tmp + 1] == remove[i] || selectedfunc[numb_tmp + 2] == remove[i]) {
+          if (smiles_with_H[numb_tmp] == remove[i] || smiles_with_H[numb_tmp + 1] == remove[i] || smiles_with_H[numb_tmp + 2] == remove[i]) {
             found = true
           }
-          else{
-            this.Required_substructures+=selectedfunc[numb_tmp];
-            numb_tmp++;
-          }
-
-        }
-        console.log(found);
-        console.log(selectedfunc[numb_tmp]);
-        console.log(remove[i])
-        //Not sure if this while loop is usefull
-        while (found && (this.isAlpha(selectedfunc[numb_tmp]) || (selectedfunc[numb_tmp] == ")") || (selectedfunc[numb_tmp] == "]")) && selectedfunc[numb_tmp] != remove[i]) {
-          console.log(selectedfunc[numb_tmp]);
-          this.Required_substructures += selectedfunc[numb_tmp];
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
-            num_atom+=1;
-          }
-          numb_tmp++;
-        }
-        console.log(this.Required_substructures);
 
 
         nb_removed = 0;
 
-        while (found &&(numb_tmp < selectedfunc.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(selectedfunc[numb_tmp]))||(selectedfunc[numb_tmp] == "H")) && (selectedfunc[numb_tmp] != "[") && (selectedfunc[numb_tmp] != "(") &&((selectedfunc[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis)))))) {
-          console.log(selectedfunc[numb_tmp]);
-          if (this.isAlpha(selectedfunc[numb_tmp]) && selectedfunc[numb_tmp]!="l" && selectedfunc[numb_tmp]!="r" ){
+        while (found &&(numb_tmp < smiles_with_H.length) && (((nb_removed < nb_remove) || (((!this.isAlpha(smiles_with_H[numb_tmp]))||(smiles_with_H[numb_tmp] == "H")) && (smiles_with_H[numb_tmp] != "[") && (smiles_with_H[numb_tmp] != "(") &&((smiles_with_H[numb_tmp] != ")")||(nb_close_parenthesis<nb_open_parenthesis)))))) {
+          console.log(smiles_with_H[numb_tmp]);
+          if (this.isAlpha(smiles_with_H[numb_tmp]) && smiles_with_H[numb_tmp]!="l" && smiles_with_H[numb_tmp]!="r" ){
             num_atom+=1;
           }
-          if (selectedfunc[numb_tmp] == remove[i]) {
+          if (smiles_with_H[numb_tmp] == remove[i]) {
             nb_removed++;
           }
-          if(selectedfunc[numb_tmp]=="("){
+          if(smiles_with_H[numb_tmp]=="("){
             nb_open_parenthesis+=1;
           }
-          else if(selectedfunc[numb_tmp]==")"){
+          else if(smiles_with_H[numb_tmp]==")"){
             nb_close_parenthesis+=1;
           }
           numb_tmp++;
@@ -946,16 +899,13 @@ export class LinkingComponent implements OnInit {
           num_tmp_atom=num_atom;
           required_sub_tmp2=this.Required_substructures;
         }
-        console.log(this.Required_substructures);
-        console.log(selectedfunc[numb_tmp]);
       }
 
 
       i++;
     }
-    console.log(this.Required_substructures);
-    for(numb_tmp;numb_tmp<selectedfunc.length;numb_tmp++){
-      this.Required_substructures+=selectedfunc[numb_tmp];
+    for(numb_tmp;numb_tmp<smiles_with_H.length;numb_tmp++){
+      this.Required_substructures+=smiles_with_H[numb_tmp];
     }
     console.log(this.Required_substructures);
 

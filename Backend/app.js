@@ -20,13 +20,13 @@ app.use(cors({origin: 'http://10.36.4.17:4200', credentials: true}));
 // each route corresponds to a file that we load via a require. This
 // file just exports a function, which is called when the user
 // ask to access the route.
-const Callscript = require ('./Callscript');
-const Callscript2 = require ('./Callscript2');
-const Callscript_UndSub = require ('./Callscript_UndSub');
+const Callscript_Func = require ('./Callscript_Func');
+const Callscript_rules = require ('./Callscript_rules');
+const Callscript_Sub = require ('./Callscript_Sub');
 
 
-app.post ('/Callscript', (req, res) => {Callscript(req,res);});
-app.post ('/Callscript2', (req, res) => {Callscript2(req,res);});
-app.post ('/Callscript_UndSub', (req, res) => {Callscript_UndSub(req,res);});
+app.post ('/Callscript_Func', (req, res) => {Callscript_Func(req,res);});
+app.post ('/Callscript_rules', (req, res) => {Callscript_rules(req,res);});
+app.post ('/Callscript_Sub', (req, res) => {Callscript_Sub(req,res);});
 
 app.listen(port, () => {console.log (`listening on port ${port}`)});

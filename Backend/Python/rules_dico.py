@@ -78,7 +78,6 @@ def displayRules(fctName):
     """print( "La clé '{0}' contient la valeur '{1}'.".format(key,values))"""
 import sys
 if __name__== '__main__':
-# simple argument echo script
    Namefct=sys.argv[1]
    displayRules(Namefct)
 

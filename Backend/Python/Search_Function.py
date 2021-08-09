@@ -877,8 +877,6 @@ def addpos(posi):
 import sys
 
 if __name__== '__main__':
-
-# simple argument echo script
    smiles=sys.argv[1]
    searchFct(smiles)
 
